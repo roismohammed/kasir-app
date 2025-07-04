@@ -4,8 +4,8 @@
   "rsc": false,
   "tsx": true,
   "tailwind": {
-    "config": "",
-    "css": "src/styles/globals.css",
+    "config": "vite.config.ts",
+    "css": "inertia/css/app.css",
     "baseColor": "neutral",
     "cssVariables": true,
     "prefix": ""
