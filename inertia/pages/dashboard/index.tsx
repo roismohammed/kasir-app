@@ -43,7 +43,7 @@ const DashboardPage = () => {
                 {stat.icon}
               </div>
               <div>
-                <p className="text-lg font-semibold">{stat.count}</p>
+                <p className="text-xl font-bold">{stat.count}</p>
                 <p className="text-sm text-muted-foreground">{stat.title}</p>
               </div>
             </CardContent>
