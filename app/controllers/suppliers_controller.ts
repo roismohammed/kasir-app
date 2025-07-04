@@ -22,12 +22,10 @@ export default class SuppliersController {
    */
   async store({ request, response, session }: HttpContext) {
     const data = await request.validateUsing(SupplierValidator)
-
-    // Simpan ke DB
+    
     await Supplier.create(data)
     session.flash('success', 'Supplier berhasil ditambahkan')
     return response.redirect('/suppliers')
-
   }
 
   /**
@@ -38,15 +36,30 @@ export default class SuppliersController {
   /**
    * Edit individual record
    */
-  async edit({ params }: HttpContext) { }
+  async edit({ params, inertia }: HttpContext) {
+    const supplier = await Supplier.findOrFail(params.id)
+    return inertia.render('suppliers/edit', { supplier })
+  }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) { }
+  async update({ params, request, response, session }: HttpContext) {
+    const supplier = await Supplier.findOrFail(params.id)
+    const data = await request.validateUsing(SupplierValidator)
+    supplier.merge(data).save()
+    session.flash('success', 'Supplier berhasil diperbarui')
+    return response.redirect('/suppliers')
+  }
 
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) { }
+  async destroy({ params,session,response }: HttpContext) { 
+    const supplier = await Supplier.findOrFail(params.id)
+    await supplier.delete()
+
+    session.flash('success', 'Supplier berhasil dihapus')
+    return response.redirect('/suppliers')
+  }
 }

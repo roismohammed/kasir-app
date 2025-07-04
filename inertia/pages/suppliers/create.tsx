@@ -8,7 +8,7 @@ const CreateSupplier = () => {
                 <PageTitle title="Create Supplier" subtitle="Create data supplier" />
             </div>
             <div className='max-w-lg'>
-                <FormSupplier />
+                <FormSupplier method="POST" url="/suppliers" />
             </div>
         </AppLayout>
     )
