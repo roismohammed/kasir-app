@@ -1,9 +1,8 @@
-import { useForm } from "@inertiajs/react";
+import { router, useForm } from "@inertiajs/react";
 import React from "react";
 import { toast } from "sonner";
 import TextInput from "~/components/form/text-input";
 import { Button } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
 import { Label } from "~/components/ui/label";
 import { Textarea } from "~/components/ui/textarea";
 
@@ -29,12 +28,19 @@ export default function FormSupplier({ url, method, supplier }: SupplierProps) {
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
-           const submitQuery = new Promise((resolve, reject) => {
-            post(url, {
-                onSuccess: (props) => resolve(props),
-                onError: (errors) => reject(errors),
-            });
-        });
+        const submitQuery = new Promise((resolve, reject) => {
+            const options = {
+                onSuccess: (props: any) => resolve(props),
+                onError: (errors: any) => reject(errors),
+            }
+
+            if (method === 'PUT') {
+                router.put(url, data, options)
+            } else {
+                post(url, options)
+            }
+        })
+
 
         toast.promise(submitQuery, {
             loading: 'Sedang Mengirim',

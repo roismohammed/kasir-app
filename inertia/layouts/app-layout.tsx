@@ -1,3 +1,4 @@
+import { Toaster } from "sonner"
 import { AppSidebar } from "~/components/app-sidebar"
 import {
   Breadcrumb,
@@ -14,7 +15,7 @@ import {
   SidebarTrigger,
 } from "~/components/ui/sidebar"
 
-export default function Page({children}: { children: React.ReactNode }) {
+export default function Page({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -42,7 +43,8 @@ export default function Page({children}: { children: React.ReactNode }) {
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">
-            {children}
+          <Toaster />
+          {children}
         </div>
       </SidebarInset>
     </SidebarProvider>

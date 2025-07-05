@@ -42,7 +42,6 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
     DropdownMenu,
-    DropdownMenuCheckboxItem,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuTrigger,
@@ -60,6 +59,7 @@ import { Label } from "../ui/label"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { EditTableIcon } from "@hugeicons/core-free-icons"
 import { Checkbox } from "../ui/checkbox"
+import noData from '@/assets/image/no-data.png'
 
 // allow custom column metadata
 declare module '@tanstack/react-table' {
@@ -232,7 +232,7 @@ export function DataTable<TData, TValue>({
                                         colSpan={columns.length}
                                         className="h-24 text-center"
                                     >
-                                        No results.
+                                        <img src={noData} alt="No Data" className="h-[350px] flex justify-center mx-auto" />
                                     </TableCell>
                                 </TableRow>
                             )}

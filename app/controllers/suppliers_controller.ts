@@ -1,5 +1,5 @@
 import Supplier from '#models/supplier'
-import {  SupplierValidator } from '#validators/supplier'
+import { SupplierValidator } from '#validators/supplier'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class SuppliersController {
@@ -7,7 +7,7 @@ export default class SuppliersController {
    * Display a list of resource
    */
   async index({ inertia }: HttpContext) {
-    return inertia.render('suppliers/index',{
+    return inertia.render('suppliers/index', {
       suppliers: await Supplier.all()
     })
   }
@@ -24,7 +24,7 @@ export default class SuppliersController {
    */
   async store({ request, response, session }: HttpContext) {
     const data = await request.validateUsing(SupplierValidator)
-    
+
     await Supplier.create(data)
     session.flash('success', 'Supplier berhasil ditambahkan')
     return response.redirect('/suppliers')
@@ -49,7 +49,9 @@ export default class SuppliersController {
   async update({ params, request, response, session }: HttpContext) {
     const supplier = await Supplier.findOrFail(params.id)
     const data = await request.validateUsing(SupplierValidator)
-    supplier.merge(data).save()
+    supplier.merge(data)        // Mengisi field
+    await supplier.save()
+
     session.flash('success', 'Supplier berhasil diperbarui')
     return response.redirect('/suppliers')
   }
@@ -57,7 +59,7 @@ export default class SuppliersController {
   /**
    * Delete record
    */
-  async destroy({ params,session,response }: HttpContext) { 
+  async destroy({ params, session, response }: HttpContext) {
     const supplier = await Supplier.findOrFail(params.id)
     await supplier.delete()
 
