@@ -45,7 +45,7 @@ export function ChartBarDefault() {
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer className="h-68 w-full" config={chartConfig}>
+        <ChartContainer className="h-65 w-full" config={chartConfig}>
           <BarChart
             accessibilityLayer
             data={chartData}
