@@ -7,3 +7,16 @@ export interface NavItem {
     isActive?: boolean;
     items?: NavItem[];
 }
+
+export interface SharedData {
+    name: string;
+    quote: { message: string; author: string };
+    [key: string]: unknown;
+}
+
+export interface SupplierProps {
+    name: string;
+    phone: string;
+    address: string;
+    description: string;
+}

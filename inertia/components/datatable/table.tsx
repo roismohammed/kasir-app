@@ -1,329 +1,338 @@
-import TableFooter from '@/components/datatable/footer'
-import TableToolbar from '@/components/datatable/toolbar'
-import { Checkbox } from '@/components/ui/checkbox'
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { cn } from '@/lib/utils'
-import { DatatableProps } from '@/types/datatable'
-import { HugeiconsProps } from '@hugeicons/react'
-import { router, usePage } from '@inertiajs/react'
+"use client"
+
+import React from "react"
+import { ChevronLeftIcon, ChevronRightIcon, ChevronsLeftIcon, ChevronsRightIcon, MoreHorizontal } from "lucide-react"
 import {
     ColumnDef,
     ColumnFiltersState,
+    SortingState,
+    VisibilityState,
     flexRender,
     getCoreRowModel,
+    getFacetedMinMaxValues,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
     getFilteredRowModel,
     getPaginationRowModel,
     getSortedRowModel,
-    RowSelectionState,
-    SortingState,
     useReactTable,
-    VisibilityState,
+    RowData,
+    Row,
 } from '@tanstack/react-table'
-import React, { Fragment, useEffect, useMemo, useRef, useState } from 'react'
-import NoDataIllustration from '../../../assets/img/no-data.svg'
-import { SharedData } from '@/types'
-import { toast } from 'sonner'
+import {
+    closestCenter,
+    DndContext,
+    KeyboardSensor,
+    MouseSensor,
+    TouchSensor,
+    useSensor,
+    useSensors,
+    type DragEndEvent,
+    type UniqueIdentifier,
+} from "@dnd-kit/core"
+import { restrictToVerticalAxis } from "@dnd-kit/modifiers"
+import {
+    arrayMove,
+    SortableContext,
+    useSortable,
+    verticalListSortingStrategy,
+} from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import {
+    DropdownMenu,
+    DropdownMenuCheckboxItem,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select"
+import { Label } from "../ui/label"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { EditTableIcon } from "@hugeicons/core-free-icons"
+import { Checkbox } from "../ui/checkbox"
 
-declare module '@tanstack/table-core' {
-
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-expect-error
+// allow custom column metadata
+declare module '@tanstack/react-table' {
     interface ColumnMeta<TData extends RowData, TValue> {
-        align?: 'left' | 'right' | 'center';
-        noWrap?: boolean;
-        filterVariant?: 'text' | 'date_range' | 'select' | 'number_range' | 'boolean' | 'multi_select' | 'checklist';
-        filterTitle?: string;
-        filterOptions?: {
-            value: string;
-            label: string;
-        }[];
-        columnIcon?: HugeiconsProps['icon']; // Fixed typo: changed 'columIcon' to 'columnIcon'
+        filterVariant?: 'text' | 'range' | 'select'
     }
 }
 
-const fallbackData: RowData[] = []
-// Define your row data type
-type RowData = {
-    id: string;
-    // other row data fields
-};
+interface DataTableProps<TData, TValue> {
+    columns: ColumnDef<TData, TValue>[]
+    data: TData[]
+}
 
-const Datatable = <TData, TValue>({ data, columns }: DatatableProps<TData>) => {
-    const { auth } = usePage<SharedData>().props
-    const userId = auth.user.id
-    const routeName = route().current()
-    const storageKey = `table-params:${userId}:${routeName}`
+function DraggableRow<TData extends RowData>({
+    row,
+}: {
+    row: Row<TData>;
+}) {
+    const { transform, transition, setNodeRef, isDragging } = useSortable({
+        id: row.original.id,
+    });
+    return (
+        <TableRow
+            data-state={row.getIsSelected() && "selected"}
+            data-dragging={isDragging}
+            ref={setNodeRef}
+            className="relative z-0 data-[dragging=true]:z-10 data-[dragging=true]:opacity-80"
+            style={{
+                transform: CSS.Transform.toString(transform),
+                transition: transition,
+            }}
+        >
+            {row.getVisibleCells().map((cell) => (
+                <TableCell key={cell.id}>
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                </TableCell>
+            ))}
+        </TableRow>
+    );
+}
 
-    // Ambil dari localStorage saat awal
-    const saved = JSON.parse(localStorage.getItem(storageKey) || '{}')
+export function DataTable<TData, TValue>({
+    columns,
+    data: initialData
+}: DataTableProps<TData, TValue>) {
 
-    const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(saved.columnFilters || [])
-
-    const [globalFilter, setGlobalFilter] = useState<{
-        keyword?: string;
-        filterBetween?: Record<string, [string, string]>;
-    }>(saved.globalFilter || {})
-
-    const [rowSelection, setRowSelection] = React.useState<RowSelectionState>({})
-
-    const [sorting, setSorting] = React.useState<SortingState>(saved.sorting || [])
-    const [loading, setLoading] = useState(false)
-    const [perPage, setPerPage] = useState(10) // [10, 25, 50, 100, false]
-    const isFirstRender = useRef(true)
-    const [{ pageIndex, pageSize }, setPagination] = useState(saved.pagination || { pageIndex: 0, pageSize: 10 })
-
-    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>(() => {
-        const savedPrefs = localStorage.getItem('userColumnVisibilityPrefs')
-        return savedPrefs ? JSON.parse(savedPrefs) : ['id']
-    })
-
-    const pagination = useMemo(
-        () => ({
-            pageIndex,
-            pageSize,
-        }),
-        [pageIndex, pageSize],
+    // const rerender = React.useReducer(() => ({}), {})[1]
+    const [data, setData] = React.useState(() => initialData)
+    const [sorting, setSorting] = React.useState<SortingState>([])
+    const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({})
+    const sortableId = React.useId()
+    const dataIds = React.useMemo<UniqueIdentifier[]>(
+        () => data?.map(({ id }: any) => id) || [],
+        [data]
     )
-
+    const sensors = useSensors(
+        useSensor(MouseSensor, {}),
+        useSensor(TouchSensor, {}),
+        useSensor(KeyboardSensor, {})
+    )
     const table = useReactTable({
-        data: data.data ?? fallbackData,
+        data,
         columns,
-        getCoreRowModel: getCoreRowModel(),
-        manualPagination: true,
-        manualFiltering: true,
-        manualSorting: true,
-        manualGrouping: true,
-        enableRowSelection: true,
-        filterFns: {},
-        getFilteredRowModel: getFilteredRowModel(),
-        onColumnVisibilityChange: setColumnVisibility,
-        onPaginationChange: setPagination,
-        onGlobalFilterChange: setGlobalFilter,
-        onColumnFiltersChange: setColumnFilters,
-        onSortingChange: setSorting, //optionally control sorting state in your own scope for easy access
-        onRowSelectionChange: setRowSelection,
-        getSortedRowModel: getSortedRowModel(),
-        getPaginationRowModel: getPaginationRowModel(),
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-        // @ts-expect-error
-        getRowId: (row) => row.id, // Use a unique row identifier
         state: {
-            globalFilter: globalFilter,
-            pagination,
+            sorting,
             columnFilters,
             columnVisibility,
-            sorting,
-            rowSelection,
         },
+        onSortingChange: setSorting,
+        onColumnFiltersChange: setColumnFilters,
+        onColumnVisibilityChange: setColumnVisibility,
+        getCoreRowModel: getCoreRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getPaginationRowModel: getPaginationRowModel(),
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
+        getFacetedMinMaxValues: getFacetedMinMaxValues(),
+        debugTable: true,
     })
-    const handleSetPerPage = (value: number) => {
-        setPerPage(value)
-    }
 
-    const formattedFilters = columnFilters.reduce(
-        (acc, filter) => {
-            if (filter.id && filter.value !== undefined) {
-                acc[filter.id] = String(filter.value)
-            }
-            return acc
-        },
-        {} as { [key: string]: string },
-    )
-
-    const formattedSorting = sorting.reduce(
-        (acc, sort) => {
-            acc['orderBy'] = String(sort.id)
-            acc['type'] = sort.desc ? 'desc' : 'asc'
-            return acc
-        },
-        {} as { orderBy: string; type: 'asc' | 'desc' },
-    )
-
-    const handleResetFilters = () => {
-        localStorage.removeItem(storageKey)
-        // Reset semua state terkait filter
-        setColumnFilters([])
-        setSorting([])
-        setPagination({ pageIndex: 0, pageSize: 10 })
-        setGlobalFilter({ keyword: '' })
-        toast.success('Filter berhasil di reset')
-    }
-
-    const params: Record<string, string | Record<string, string | [string, string]>> = {
-        _method: 'get',
-        filter: formattedFilters,
-        sort: formattedSorting,
-        ...(globalFilter.keyword ? { search: String(globalFilter.keyword) } : {}),
-        page: String(pageIndex),
-        perPage: String(pageSize),
-    }
-
-
-    useEffect(() => {
-        if (isFirstRender.current) {
-            isFirstRender.current = false
-        } else {
-            localStorage.setItem(storageKey, JSON.stringify({
-                columnFilters,
-                sorting,
-                pagination,
-            }))
-            router.visit(data.meta.path, {
-                method: 'post',
-                data: { ...params } as Record<string, string>,
-                preserveState: true,
-                replace: true,
-                showProgress: false,
-                onStart: () => setLoading(true),
-                onSuccess: () => {
-                    setLoading(false)
-                },
+    function handleDragEnd(event: DragEndEvent) {
+        const { active, over } = event
+        if (active && over && active.id !== over.id) {
+            setData((data) => {
+                const oldIndex = dataIds.indexOf(active.id)
+                const newIndex = dataIds.indexOf(over.id)
+                return arrayMove(data, oldIndex, newIndex)
             })
         }
-    }, [columnFilters, sorting, pagination, globalFilter])
+    }
 
-    useEffect(() => {
-        localStorage.setItem('userColumnVisibilityPrefs', JSON.stringify(columnVisibility))
-    }, [columnVisibility])
+
 
     return (
-        <Fragment>
-            <div
-                className="table-wrapper min-w-full  max-w-[calc(100vw-20rem)] overflow-hidden rounded-md border border-slate-100 shadow-xs">
-                <div className="flex w-full items-center px-4 py-3">
-                    <TableToolbar table={table} handleReset={handleResetFilters} />
-                </div>
-                <div className="w-full">
+        <div>
+            <div className="flex items-center py-4">
+                <Input
+                    placeholder="Search Data..."
+                    value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+                    onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
+                    className="max-w-sm"
+                />
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button variant="outline" className="ml-auto">
+                            <HugeiconsIcon icon={EditTableIcon} />
+                            Columns
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        {table.getAllColumns().filter(col => col.getCanHide()).map((column) => (
+                            <DropdownMenuItem
+                                key={column.id}
+                                className="flex items-center gap-2 capitalize"
+                                onClick={() => column.toggleVisibility(!column.getIsVisible())}
+                            >
+                                <Checkbox
+                                    checked={column.getIsVisible()}
+                                    className="shrink-0"
+                                />
+                                {column.id}
+                            </DropdownMenuItem>
+                        ))}
+                    </DropdownMenuContent>
+                </DropdownMenu>
+            </div>
+
+            <div className="rounded-md border">
+                <DndContext
+                    collisionDetection={closestCenter}
+                    modifiers={[restrictToVerticalAxis]}
+                    onDragEnd={handleDragEnd}
+                    sensors={sensors}
+                    id={sortableId}
+                >
                     <Table>
-                        <TableHeader
-                            className={
-                                'bg-gradient-to-r from-indigo-100/10 to-indigo-50/20 px-6 font-medium text-nowrap text-zinc-900 hover:bg-gradient-to-r hover:from-indigo-100/10 hover:to-indigo-50/20'
-                            }
-                        >
+                        <TableHeader className="bg-muted sticky top-0 z-10">
                             {table.getHeaderGroups().map((headerGroup) => (
-                                <TableRow
-                                    key={headerGroup.id}
-                                    className={
-                                        'group border-slate-100 bg-gradient-to-r from-indigo-100/10 to-indigo-50/20 px-6 font-medium text-nowrap text-zinc-900 hover:bg-gradient-to-r hover:from-indigo-100/10 hover:to-indigo-50/20'
-                                    }
-                                >
-                                    <TableHead className={'w-[10px] ps-4'}>
-                                        <Checkbox
-                                            checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && 'indeterminate')}
-                                            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                                            aria-label="Select all"
-                                            className={cn(
-                                                'invisible cursor-pointer shadow-none group-hover:visible data-[state=checked]:visible data-[state=checked]:border-blue-500/40 data-[state=checked]:bg-blue-500/10 data-[state=checked]:text-blue-500/80 data-[state=indeterminate]:visible data-[state=indeterminate]:text-blue-500',
-                                            )}
-                                        />
-                                    </TableHead>
-                                    {headerGroup.headers.map((header) => (
-                                        <TableHead
-                                            className={cn(
-                                                'bg-gradient-to-r from-indigo-100/10 to-indigo-50/20 px-6 ps-2 font-medium text-nowrap text-zinc-900 hover:bg-gradient-to-r hover:from-indigo-100/10 hover:to-indigo-50/20',
-                                                header.column.columnDef.header == 'Aksi' ? 'text-right' : '',
-                                                `text-${header.column.columnDef.meta?.align}`,
-                                            )}
-                                            key={header.id}
-                                            colSpan={header.colSpan}
-                                        >
-                                            {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
-                                        </TableHead>
-                                    ))}
+                                <TableRow key={headerGroup.id}>
+                                    {headerGroup.headers.map((header) => {
+                                        return (
+                                            <TableHead key={header.id} colSpan={header.colSpan}>
+                                                {header.isPlaceholder
+                                                    ? null
+                                                    : flexRender(
+                                                        header.column.columnDef.header,
+                                                        header.getContext()
+                                                    )}
+                                            </TableHead>
+                                        )
+                                    })}
                                 </TableRow>
                             ))}
                         </TableHeader>
-                        <TableBody className={'px-6'}>
-                            {loading ? (
-                                Array.from({ length: 15 }).map((_, index) => (
-                                    <TableRow key={index} className={'h-8 animate-pulse border-slate-100'}>
-                                        <TableCell className={'ps-4'} />
-                                        {columns.map((column: ColumnDef<TData, TValue>, colIndex: number) => (
-                                            <TableCell
-                                                key={colIndex}
-                                                className={cn(
-                                                    'min-h-8 px-6 ps-2 font-normal text-zinc-600',
-                                                    column.header === 'Aksi' ? 'text-right' : '',
-                                                    `text-${column.meta?.align}`,
-                                                    column.meta?.noWrap ? 'text-nowrap' : '',
-                                                )}
-                                            >
-                                                <div className={'h-4 w-3/4 rounded bg-slate-200'}></div>
-                                            </TableCell>
-                                        ))}
-                                    </TableRow>
-                                ))
-                            ) : table.getRowModel().rows.length > 0 ? (
-                                table.getRowModel().rows.map((row) => (
-                                    <Fragment key={row.id}>
-                                        <TableRow key={row.id} className={'group h-8 border-slate-100'}>
-                                            <TableCell className={'ps-4'}>
-                                                <Checkbox
-                                                    checked={row.getIsSelected()}
-                                                    onCheckedChange={(value) => row.toggleSelected(!!value)}
-                                                    aria-label="Select row"
-                                                    className={cn(
-                                                        'invisible cursor-pointer shadow-none group-hover:visible data-[state=checked]:visible data-[state=checked]:border-blue-500/40 data-[state=checked]:bg-blue-500/10 data-[state=checked]:text-blue-500/80',
-                                                    )}
-                                                />
-                                            </TableCell>
-                                            {row.getVisibleCells().map((cell) => (
-                                                <TableCell
-                                                    key={cell.id}
-                                                    className={cn(
-                                                        'px-6 ps-2 font-normal text-zinc-600',
-                                                        cell.column.columnDef.header == 'Aksi' ? 'text-right' : '',
-                                                        `text-${cell.column.columnDef.meta?.align}`,
-                                                        cell.column.columnDef.meta?.noWrap ? 'text-nowrap' : '',
-                                                    )}
-                                                >
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                                                </TableCell>
-                                            ))}
-                                        </TableRow>
-                                    </Fragment>
-                                ))
+                        <TableBody className="**:data-[slot=table-cell]:first:w-8">
+                            {table.getRowModel().rows?.length ? (
+                                <SortableContext
+                                    items={dataIds}
+                                    strategy={verticalListSortingStrategy}
+                                >
+                                    {table.getRowModel().rows.map((row) => (
+                                        <DraggableRow key={row.id} row={row} />
+                                    ))}
+                                </SortableContext>
                             ) : (
-                                <TableRow className={'bg-white hover:bg-white'}>
-                                    <TableCell colSpan={columns.length} className={'py-16 text-center'}>
-                                        <img src={NoDataIllustration} className={'mx-auto h-52'} alt={'No Data'} />
-                                        <h4 className={'text-primary/80 mt-5 text-lg font-semibold'}>Data tidak
-                                            ditemukan</h4>
-                                        <p className="text-sm font-light text-slate-500">
-                                            Silahkan anda tambahkan terlebih dahulu, kemudiah refresh halaman ini
-                                            kembali.
-                                        </p>
+                                <TableRow>
+                                    <TableCell
+                                        colSpan={columns.length}
+                                        className="h-24 text-center"
+                                    >
+                                        No results.
                                     </TableCell>
                                 </TableRow>
                             )}
                         </TableBody>
                     </Table>
+                </DndContext>
+            </div>
 
-                    <div className={'flex items-center border-t bg-slate-100/20 px-4 py-6'}>
-                        <TableFooter
-                            data={data}
-                            table={table}
-                            perPage={perPage.toString()}
-                            handleChangePerPage={(value: string) => handleSetPerPage(parseInt(value))}
+            <div className="flex items-center gap-8 mt-4 lg:justify-between lg:w-full">
+                <div className="flex items-center gap-2">
+                    <span className=" items-center gap-1 hidden lg:flex ">
+                        Go to page:
+                        <Input
+                            type="number"
+                            defaultValue={table.getState().pagination.pageIndex + 1}
+                            onChange={e => {
+                                const page = e.target.value ? Number(e.target.value) - 1 : 0
+                                table.setPageIndex(page)
+                            }}
+                            className="border h-8 rounded-lg w-16"
                         />
+                    </span>
+                </div>
+                <div className="flex items-center gap-3">
+                    <div className="hidden items-center gap-2 lg:flex">
+                        <Label htmlFor="rows-per-page" className="text-sm font-medium">
+                            Rows per page
+                        </Label>
+                        <Select
+                            value={`${table.getState().pagination.pageSize}`}
+                            onValueChange={(value) => {
+                                table.setPageSize(Number(value))
+                            }}
+                        >
+                            <SelectTrigger size="sm" className="w-20" id="rows-per-page">
+                                <SelectValue
+                                    placeholder={table.getState().pagination.pageSize}
+                                />
+                            </SelectTrigger>
+                            <SelectContent side="top">
+                                {[10, 20, 30, 40, 50].map((pageSize) => (
+                                    <SelectItem key={pageSize} value={`${pageSize}`}>
+                                        {pageSize}
+                                    </SelectItem>
+                                ))}
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="ml-auto flex items-center justify-center  text-sm font-medium">
+                        Page {table.getState().pagination.pageIndex + 1} of{" "}
+                        {table.getPageCount()}
+                    </div>
+                    <div className="ml-auto flex items-center gap-2 lg:ml-0">
+                        <Button
+                            variant="outline"
+                            className="hidden h-8 w-8 p-0 lg:flex"
+                            onClick={() => table.setPageIndex(0)}
+                            disabled={!table.getCanPreviousPage()}
+                        >
+                            <span className="sr-only">Go to first page</span>
+                            <ChevronsLeftIcon />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className="size-8"
+                            size="icon"
+                            onClick={() => table.previousPage()}
+                            disabled={!table.getCanPreviousPage()}
+                        >
+                            <span className="sr-only">Go to previous page</span>
+                            <ChevronLeftIcon />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className="size-8"
+                            size="icon"
+                            onClick={() => table.nextPage()}
+                            disabled={!table.getCanNextPage()}
+                        >
+                            <span className="sr-only">Go to next page</span>
+                            <ChevronRightIcon />
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className="hidden size-8 lg:flex"
+                            size="icon"
+                            onClick={() => table.setPageIndex(table.getPageCount() - 1)}
+                            disabled={!table.getCanNextPage()}
+                        >
+                            <span className="sr-only">Go to last page</span>
+                            <ChevronsRightIcon />
+                        </Button>
                     </div>
                 </div>
             </div>
-            {Object.keys(rowSelection).length > 0 && (
-                <div
-                    className={cn(
-                        'floating-bottom fixed bottom-5 left-1/2 flex h-10 max-w-sm min-w-sm -translate-x-1/2 transform items-center rounded-lg border-b border-b-slate-200 px-2 shadow-xs transition-transform',
-                        'translate-y-0 opacity-100 duration-150',
-                    )}
-                >
-                    <span
-                        className={'text-primary rounded-full rounded-md bg-slate-50 px-3 py-1 text-sm font-light shadow-none'}>
-                        {Object.keys(rowSelection).length} dipilih
-                    </span>
-                </div>
-            )}
-        </Fragment>
+
+            {/* <div className="text-sm text-muted-foreground">{table.getPrePaginationRowModel().rows.length} Rows total</div>
+      <div className="pt-2 flex gap-2">
+        <Button onClick={() => rerender()}>Force Rerender</Button>
+      </div> */}
+        </div>
     )
 }
-
-export default Datatable

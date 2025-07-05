@@ -7,7 +7,9 @@ export default class SuppliersController {
    * Display a list of resource
    */
   async index({ inertia }: HttpContext) {
-    return inertia.render('suppliers/index')
+    return inertia.render('suppliers/index',{
+      suppliers: await Supplier.all()
+    })
   }
 
   /**
