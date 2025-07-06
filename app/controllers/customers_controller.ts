@@ -1,3 +1,6 @@
+import Customer from '#models/customer'
+import Supplier from '#models/supplier'
+import { CustomersValidator } from '#validators/customer'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class CustomersController {
@@ -5,7 +8,9 @@ export default class CustomersController {
    * Display a list of resource
    */
   async index({ inertia }: HttpContext) {
-    return inertia.render('customers/index')
+    return inertia.render('customers/index', {
+      customers: await Customer.query().paginate(1, 10),
+    })
   }
 
   /**
@@ -18,7 +23,14 @@ export default class CustomersController {
   /**
    * Handle form submission for the create action
    */
-  async store({ request }: HttpContext) { }
+  async store({ params, request, response, session }: HttpContext) {
+    const data = await request.validateUsing(CustomersValidator)
+
+    await Customer.create(data)
+
+    session.flash('success', 'Customer berhasil ditambahkan')
+    return response.redirect('/customers')
+  }
 
   /**
    * Show individual record
@@ -28,15 +40,32 @@ export default class CustomersController {
   /**
    * Edit individual record
    */
-  async edit({ params }: HttpContext) { }
+  async edit({ params, inertia }: HttpContext) {
+    const customers = await Customer.findOrFail(params.id)
+    return inertia.render('customers/edit', { customers })
+  }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) { }
+  async update({ params, request,session, response }: HttpContext) {
+    const data = await request.validateUsing(CustomersValidator)
+    const customer = await Customer.findOrFail(params.id)
+    customer.merge(data)
+    await customer.save()
+
+    session.flash('success', 'Customers berhasil diperbarui')
+    return response.redirect('/Customers')
+  }
 
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) { }
+  async destroy({ params, session, response }: HttpContext) {
+    const data = await Customer.findOrFail(params.id)
+    await data.delete()
+
+    session.flash('success', 'Customer berhasil dihapus')
+    return response.redirect('/customers')
+  }
 }

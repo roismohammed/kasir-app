@@ -15,6 +15,7 @@ export interface SharedData {
 }
 
 export interface SupplierProps {
+    id: number;
     name: string;
     phone: string;
     address: string;
@@ -24,4 +25,12 @@ export interface SupplierProps {
 export interface BreadcrumbProps {
     title: string;
     href?: string;
+}
+
+export interface CustomersProps {
+    id: number;
+    name: string;
+    phone: string;
+    address: string;
+    gender: string;
 }

@@ -29,9 +29,15 @@ const stats = [
   },
 ];
 
+  const breadcrumbs = [
+    {
+      title: "Beranda",
+      url: "/",
+    },
+  ]
 const DashboardPage = () => {
   return (
-    <AppLayout>
+    <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard Admin" />
       <PageTitle title="Dashboard" subtitle="Anda bisa melihat statistik dashboard" />
       
