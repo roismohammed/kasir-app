@@ -3,27 +3,23 @@ import React from "react";
 import { toast } from "sonner";
 import TextInput from "~/components/form/text-input";
 import { Button } from "~/components/ui/button";
-import SelectInput from "~/components/form/select-input";
 import TextareaInput from "~/components/form/textarea-input";
 
 interface CustomersProps {
     url: string;
     method: "POST" | "PUT";
-    customers?: {
+    category?: {
         name?: string;
-        phone?: string;
-        address?: string;
-        gender?: string;
+        description?: string;
+        
     };
 }
 
-export default function FormCustomers({ url, method, customers }: CustomersProps) {
+export default function FormCategory({ url, method, category }: CustomersProps) {
     const { data, setData, post, errors, processing } = useForm({
         _method: method,
-        name: customers?.name || "",
-        phone: customers?.phone || "",
-        address: customers?.address || "",
-        gender: customers?.gender || "",
+        name: category?.name || "",
+        description: category?.description || "",
     });
 
     const submit = (e: React.FormEvent) => {
@@ -53,44 +49,21 @@ export default function FormCustomers({ url, method, customers }: CustomersProps
         <form onSubmit={submit} className="space-y-2">
             <div>
                 <TextInput
-                    label="Customer Name"
+                    label="Category Name"
                     className="mt-1"
-                    placeholder="Masukan nama supplier"
+                    placeholder="Masukan nama category"
                     value={data.name}
                     onChange={(e) => setData("name", e.target.value)}
                     error={errors.name}
                 />
             </div>
             <div>
-                <SelectInput
-                    label="Pilih Jenis Kelamin"
-                    options={[
-                        { value: "male", label: "Laki-laki" },
-                        { value: "female", label: "Perempuan" }
-                    ]}
-                    value={data.gender}
-                    onSelect={(value) => setData("gender", value)}
-                    placeholder="Pilih jenis kelamin"
-                    errors={errors.gender}
-                />
-            </div>
-            <div>
-                <TextInput
-                    label="Phone"
-                    value={data.phone}
-                    onChange={(e) => setData("phone", e.currentTarget.value)}
-                    placeholder="Masukan nomor telepon"
-                    error={errors.phone}
-                />
-            </div>
-            <div>
-
                 <TextareaInput
-                    label="Alamat"
-                    value={data.address}
-                    onChange={(e) => setData("address", e.currentTarget.value)}
-                    placeholder="Masukan alamat customers"
-                    error={errors.address}
+                    label="Deskripsi"
+                    value={data.description}
+                    onChange={(e) => setData("description", e.currentTarget.value)}
+                    placeholder="Masukan descripsi category"
+                    error={errors.description}
                 />
             </div>
 

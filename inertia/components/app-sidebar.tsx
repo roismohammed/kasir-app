@@ -25,7 +25,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
-import { AddInvoiceIcon, Home01Icon, Home07Icon, Tag01Icon, Trolley02Icon, TwitterFreeIcons, TwitterIcon, UserAccountIcon } from "@hugeicons/core-free-icons"
+import { AddInvoiceIcon, Home01Icon, Home07Icon, Settings01FreeIcons, Tag01Icon, Trolley02Icon, TwitterFreeIcons, TwitterIcon, UserAccountIcon, UserSearch01FreeIcons } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 
 const data = {
@@ -60,15 +60,15 @@ const data = {
       items: [
         {
           title: "Category",
-          url: "#",
+          url: "/categories",
         },
         {
           title: "Units",
-          url: "#",
+          url: "/units",
         },
         {
           title: "Item",
-          url: "#",
+          url: "/products",
         },
       ],
     },
@@ -78,19 +78,23 @@ const data = {
       icon: () => <HugeiconsIcon icon={AddInvoiceIcon} />,
       items: [
         {
-          title: "Introduction",
+          title: "Sales",
           url: "#",
         },
         {
-          title: "Get Started",
+          title: "Stock in / purchase",
           url: "#",
         },
         {
-          title: "Tutorials",
+          title: "Stock out",
           url: "#",
         },
         {
-          title: "Changelog",
+          title: "Stock Opname",
+          url: "#",
+        },
+         {
+          title: "Stock Return",
           url: "#",
         },
       ],
@@ -119,35 +123,21 @@ const data = {
       ],
     },
   ],
-  navSecondary: [
+   settings: [
     {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy,
+      title: "User / Employes",
+      url: "/dashboard",
+      icon: () => <HugeiconsIcon icon={UserSearch01FreeIcons} className="w-10 h-10" />,
+      isActive: true,
     },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
-  ],
-  projects: [
-    {
-      name: "Design Engineering",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Sales & Marketing",
-      url: "#",
-    icon: () => <HugeiconsIcon icon={TwitterFreeIcons} className="w-5 h-5" />,
-    },
-    {
-      name: "Travel",
-      url: "#",
-      icon: Map,
+      {
+      title: "Pengaturan",
+      url: "/dashboard",
+      icon: () => <HugeiconsIcon icon={Settings01FreeIcons} className="w-10 h-10" />,
+      isActive: true,
     },
   ],
+
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -172,8 +162,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} subTitle="Beranda" />
-        {/* <NavMain items={data.projects} subTitle="Settings"/> */}
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
+        <NavMain items={data.settings} subTitle="Pengaturan" />
       </SidebarContent>
       <SidebarFooter>
         <NavUser user={data.user} />

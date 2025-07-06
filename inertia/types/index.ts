@@ -34,3 +34,10 @@ export interface CustomersProps {
     address: string;
     gender: string;
 }
+
+export interface CategoriesProps {
+    id: number;
+    name: string;
+    description: string;
+}
+
