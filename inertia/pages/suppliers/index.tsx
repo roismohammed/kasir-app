@@ -1,12 +1,10 @@
-'use client'
-
 import { useState } from 'react'
 import { PageTitle } from '@/components/page-title'
 import { Button } from '@/components/ui/button'
 import AppLayout from '@/layouts/app-layout'
 import { MoreHorizontalCircle01FreeIcons } from '@hugeicons/core-free-icons'
 import { HugeiconsIcon } from '@hugeicons/react'
-import { Link, router, usePage } from '@inertiajs/react'
+import { Head, Link, usePage } from '@inertiajs/react'
 import { ColumnDef } from '@tanstack/react-table'
 import { DataTable } from '~/components/datatable/table'
 import {
@@ -14,7 +12,6 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger
 } from '~/components/ui/dropdown-menu'
 import { SupplierProps } from '~/types'
-import { toast } from 'sonner'
 import DeleteConfirmation from '~/components/delete-confirmation'
 
 const Suppliers = () => {
@@ -45,7 +42,7 @@ const Suppliers = () => {
       id: "actions",
       header: "Action",
       cell: ({ row }) => {
-        const supplierId = row.original.id
+        const supplierId = row.original?.id || '';
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -80,9 +77,20 @@ const Suppliers = () => {
       },
     },
   ]
+  const breadcrumbs = [
+    {
+      title: "Beranda",
+      url: "/suppliers",
+    },
+     {
+      title: "Suppliers",
+      url: "/suppliers",
+    },
+  ]
 
   return (
-    <AppLayout>
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title="Suppliers"/>
       <div className="flex justify-between items-center ">
         <PageTitle title="Suppliers" subtitle="Data untuk mengatur suppliers" />
         <Link href="/suppliers/create">

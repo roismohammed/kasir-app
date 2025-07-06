@@ -20,3 +20,8 @@ export interface SupplierProps {
     address: string;
     description: string;
 }
+
+export interface BreadcrumbProps {
+    title: string;
+    href?: string;
+}
