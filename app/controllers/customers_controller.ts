@@ -22,7 +22,7 @@ export default class CustomersController {
   /**
    * Handle form submission for the create action
    */
-  async store({ params, request, response, session }: HttpContext) {
+  async store({ request, response, session }: HttpContext) {
     const data = await request.validateUsing(CustomersValidator)
 
     await Customer.create(data)

@@ -12,7 +12,7 @@ const CraeteCustomers = () => {
             title: 'Customers',
             url: '/customers'
         },
-          {
+        {
             title: 'Create-Customers',
             url: '/customers'
         },
@@ -23,9 +23,9 @@ const CraeteCustomers = () => {
             <div className="flex justify-between items-center">
                 <PageTitle title="Customers " subtitle="klik simpan untuk membuat data customers" />
             </div>
-        <div className='max-w-lg'>
-            <FormCustomers method={'POST'} url='/customers' />
-        </div>
+            <div className='max-w-lg'>
+                <FormCustomers method={'POST'} url='/customers' />
+            </div>
         </AppLayout>
     )
 }
