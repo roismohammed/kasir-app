@@ -6,28 +6,37 @@ import { Head } from "@inertiajs/react";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="min-h-screen  bg-gradient-to-b from-gray-50 to-gray-100">
       <Head title="SwiftTill" />
       {/* Modern Header with Gradient */}
-      <nav className="px-12 py-4 flex justify-between items-center bg-white shadow-sm">
-        <div className="flex items-center space-x-2">
-          <RocketIcon className="h-6 w-6 text-primary" />
-          <span className="text-xl font-bold text-gray-800">SwiftTill</span>
-        </div>
-        <div className="flex items-center text-center justify-center space-x-6">
-          <a href="#features" className="text-gray-600 hover:text-primary transition-colors">
-            Fitur
-          </a>
-          <a href="#pricing" className="text-gray-600 hover:text-primary transition-colors">
-            Harga
-          </a>
-          <a href="#testimonials" className="text-gray-600 hover:text-primary transition-colors">
-            Testimoni
-          </a>
-          <Button variant="outline" className="border-primary text-primary">
-            Masuk
-          </Button>
-          <Button>Daftar Gratis</Button>
+      <nav className="px-4 sm:px-6 lg:px-12 py-4 bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center space-x-2">
+            <RocketIcon className="h-6 w-6 text-primary" />
+            <span className="text-xl font-bold text-gray-800">SwiftTill</span>
+          </div>
+
+          {/* Menu Tengah - Hidden di mobile */}
+          <div className="hidden lg:flex flex-1 justify-center space-x-8">
+            <a href="#features" className="text-gray-600 hover:text-primary transition-colors">
+              Fitur
+            </a>
+            <a href="#pricing" className="text-gray-600 hover:text-primary transition-colors">
+              Harga
+            </a>
+            <a href="#testimonials" className="text-gray-600 hover:text-primary transition-colors">
+              Testimoni
+            </a>
+          </div>
+
+          {/* Tombol Aksi */}
+          <div className="hidden sm:flex items-center space-x-4">
+            <Button variant="outline" className="border-primary text-primary">
+              Masuk
+            </Button>
+            <Button>Daftar Gratis</Button>
+          </div>
         </div>
       </nav>
 
@@ -73,7 +82,7 @@ export default function Home() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          
+
             <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-sm">
               <CardHeader>
                 <div className="p-3 rounded-lg bg-blue-100 w-fit mb-4">
@@ -88,7 +97,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-          
+
             <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-sm">
               <CardHeader>
                 <div className="p-3 rounded-lg bg-green-100 w-fit mb-4">
@@ -103,7 +112,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
- 
+
             <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-sm">
               <CardHeader>
                 <div className="p-3 rounded-lg bg-purple-100 w-fit mb-4">
@@ -132,7 +141,7 @@ export default function Home() {
               </CardContent>
             </Card>
 
-  
+
             <Card className="hover:shadow-lg transition-all duration-300 border-0 shadow-sm">
               <CardHeader>
                 <div className="p-3 rounded-lg bg-emerald-100 w-fit mb-4">
