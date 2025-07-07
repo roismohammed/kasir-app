@@ -41,3 +41,9 @@ export interface CategoriesProps {
     description: string;
 }
 
+export interface UnitsProps {
+    id: number;
+    name: string;
+    description: string;
+}
+

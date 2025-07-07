@@ -53,7 +53,7 @@ export function NavMain({
             >
               <SidebarMenuItem>
                 <CollapsibleTrigger asChild>
-                  <SidebarMenuButton tooltip={item.title}>
+                  <SidebarMenuButton tooltip={item.title} className="cursor-pointer">
                     {item.icon && (
                       <item.icon className="transition-transform group-hover/item:animate-wiggle " />
                     )}
@@ -64,7 +64,7 @@ export function NavMain({
                 <CollapsibleContent>
                   <SidebarMenuSub>
                     {item.items.map((subItem) => (
-                      <SidebarMenuSubItem key={subItem.title}>
+                      <SidebarMenuSubItem key={subItem.title} className="cursor-pointer">
                         <SidebarMenuSubButton asChild>
                           <Link href={subItem.url}>
                             <span>{subItem.title}</span>
@@ -78,8 +78,8 @@ export function NavMain({
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <Link href={item.url} className="hover:bg-gray-200">
-                <SidebarMenuButton className="hover:bg-gray-100 transition-all " tooltip={item.title}>
+              <Link href={item.url} className="hover:bg-gray-200 cursor-pointer">
+                <SidebarMenuButton className="hover:bg-gray-100  transition-all cursor-pointer" tooltip={item.title}>
                   {item.icon && (
                     <item.icon className="transition-transform text-[#2E9D8F] group-hover/item:animate-wiggle w-10 h-10" />
                   )}

@@ -47,7 +47,7 @@ const CategoryPage = () => {
               }}>
                 Edit
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setConfirm({ open: true, url: `/categories/${category.id}` })}>
+              <DropdownMenuItem   variant="destructive" onClick={() => setConfirm({ open: true, url: `/categories/${category.id}` })}>
                 Hapus
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -84,8 +84,8 @@ const CategoryPage = () => {
 
       <DataTable data={categories.data} columns={columns} />
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent>
+      <Dialog open={isOpen} onOpenChange={setIsOpen} >
+        <DialogContent className="w-[450px]">
           <DialogHeader>
             <DialogTitle>{editData ? "Edit" : "Tambah"} Category</DialogTitle>
           </DialogHeader>
@@ -93,12 +93,12 @@ const CategoryPage = () => {
             method={editData ? "PUT" : "POST"}
             url={editData ? `/categories/${editData.id}` : "/categories"}
             category={editData}
-
             onSuccess={() => {
               handleSuccess(editData ? "Berhasil diperbarui" : "Berhasil ditambahkan");
               setIsOpen(false);
               setEditData(null);
             }}
+            
           />
         </DialogContent>
       </Dialog>

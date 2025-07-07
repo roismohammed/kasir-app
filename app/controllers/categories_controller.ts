@@ -66,6 +66,6 @@ export default class CategoriesController {
     await category.delete()
 
     session.flash('success', 'Category berhasil dihapus')
-    return response.redirect('/categories') 
+    return response.redirect().toRoute('categories.index')
   }
 }

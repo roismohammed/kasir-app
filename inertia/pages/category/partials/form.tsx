@@ -9,13 +9,14 @@ interface CustomersProps {
     url: string;
     method: "POST" | "PUT";
     category?: {
+        id: number
         name?: string;
         description?: string;
-        
-    };
+    }| null;
+    onSuccess?: () => void;
 }
 
-export default function FormCategory({ url, method, category }: CustomersProps) {
+export default function FormCategory({ url, method, category, onSuccess }: CustomersProps) {
     const { data, setData, post, errors, processing } = useForm({
         _method: method,
         name: category?.name || "",
@@ -26,9 +27,15 @@ export default function FormCategory({ url, method, category }: CustomersProps) 
         e.preventDefault();
         const submitQuery = new Promise((resolve, reject) => {
             const options = {
-                onSuccess: (props: any) => resolve(props),
+                onSuccess: (props: any) => {
+                    resolve(props);
+                    router.reload(); // Reload the page
+                    if (onSuccess) {
+                        onSuccess();
+                    }
+                },
                 onError: (errors: any) => reject(errors),
-            }
+            };
 
             if (method === 'PUT') {
                 router.put(url, data, options)
@@ -68,7 +75,7 @@ export default function FormCategory({ url, method, category }: CustomersProps) 
             </div>
 
             <div className="flex justify-end gap-2">
-                <Button variant={"outline"} disabled={processing}>
+                <Button variant={"outline"} type="button" onClick={() => { }}>
                     Batal
                 </Button>
                 <Button type="submit" disabled={processing}>
@@ -78,4 +85,3 @@ export default function FormCategory({ url, method, category }: CustomersProps) 
         </form>
     );
 }
-

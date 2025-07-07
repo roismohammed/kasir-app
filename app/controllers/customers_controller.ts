@@ -1,5 +1,4 @@
 import Customer from '#models/customer'
-import Supplier from '#models/supplier'
 import { CustomersValidator } from '#validators/customer'
 import type { HttpContext } from '@adonisjs/core/http'
 

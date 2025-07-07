@@ -6,24 +6,28 @@ export default class UnitsController {
    * Display a list of resource
    */
   public async index({ inertia }: HttpContext) {
-    return inertia.render('units/index')
+    return inertia.render('units/index', {
+      units: await Unit.query().paginate(1, 10)
+    }
+    )
   }
 
   /**
    * Display form to create a new record
    */
-  public async create({}: HttpContext) {}
+  public async create({ }: HttpContext) { }
 
   /**
    * Handle form submission for the create action
    */
-  public async store({ request, response }: HttpContext) {
+  public async store({ request, session, response }: HttpContext) {
     const data = request.only(['name', 'description'])
     const unit = new Unit()
     unit.merge(data)
     await unit.save()
 
-    return response.created(unit)
+    session.flash('success', 'Unit berhasil ditambahkan')
+    return response.redirect('/units')
   }
 
   /**
@@ -47,13 +51,14 @@ export default class UnitsController {
   /**
    * Handle form submission for the edit action
    */
-  public async update({ params, request, response }: HttpContext) {
+  public async update({ params, session, request, response }: HttpContext) {
     const unit = await Unit.findOrFail(params.id)
     const data = request.only(['name', 'description'])
     unit.merge(data)
     await unit.save()
 
-    return response.ok(unit)
+    session.flash('success', 'Unit berhasil di update')
+    return response.redirect('/units')
   }
 
   /**
@@ -63,6 +68,6 @@ export default class UnitsController {
     const unit = await Unit.findOrFail(params.id)
     await unit.delete()
 
-    return response.ok({ message: 'Unit deleted successfully' })
+    return response.redirect('/units')
   }
 }
