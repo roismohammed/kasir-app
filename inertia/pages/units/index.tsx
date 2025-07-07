@@ -14,18 +14,20 @@ import { UnitsProps } from "~/types";
 import { ColumnDef } from "@tanstack/react-table";
 import DeleteConfirmation from "~/components/delete-confirmation";
 import { DataTable } from "~/components/datatable/table";
-const ProductPage = () => {
-    const { units } = usePage<{ units: PaginatedData<UnitsProps> }>().props
-    const [isOpen, setIsOpen] = useState(false)
-    const [data, setIsData] = useState(null)
-    const [editData, setEditData] = useState(null);
+
+const UnitsPage = () => {
+    const { units } = usePage<{ units: PaginatedData<UnitsProps> }>().props;
+    const [isOpen, setIsOpen] = useState(false);
+    const [editData, setEditData] = useState<UnitsProps | null>(null);
     const [confirm, setConfirm] = useState({
         open: false,
         url: ""
-    })
+    });
+
     const handleSuccess = (message: string) => {
         toast.success(message);
-    }
+    };
+
     const breadcrumbs = [
         {
             title: 'Beranda',
@@ -33,17 +35,19 @@ const ProductPage = () => {
         },
         {
             title: 'Units',
-            url: '/customers'
+            url: '/units'
         },
-    ]
+    ];
+
     const columns: ColumnDef<UnitsProps>[] = [
+        { accessorKey: "id", header: "ID" },
         { accessorKey: "name", header: "Nama" },
         { accessorKey: "description", header: "Deskripsi" },
         {
             id: "actions",
             header: "Action",
             cell: ({ row }) => {
-                const units = row.original;
+                const unit = row.original;
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -53,12 +57,12 @@ const ProductPage = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end">
                             <DropdownMenuItem onClick={() => {
-                                setEditData(units);
+                                setEditData(unit);
                                 setIsOpen(true);
                             }}>
                                 Edit
                             </DropdownMenuItem>
-                            <DropdownMenuItem variant="destructive" onClick={() => setConfirm({ open: true, url: `/units/${units.id}` })}>
+                            <DropdownMenuItem variant="destructive" onClick={() => setConfirm({ open: true, url: `/units/${unit.id}` })}>
                                 Hapus
                             </DropdownMenuItem>
                         </DropdownMenuContent>
@@ -67,20 +71,23 @@ const ProductPage = () => {
             },
         },
     ];
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <div className="flex justify-between items-center">
                 <PageTitle title="Units" subtitle="Data untuk mengatur Unit Product" />
                 <Button className='flex gap-0'
                     onClick={() => {
-                        setIsOpen(true)
+                        setIsOpen(true);
+                        setEditData(null);
                     }}
                 >
                     <HugeiconsIcon icon={AddIcon} className="h-5 w-5 mr-2" />
-                    Unit Baru</Button>
+                    Unit Baru
+                </Button>
             </div>
             <DataTable columns={columns} data={units.data} />
-            <Dialog open={isOpen} onOpenChange={setIsOpen} >
+            <Dialog open={isOpen} onOpenChange={setIsOpen}>
                 <DialogContent className="w-[450px]">
                     <DialogHeader>
                         <DialogTitle>{editData ? "Edit" : "Tambah"} Units</DialogTitle>
@@ -106,4 +113,5 @@ const ProductPage = () => {
     );
 };
 
-export default ProductPage;
+export default UnitsPage;
+
