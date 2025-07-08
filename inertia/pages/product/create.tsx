@@ -1,8 +1,14 @@
 import AppLayout from "~/layouts/app-layout";
 import FormProduct from "./partials/form";
 import { PageTitle } from '../../components/page-title';
+import { Head, usePage } from "@inertiajs/react";
+import { CategoriesProps } from "~/types";
+import { PaginatedData } from "~/types/datatable";
 
 const CreateCategory = () => {
+    const {categories,unit:units} = usePage<{categories:PaginatedData<CategoriesProps>}>().props
+    console.log(categories);
+    
     const breadcrumbs = [
         {
             title: 'Beranda',
@@ -10,18 +16,19 @@ const CreateCategory = () => {
         },
         {
             title: 'Products',
-            url: '/customers'
+            url: '/products'
         },
         {
             title: 'Create-product',
-            url: '/customers'
+            url: '#'
         },
     ]
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Product"/>
             <PageTitle title="Create Product" subtitle="Create data product"/>
             <div className="max-w-lg ">
-                <FormProduct method={'POST'} url={'/products/create'} />
+                <FormProduct method={'POST'} url={'/products'} categories={categories} unit={units}/>
             </div>
         </AppLayout>
     )

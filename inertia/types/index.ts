@@ -47,3 +47,11 @@ export interface UnitsProps {
     description: string;
 }
 
+export interface ProductProps {
+    id: number;
+    barcode: string;
+    name: string;
+    price: number;
+    unit_id: number;
+    category_id: number;
+}

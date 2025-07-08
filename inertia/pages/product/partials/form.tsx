@@ -3,8 +3,8 @@ import React from "react";
 import { toast } from "sonner";
 import TextInput from "~/components/form/text-input";
 import { Button } from "~/components/ui/button";
-import TextareaInput from "~/components/form/textarea-input";
 import SelectInput from "~/components/form/select-input";
+import { CategoriesProps, UnitsProps } from "~/types";
 
 interface ProductProps {
     url: string;
@@ -13,24 +13,25 @@ interface ProductProps {
         id: number
         barcode?: string;
         name?: string;
-        description?: string;
         price?: number;
         unit_id?: number;
         category_id?: number;
     } | null;
     onSuccess?: () => void;
+    categories: CategoriesProps[]
+    unit: UnitsProps[];
 }
 
-export default function FormProduct({ url, method, product, onSuccess }: ProductProps) {
+export default function FormProduct({ url, method, product, onSuccess,categories,unit }: ProductProps) {
     const { data, setData, post, errors, processing } = useForm({
         _method: method,
         barcode: product?.barcode || "",
         name: product?.name || "",
-        description: product?.description || "",
         price: product?.price?.toString() || "",
         unit_id: product?.unit_id?.toString() || "",
         category_id: product?.category_id?.toString() || "",
     });
+    
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -38,12 +39,16 @@ export default function FormProduct({ url, method, product, onSuccess }: Product
             const options = {
                 onSuccess: (props: any) => {
                     resolve(props);
-                    router.reload(); // Reload the page
+                    router.reload(); 
                     if (onSuccess) {
                         onSuccess();
                     }
                 },
-                onError: (errors: any) => reject(errors),
+                onError: (errors: any) =>{
+                     reject(errors)
+                     console.log(data);
+                     
+                },
             };
 
             if (method === 'PUT') {
@@ -84,15 +89,6 @@ export default function FormProduct({ url, method, product, onSuccess }: Product
                 />
             </div>
             <div>
-                <TextareaInput
-                    label="Deskripsi"
-                    value={data.description}
-                    onChange={(e) => setData("description", e.currentTarget.value)}
-                    placeholder="Masukan descripsi product"
-                    error={errors.description}
-                />
-            </div>
-            <div>
                 <TextInput
                     label="Harga"
                     className="mt-1"
@@ -105,14 +101,13 @@ export default function FormProduct({ url, method, product, onSuccess }: Product
             </div>
             <SelectInput
                 label="Satuan"
-                value={data.unit_id}
+                value={data.category_id}
                 placeholder="Pilih Satuan"
                 onSelect={(value) => setData("unit_id", value)}
-                options={[
-                    { value: "1", label: "PCS" },
-                    { value: "2", label: "BOX" },
-                    { value: "3", label: "PACK" },
-                ]}
+                options={unit.map((unit:UnitsProps) => ({
+                    value: String(unit.id),
+                    label: unit.name
+                }))}
                 errors={errors.unit_id}
             />
 
@@ -121,11 +116,10 @@ export default function FormProduct({ url, method, product, onSuccess }: Product
                 value={data.category_id}
                 placeholder="Pilih Kategori"
                 onSelect={(value) => setData("category_id", value)}
-                options={[
-                    { value: "1", label: "Makanan" },
-                    { value: "2", label: "Minuman" },
-                    { value: "3", label: "Snack" },
-                ]}
+                options={categories.map((category:CategoriesProps) => ({
+                    value: String(category.id),
+                    label: category.name
+                }))}
             />
 
 

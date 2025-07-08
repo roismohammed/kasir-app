@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { RocketIcon, ZapIcon, PackageIcon, BarChartIcon, UsersIcon, CreditCardIcon, SettingsIcon } from "lucide-react";
+import { ZapIcon, PackageIcon, BarChartIcon, UsersIcon, CreditCardIcon, SettingsIcon } from "lucide-react";
 import dashboardPng from '../assets/image/dashboard.png'
 import { Head } from "@inertiajs/react";
 import GuestLayout from "~/layouts/guest-layout";
@@ -377,7 +377,7 @@ export default function Home() {
                 <Button size="lg" className="px-8 bg-white  hover:bg-white/90">
                   Mulai Gratis 14 Hari
                 </Button>
-                <Button size="lg" variant="outline" className="px-8 border-white text-blue-500 hover:bg-white/10">
+                <Button size="lg" variant="outline" className="px-8 border-white text-orange-500 hover:bg-white/10">
                   Hubungi Sales
                 </Button>
               </div>

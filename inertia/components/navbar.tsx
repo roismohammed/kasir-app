@@ -24,7 +24,7 @@ export default function Header01() {
   const [sticky, setSticky] = useState(false);
 
   document.addEventListener("scroll", () => {
-    if (window.scrollY > 0) {
+    if (window.scrollY > 20) {
       setSticky(true);
     } else {
       setSticky(false);

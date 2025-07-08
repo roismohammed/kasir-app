@@ -9,16 +9,16 @@ export default class Product extends BaseModel {
   declare id: number
 
   @column()
-  declare barcoe: string
+  declare barcode: string
 
   @column()
   declare name: string
 
-  @column()
-  declare category_id: number
+  @column({columnName: 'category_id'})
+  declare categoryId: number
 
-  @column()
-  declare unit_id: number
+  @column({columnName: 'unit_id'})
+  declare unitId: number
 
   @column()
   declare price: string

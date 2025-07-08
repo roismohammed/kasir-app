@@ -1,52 +1,83 @@
+import Category from '#models/category'
 import Product from '#models/product'
+import Unit from '#models/unit'
 import { ProductValidator } from '#validators/product'
 import type { HttpContext } from '@adonisjs/core/http'
-
 export default class ProductsController {
   /**
    * Display a list of resource
    */
-  async index({ inertia }: HttpContext) {
-    return inertia.render('product/index')
+  public async index({ inertia }: HttpContext) {
+    const products = await Product.query().preload('category').preload('unit').paginate(1, 10)
+    return inertia.render('product/index', { products })
   }
 
   /**
    * Display form to create a new record
    */
-  async create({ inertia }: HttpContext) {
-    return inertia.render('product/create')
-
+  public async create({ inertia }: HttpContext) {
+    const categories = await Category.all()
+    const unit = await Unit.all()
+    return inertia.render('product/create',{
+      categories,
+      unit
+    })
   }
 
   /**
    * Handle form submission for the create action
    */
-  async store({ request, response, session, }: HttpContext) {
-       const data = await request.validateUsing(ProductValidator)
-   
-       await Product.create(data)
-   
-       session.flash('success', 'Customer berhasil ditambahkan')
-       return response.redirect('/customers')
+  public async store({ request, response, session }: HttpContext) {
+    const data = await request.validateUsing(ProductValidator)
+
+    await Product.create(data)
+    session.flash('success', 'Product berhasil ditambahkan')
+    return response.redirect('/products')
   }
 
   /**
    * Show individual record
    */
-  async show({ params }: HttpContext) { }
+  public async show({ params, inertia }: HttpContext) {
+    const product = await Product.findOrFail(params.id);
+
+    return inertia.render('product/show', { product })
+  }
 
   /**
    * Edit individual record
    */
-  async edit({ params }: HttpContext) { }
+  public async edit({ params, inertia }: HttpContext) {
+    const product= await Product.findOrFail(params.id)
+    const categories = await Category.all()
+    const unit = await Unit.all()
+
+    return inertia.render('product/edit', { product, categories, unit })
+  }
 
   /**
    * Handle form submission for the edit action
    */
-  async update({ params, request }: HttpContext) { }
+  public async update({ params, request, response, session }: HttpContext) {
+    const product = await Product.findOrFail(params.id)
+    const data = await request.validateUsing(ProductValidator)
+
+    product.merge(data)
+    await product.save()
+
+    session.flash('success', 'Product berhasil diperbarui')
+    return response.redirect('/products')
+  }
 
   /**
    * Delete record
    */
-  async destroy({ params }: HttpContext) { }
+  public async destroy({ params, response, session }: HttpContext) {
+    const product = await Product.findOrFail(params.id)
+
+    await product.delete()
+
+    session.flash('success', 'Product berhasil dihapus')
+    return response.redirect('/products')
+  }
 }
