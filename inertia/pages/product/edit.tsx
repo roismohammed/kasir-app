@@ -7,32 +7,35 @@ import { PageTitle } from "~/components/page-title"
 const EditProduct = ({
     categories,
     unit,
-    products
+    product
 }: {
     categories: CategoriesProps[],
     unit: UnitsProps[],
-    products: ProductProps
+    product: ProductProps
 }) => {
 
-     const breadcrumbs = [
+
+    const breadcrumbs = [
         {
             title: 'Beranda',
             url: '/'
         },
         {
             title: 'Products',
-            url: '/customers'
+            url: '/products'
         },
-          {
+        {
             title: 'Edit-Product',
-            url: '/customers'
+            url: '#'
         },
     ]
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Product" />
             <PageTitle title="Edit Product" subtitle="Edit data product" />
-            <FormProduct method={"PUT"} url={'/products'} categories={categories} unit={unit} product={products} />
+            <div className="max-w-lg">
+                <FormProduct method={"PUT"} url={`/products/${product.id}`} categories={categories} unit={unit} product={product} />
+            </div>
         </AppLayout>
     )
 }

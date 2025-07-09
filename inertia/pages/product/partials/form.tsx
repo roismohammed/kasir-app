@@ -16,22 +16,24 @@ interface ProductProps {
         price?: number;
         unit_id?: number;
         category_id?: number;
-    } | null;
+        unit:{id:string}
+        category:{id:string}
+    } ;
     onSuccess?: () => void;
     categories: CategoriesProps[]
     unit: UnitsProps[];
 }
 
-export default function FormProduct({ url, method, product, onSuccess,categories,unit }: ProductProps) {
+export default function FormProduct({ url, method, product, onSuccess, categories, unit }: ProductProps) {
     const { data, setData, post, errors, processing } = useForm({
         _method: method,
         barcode: product?.barcode || "",
         name: product?.name || "",
         price: product?.price?.toString() || "",
-        unit_id: product?.unit_id?.toString() || "",
-        category_id: product?.category_id?.toString() || "",
+        category_id: product?.category_id?.toString() ?? product?.category?.id?.toString() ?? "",
+        unit_id: product?.unit_id?.toString() ?? product?.unit?.id?.toString() ?? "",
     });
-    
+
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,15 +41,14 @@ export default function FormProduct({ url, method, product, onSuccess,categories
             const options = {
                 onSuccess: (props: any) => {
                     resolve(props);
-                    router.reload(); 
+                    router.reload();
                     if (onSuccess) {
                         onSuccess();
                     }
                 },
-                onError: (errors: any) =>{
-                     reject(errors)
-                     console.log(data);
-                     
+                onError: (errors: any) => {
+                    reject(errors)
+                    console.log(data); // It's good to log 'errors' directly here for debugging
                 },
             };
 
@@ -101,10 +102,10 @@ export default function FormProduct({ url, method, product, onSuccess,categories
             </div>
             <SelectInput
                 label="Satuan"
-                value={data.category_id}
+                value={data.unit_id} // This is already a string due to the change in useForm
                 placeholder="Pilih Satuan"
                 onSelect={(value) => setData("unit_id", value)}
-                options={unit.map((unit:UnitsProps) => ({
+                options={unit.map((unit: UnitsProps) => ({
                     value: String(unit.id),
                     label: unit.name
                 }))}
@@ -113,18 +114,19 @@ export default function FormProduct({ url, method, product, onSuccess,categories
 
             <SelectInput
                 label="Kategori"
-                value={data.category_id}
+                value={data.category_id} // This is already a string due to the change in useForm
                 placeholder="Pilih Kategori"
                 onSelect={(value) => setData("category_id", value)}
-                options={categories.map((category:CategoriesProps) => ({
+                options={categories.map((category: CategoriesProps) => ({
                     value: String(category.id),
                     label: category.name
                 }))}
+                errors={errors.category_id}
             />
 
 
             <div className="flex justify-end gap-2">
-                <Button variant={"outline"} type="button" onClick={() => { }}>
+                <Button variant={"outline"} type="button" onClick={() => { /* Consider adding a clear way to close or cancel the form here */ }}>
                     Batal
                 </Button>
                 <Button type="submit" disabled={processing}>
@@ -134,4 +136,3 @@ export default function FormProduct({ url, method, product, onSuccess,categories
         </form>
     );
 }
-

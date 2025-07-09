@@ -48,7 +48,7 @@ export default class ProductsController {
    * Edit individual record
    */
   public async edit({ params, inertia }: HttpContext) {
-    const product= await Product.findOrFail(params.id)
+    const product = await Product.query().where('id', params.id).preload('category').preload('unit').firstOrFail()
     const categories = await Category.all()
     const unit = await Unit.all()
 
