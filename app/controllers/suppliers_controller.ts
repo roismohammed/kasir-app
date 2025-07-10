@@ -8,7 +8,7 @@ export default class SuppliersController {
    */
   async index({ inertia }: HttpContext) {
     return inertia.render('suppliers/index', {
-      suppliers: await Supplier.all()
+      suppliers: await Supplier.query().paginate(1, 10),
     })
   }
 

@@ -55,3 +55,9 @@ export interface ProductProps {
     unit_id: number;
     category_id: number;
 }
+export interface StockInProps {
+    id: number;
+    product_id: number;
+    quantity: number;
+    supplier_id: number;
+}

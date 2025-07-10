@@ -1,66 +1,74 @@
-import { AddIcon, MoreHorizontalCircle01FreeIcons } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import { Head, Link, usePage } from "@inertiajs/react";
-import { ColumnDef } from "@tanstack/react-table";
-import { log } from "node:console";
-import { useState } from "react";
-import { DataTable } from "~/components/datatable/table";
-import DeleteConfirmation from "~/components/delete-confirmation";
-import { PageTitle } from "~/components/page-title";
-import { Button } from "~/components/ui/button";
+import { AddIcon, MoreHorizontalCircle01FreeIcons } from "@hugeicons/core-free-icons"
+import { HugeiconsIcon } from "@hugeicons/react"
+import { Head, Link, usePage } from "@inertiajs/react"
+import { useState } from "react"
+import { PageTitle } from "~/components/page-title"
+import { Button } from "~/components/ui/button"
+import AppLayout from "~/layouts/app-layout"
+import { StockInProps } from "~/types"
+import { PaginatedData } from "~/types/datatable"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
-import AppLayout from "~/layouts/app-layout";
-import { ProductProps } from "~/types";
-import { PaginatedData } from "~/types/datatable";
+import { ColumnDef } from "@tanstack/react-table"
+import { DataTable } from "~/components/datatable/table"
+import DeleteConfirmation from "~/components/delete-confirmation"
 
-const ProductPage = () => {
-    const { products, } = usePage<{ products: PaginatedData<ProductProps> }>().props
-    const [confirm,setConfirm] = useState({
-        open:false,
-        url:'',
+const IndexStockIn = () => {
+    const { stock_in } = usePage<{ stock_in: PaginatedData<StockInProps> }>().props
+    console.log(stock_in);
+
+    const [confirm, setConfirm] = useState({
+        open: false,
+        url: '',
     })
-    console.log(products);
-    
     const breadcrumbs = [
         {
             title: 'Beranda',
             url: '/'
         },
         {
-            title: 'Products',
-            url: '/customers'
+            title: 'Stock In',
+            url: '/stock-in'
         },
     ]
-    const columns: ColumnDef<ProductProps>[] = [
+
+    const columns: ColumnDef<StockInProps>[] = [
         {
-            accessorKey: "name",
-            header: "Nama",
-        },
-        {
-            accessorKey: "barcode",
+            accessorKey: "products.barcode",
             header: "Barcode",
         },
         {
-            accessorKey: "category.name",
-            header: "Category",
+            accessorKey: "products.name",
+            header: "Nama",
         },
+        // {
+        //     accessorKey: "unit.name",
+        //     header: "Satuan Unit",
+        // },
+        // {
+        //     accessorKey: "date",
+        //     header: "Tanggal",
+        //     cell: ({ getValue }) => {
+        //         const date = new Date(getValue<string>('Date'));
+        //         return date.toLocaleDateString('id-ID', {
+        //             year: 'numeric',
+        //             month: 'long',
+        //             day: 'numeric',
+        //         });
+        //     },
+        // },
         {
-            accessorKey: "unit.name",
-            header: "Satuan Unit",
-        },
-         {
-            accessorKey: "stock_in",
+            accessorKey: "quantity",
             header: "Stock",
         },
         {
-            accessorKey: "price",
+            accessorKey: "products.price",
             header: "Harga",
         },
         {
             id: "actions",
             header: "Action",
             cell: ({ row }) => {
-                const productId = row.original?.id || '';
+                const stockIn = row.original?.id || '';
                 return (
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
@@ -75,7 +83,7 @@ const ProductPage = () => {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent align="end" className="w-32">
                             <DropdownMenuItem>
-                                <Link href={`/products/${productId}/edit`}>Edit</Link>
+                                <Link href={`/stock-in/${stockIn}/edit`}>Edit</Link>
                             </DropdownMenuItem>
                             <DropdownMenuSeparator />
                             <DropdownMenuItem
@@ -83,7 +91,7 @@ const ProductPage = () => {
                                 onClick={() =>
                                     setConfirm({
                                         open: true,
-                                        url: `/products/${productId}`,
+                                        url: `/stock-in/${stockIn}`,
                                     })
                                 }
                             >
@@ -95,18 +103,17 @@ const ProductPage = () => {
             },
         },
     ]
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Product" />
-            <div className="flex justify-between items-center">
-                <PageTitle title="Product Item " subtitle="Data untuk mengatur prooducts" />
-                <Link href="/products/create">
-                    <Button className='flex gap-0'>
-                        <HugeiconsIcon icon={AddIcon} className="h-5 w-5 mr-2" />
-                        Item Baru</Button>
+            <Head title=" Stock In" />
+            <div className="flex items-center justify-between">
+                <PageTitle title="Data Stock In" subtitle=" data stock in" />
+                <Link href="/stock-in/create" >
+                    <Button> <HugeiconsIcon icon={AddIcon} className="h-5 w-5 " />StockIn Baru</Button>
                 </Link>
             </div>
-            <DataTable columns={columns} data={products.data} />
+            <DataTable columns={columns} data={stock_in.data} />
             <DeleteConfirmation
                 url={confirm.url}
                 open={confirm.open}
@@ -118,7 +125,7 @@ const ProductPage = () => {
                 }
             />
         </AppLayout>
-    );
-};
+    )
+}
 
-export default ProductPage;
+export default IndexStockIn

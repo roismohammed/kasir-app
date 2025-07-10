@@ -13,9 +13,10 @@ import {
 } from '~/components/ui/dropdown-menu'
 import { SupplierProps } from '~/types'
 import DeleteConfirmation from '~/components/delete-confirmation'
+import { PaginatedData } from '../../types/datatable';
 
 const Suppliers = () => {
-  const { suppliers } = usePage<{ suppliers: SupplierProps[] }>().props
+  const { suppliers } = usePage<{ suppliers:PaginatedData< SupplierProps> }>().props
   const [confirm, setConfirm] = useState({
     open: false,
     url: '',
@@ -98,7 +99,7 @@ const Suppliers = () => {
         </Link>
       </div>
 
-      <DataTable data={suppliers} columns={columns} />
+      <DataTable data={suppliers.data} columns={columns} />
 
       <DeleteConfirmation
         url={confirm.url}

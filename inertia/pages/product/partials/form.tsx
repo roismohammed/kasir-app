@@ -76,7 +76,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
                     placeholder="Masukan barcode"
                     value={data.barcode}
                     onChange={(e) => setData("barcode", e.target.value)}
-                    error={errors.barcode}
+                    error={errors.barcode }
                 />
             </div>
             <div>

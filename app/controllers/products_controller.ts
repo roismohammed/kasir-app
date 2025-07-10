@@ -9,6 +9,9 @@ export default class ProductsController {
    */
   public async index({ inertia }: HttpContext) {
     const products = await Product.query().preload('category').preload('unit').paginate(1, 10)
+    // const stockin = await Product.query().where('stock' )
+
+    // products.stock_in += hasil
     return inertia.render('product/index', { products })
   }
 
@@ -18,7 +21,7 @@ export default class ProductsController {
   public async create({ inertia }: HttpContext) {
     const categories = await Category.all()
     const unit = await Unit.all()
-    return inertia.render('product/create',{
+    return inertia.render('product/create', {
       categories,
       unit
     })
@@ -29,6 +32,14 @@ export default class ProductsController {
    */
   public async store({ request, response, session }: HttpContext) {
     const data = await request.validateUsing(ProductValidator)
+
+    const validateBarcode = await Product.findBy('barcode', data.barcode)
+    // if (validateBarcode) {
+    //   session.flash('errors', {
+    //     barcode: ['Barcode sudah dipakai']
+    //   })
+    //   return response.redirect().back()
+    // }
 
     await Product.create(data)
     session.flash('success', 'Product berhasil ditambahkan')

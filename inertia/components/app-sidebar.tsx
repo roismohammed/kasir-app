@@ -2,16 +2,8 @@
 
 import * as React from "react"
 import {
-  BookOpen,
-  Bot,
   Command,
-  Frame,
-  LifeBuoy,
-  Map,
-  PieChart,
-  Send,
   Settings2,
-  SquareTerminal,
 } from "lucide-react"
 
 import { NavMain } from "~/components/nav-main"
@@ -83,7 +75,7 @@ const data = {
         },
         {
           title: "Stock in / purchase",
-          url: "#",
+          url: "/stock-in",
         },
         {
           title: "Stock out",
@@ -100,24 +92,16 @@ const data = {
       ],
     },
     {
-      title: "Settings",
+      title: "Reports",
       url: "#",
       icon: Settings2,
       items: [
         {
-          title: "General",
+          title: "Sales",
           url: "#",
         },
         {
-          title: "Team",
-          url: "#",
-        },
-        {
-          title: "Billing",
-          url: "#",
-        },
-        {
-          title: "Limits",
+          title: "Stock In/Out",
           url: "#",
         },
       ],
@@ -142,7 +126,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

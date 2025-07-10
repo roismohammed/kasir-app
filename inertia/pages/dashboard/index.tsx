@@ -5,6 +5,7 @@ import AppLayout from "~/layouts/app-layout";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Package02Icon, ShoppingCart01FreeIcons, TruckDeliveryIcon, UserSearch02Icon } from "@hugeicons/core-free-icons";
 import { ChartBarDefault } from "~/components/ui/chart-bar-default";
+import { NumberTicker } from "~/components/magicui/numberTicker";
 
 const stats = [
   {
@@ -49,7 +50,8 @@ const DashboardPage = () => {
                 {stat.icon}
               </div>
               <div>
-                <p className="text-xl font-bold">{stat.count}</p>
+                <NumberTicker className="text-2xl font-bold" value={Number(stat.count)}/>
+                {/* <p className="text-xl font-bold">{stat.count}</p> */}
                 <p className="text-sm text-muted-foreground">{stat.title}</p>
               </div>
             </CardContent>
