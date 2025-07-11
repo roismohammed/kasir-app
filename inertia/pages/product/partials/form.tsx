@@ -48,7 +48,6 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
                 },
                 onError: (errors: any) => {
                     reject(errors)
-                    console.log(data); // It's good to log 'errors' directly here for debugging
                 },
             };
 
@@ -102,7 +101,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
             </div>
             <SelectInput
                 label="Satuan"
-                value={data.unit_id} // This is already a string due to the change in useForm
+                value={data.unit_id} 
                 placeholder="Pilih Satuan"
                 onSelect={(value) => setData("unit_id", value)}
                 options={unit.map((unit: UnitsProps) => ({
@@ -114,7 +113,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
 
             <SelectInput
                 label="Kategori"
-                value={data.category_id} // This is already a string due to the change in useForm
+                value={data.category_id} 
                 placeholder="Pilih Kategori"
                 onSelect={(value) => setData("category_id", value)}
                 options={categories.map((category: CategoriesProps) => ({
@@ -126,7 +125,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
 
 
             <div className="flex justify-end gap-2">
-                <Button variant={"outline"} type="button" onClick={() => { /* Consider adding a clear way to close or cancel the form here */ }}>
+                <Button variant={"outline"} type="button" onClick={() => {}}>
                     Batal
                 </Button>
                 <Button type="submit" disabled={processing}>

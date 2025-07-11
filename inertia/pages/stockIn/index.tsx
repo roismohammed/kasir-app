@@ -1,4 +1,4 @@
-import { AddIcon, MoreHorizontalCircle01FreeIcons } from "@hugeicons/core-free-icons"
+import { AddIcon, Delete02Icon, EditIcon, MoreHorizontalCircle01FreeIcons } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Head, Link, usePage } from "@inertiajs/react"
 import { useState } from "react"
@@ -70,35 +70,30 @@ const IndexStockIn = () => {
             cell: ({ row }) => {
                 const stockIn = row.original?.id || '';
                 return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                    <div className="flex items-center space-x-2">
+                        <Link href={`/stock-in/${stockIn}/edit`}>
                             <Button
-                                variant="ghost"
-                                className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                                size="icon"
+                                variant={'outline'}
+                                size="xs"
+
                             >
-                                <HugeiconsIcon icon={MoreHorizontalCircle01FreeIcons} />
-                                <span className="sr-only">Open menu</span>
+                                <HugeiconsIcon icon={EditIcon} size={14}/>
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-32">
-                            <DropdownMenuItem>
-                                <Link href={`/stock-in/${stockIn}/edit`}>Edit</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                variant="destructive"
-                                onClick={() =>
-                                    setConfirm({
-                                        open: true,
-                                        url: `/stock-in/${stockIn}`,
-                                    })
-                                }
-                            >
-                                Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                        </Link>
+                        <Button
+                            size="xs"
+                            variant={'destructive'}
+                            className="text-white"
+                            onClick={() =>
+                                setConfirm({
+                                    open: true,
+                                    url: `/stock-in/${stockIn}`,
+                                })
+                            }
+                        >
+                            <HugeiconsIcon icon={Delete02Icon} size={14}/>
+                        </Button>
+                    </div>
                 )
             },
         },

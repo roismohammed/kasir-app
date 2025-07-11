@@ -98,7 +98,7 @@ export default function FormStockIn({ url, method, stockIn, supplier, products }
                     value={selectedProduct ? selectedProduct.name : ""}
                     readOnly />
             </div>
-            {/* Detail produk */}
+
             <div className="grid grid-cols-2 gap-2">
                 <TextInput label="Satuan" value={selectedProduct ? selectedProduct.unit.name || "-" : "-"} readOnly />
                 <TextInput label="Stok Saat Ini" value={selectedProduct ? String(selectedProduct.stock ?? 0) : "0"} readOnly />
@@ -115,7 +115,7 @@ export default function FormStockIn({ url, method, stockIn, supplier, products }
             <div className="grid grid-cols-2 gap-2">
                 <SelectInput
                     label="Pilih Supplier"
-                    options={supplier.map((s) => ({
+                    options={supplier.map((s:SupplierProps) => ({
                         value: String(s.id),
                         label: s.name,
                     }))}

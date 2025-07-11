@@ -3,6 +3,7 @@ import StockIn from '#models/stock_in'
 import Supplier from '#models/supplier'
 import { StockInValidator } from '#validators/stock_in'
 import type { HttpContext } from '@adonisjs/core/http'
+import { DateTime } from 'luxon'
 
 export default class StockInsController {
   /**
@@ -35,7 +36,7 @@ export default class StockInsController {
       return response.redirect('/stock-in')
     } catch (error) {
       console.log(error);
-    
+
       session.flash('error', 'Stock In gagal ditambahkan')
       return response.redirect('/stock-in')
     }
@@ -50,10 +51,28 @@ export default class StockInsController {
    * Edit individual record
    */
   async edit({ params, inertia }: HttpContext) {
-    const stockIn = await StockIn.findOrFail(params.id)
+    const stockIn = await StockIn
+      .query()
+      .where('id', params.id)
+      .preload('products')
+      .preload('suppliers')
+      .firstOrFail()
+
     const supplier = await Supplier.all()
     const products = await Product.query().preload('category').preload('unit')
-    return inertia.render('stockIn/edit', { stockIn, supplier, products })
+    const formattedDate = DateTime.fromJSDate(stockIn.date).toFormat('yyyy-MM-dd')
+    return inertia.render('stockIn/edit', {
+      stockIn: {
+        id: stockIn.id,
+        date: formattedDate,
+        product_id: stockIn.productId,
+        supplier_id: stockIn.supplierId,
+        description: stockIn.description,
+        quantity: stockIn.quantity,
+      },
+      supplier,
+      products,
+    })
   }
 
   /**
