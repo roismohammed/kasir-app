@@ -11,11 +11,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSepara
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "~/components/datatable/table"
 import DeleteConfirmation from "~/components/delete-confirmation"
+import { Dialog, DialogContent, DialogTitle } from "~/components/ui/dialog"
 
 const IndexStockIn = () => {
     const { stock_in } = usePage<{ stock_in: PaginatedData<StockInProps> }>().props
-    console.log(stock_in);
-
+    const [modalOpen, setModalOpen] = useState(false);
+    const [selectedStockIn, setSelectedStockIn] = useState<StockInProps | null>(null);
     const [confirm, setConfirm] = useState({
         open: false,
         url: '',
@@ -31,73 +32,72 @@ const IndexStockIn = () => {
         },
     ]
 
-    const columns: ColumnDef<StockInProps>[] = [
-        {
-            accessorKey: "products.barcode",
-            header: "Barcode",
-        },
-        {
-            accessorKey: "products.name",
-            header: "Nama",
-        },
-        // {
-        //     accessorKey: "unit.name",
-        //     header: "Satuan Unit",
-        // },
-        // {
-        //     accessorKey: "date",
-        //     header: "Tanggal",
-        //     cell: ({ getValue }) => {
-        //         const date = new Date(getValue<string>('Date'));
-        //         return date.toLocaleDateString('id-ID', {
-        //             year: 'numeric',
-        //             month: 'long',
-        //             day: 'numeric',
-        //         });
-        //     },
-        // },
-        {
-            accessorKey: "quantity",
-            header: "Stock",
-        },
-        {
-            accessorKey: "products.price",
-            header: "Harga",
-        },
-        {
-            id: "actions",
-            header: "Action",
-            cell: ({ row }) => {
-                const stockIn = row.original?.id || '';
-                return (
-                    <div className="flex items-center space-x-2">
-                        <Link href={`/stock-in/${stockIn}/edit`}>
-                            <Button
-                                variant={'outline'}
-                                size="xs"
+    const handleOpenModal = (stock: StockInProps) => {
+        setSelectedStockIn(stock);
+        setModalOpen(true);
+    };
 
-                            >
-                                <HugeiconsIcon icon={EditIcon} size={14}/>
-                            </Button>
-                        </Link>
-                        <Button
-                            size="xs"
-                            variant={'destructive'}
-                            className="text-white"
-                            onClick={() =>
-                                setConfirm({
-                                    open: true,
-                                    url: `/stock-in/${stockIn}`,
-                                })
-                            }
-                        >
-                            <HugeiconsIcon icon={Delete02Icon} size={14}/>
-                        </Button>
-                    </div>
-                )
-            },
-        },
-    ]
+  const columns: ColumnDef<StockInProps>[] = [
+  {
+    accessorKey: "products.barcode",
+    header: "Barcode",
+  },
+  {
+    accessorKey: "products.name",
+    header: "Nama",
+  },
+  {
+    accessorKey: "quantity",
+    header: "Stock",
+  },
+  {
+    accessorKey: "products.price",
+    header: "Harga",
+  },
+  {
+    id: "actions",
+    header: "Action",
+    enableSorting: false,
+    cell: ({ row }) => {
+      const stockIn = row.original?.id || '';
+      return (
+        <div className="flex items-center justify-end space-x-2">
+          <Button
+            onClick={() => handleOpenModal(row.original)}
+            variant={'outline'}
+            size="xs"
+          >
+            <HugeiconsIcon icon={MoreHorizontalCircle01FreeIcons} size={14} />
+          </Button>
+
+          <Link href={`/stock-in/${stockIn}/edit`}>
+            <Button
+              variant={'outline'}
+              size="xs"
+            >
+              <HugeiconsIcon icon={EditIcon} size={14} />
+            </Button>
+          </Link>
+
+          <Button
+            size="xs"
+            variant={'destructive'}
+            className="text-white"
+            onClick={() =>
+              setConfirm({
+                open: true,
+                url: `/stock-in/${stockIn}`,
+              })
+            }
+          >
+            <HugeiconsIcon icon={Delete02Icon} size={14} />
+          </Button>
+        </div>
+      );
+    },
+  },
+];
+
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -119,6 +119,26 @@ const IndexStockIn = () => {
                     })
                 }
             />
+
+            <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+                <DialogContent>
+                    <DialogTitle>Detail Produk</DialogTitle>
+
+                    {selectedStockIn && (
+                        <div className="space-y-2">
+                            <p><strong>Barcode:</strong> {selectedStockIn.barcode}</p>
+                            <p><strong>Nama Produk:</strong> {selectedStockIn.name}</p>
+                            <p><strong>Stok:</strong> {selectedStockIn.stock}</p>
+                            <p><strong>Satuan:</strong> {selectedStockIn.unit?.name}</p>
+                            <p><strong>Supplier:</strong> {selectedStockIn.supplier?.name}</p>
+                            <p><strong>Deskripsi:</strong> {selectedStockIn.description}</p>
+                            <p><strong>Tanggal:</strong> {selectedStockIn.date}</p>
+                            <p><strong>Jumlah Masuk:</strong> {selectedStockIn.quantity}</p>
+                        </div>
+                    )}
+                </DialogContent>
+            </Dialog>
+
         </AppLayout>
     )
 }

@@ -4,7 +4,7 @@ import AppLayout from "~/layouts/app-layout"
 import { ProductProps, SupplierProps } from "~/types"
 import FormStockIn from "./partials/form"
 
-const CreateStockIn = ({ products, supplier }: { products: ProductProps, supplier: SupplierProps }) => {
+const CreateStockIn = ({ products, supplier }: { products: ProductProps[], supplier: SupplierProps[] }) => {
     const breadcrumbs = [
         {
             title: 'Beranda',

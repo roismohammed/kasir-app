@@ -1,4 +1,4 @@
-import { Head } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { PageTitle } from "~/components/page-title";
 import { Card, CardContent } from "~/components/ui/card";
 import AppLayout from "~/layouts/app-layout";
@@ -37,6 +37,9 @@ const stats = [
     },
   ]
 const DashboardPage = () => {
+    const {allProduct} = usePage().props
+    console.log(allProduct);
+    
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard Admin" />

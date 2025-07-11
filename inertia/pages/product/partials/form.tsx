@@ -5,7 +5,8 @@ import TextInput from "~/components/form/text-input";
 import { Button } from "~/components/ui/button";
 import SelectInput from "~/components/form/select-input";
 import { CategoriesProps, UnitsProps } from "~/types";
-
+import CurrencyInput from 'react-currency-input-field';
+import { Label } from "~/components/ui/label";
 interface ProductProps {
     url: string;
     method: "POST" | "PUT";
@@ -16,9 +17,9 @@ interface ProductProps {
         price?: number;
         unit_id?: number;
         category_id?: number;
-        unit:{id:string}
-        category:{id:string}
-    } ;
+        unit: { id: string }
+        category: { id: string }
+    };
     onSuccess?: () => void;
     categories: CategoriesProps[]
     unit: UnitsProps[];
@@ -75,7 +76,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
                     placeholder="Masukan barcode"
                     value={data.barcode}
                     onChange={(e) => setData("barcode", e.target.value)}
-                    error={errors.barcode }
+                    error={errors.barcode}
                 />
             </div>
             <div>
@@ -89,19 +90,21 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
                 />
             </div>
             <div>
-                <TextInput
-                    label="Harga"
-                    className="mt-1"
+                <Label>Harga</Label>
+                <CurrencyInput
+                    id="price-input"
+                    name="price"
                     placeholder="Masukan harga"
-                    type="number"
-                    value={data.price}
-                    onChange={(e) => setData("price", e.target.value)}
-                    error={errors.price}
+                    defaultValue={data.price}
+                    decimalsLimit={2}
+                    onValueChange={(value:any) => setData("price", value)}
+                    className="mt-1 border border-gray-300 shadow-xm rounded-sm py-2 px-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 w-full"
+                    prefix="Rp "
                 />
             </div>
             <SelectInput
                 label="Satuan"
-                value={data.unit_id} 
+                value={data.unit_id}
                 placeholder="Pilih Satuan"
                 onSelect={(value) => setData("unit_id", value)}
                 options={unit.map((unit: UnitsProps) => ({
@@ -113,7 +116,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
 
             <SelectInput
                 label="Kategori"
-                value={data.category_id} 
+                value={data.category_id}
                 placeholder="Pilih Kategori"
                 onSelect={(value) => setData("category_id", value)}
                 options={categories.map((category: CategoriesProps) => ({
@@ -125,7 +128,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
 
 
             <div className="flex justify-end gap-2">
-                <Button variant={"outline"} type="button" onClick={() => {}}>
+                <Button variant={"outline"} type="button" onClick={() => { }}>
                     Batal
                 </Button>
                 <Button type="submit" disabled={processing}>

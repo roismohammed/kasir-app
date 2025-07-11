@@ -15,12 +15,17 @@ import { PaginatedData } from "~/types/datatable";
 
 const ProductPage = () => {
     const { products, } = usePage<{ products: PaginatedData<ProductProps> }>().props
-    const [confirm,setConfirm] = useState({
-        open:false,
-        url:'',
+    const [confirm, setConfirm] = useState({
+        open: false,
+        url: '',
     })
-    console.log(products);
-    
+
+    const rupiah = (number:number) => {
+        return new Intl.NumberFormat("id-ID", {
+            style: "currency",
+            currency: "IDR"
+        }).format(number);
+    }
     const breadcrumbs = [
         {
             title: 'Beranda',
@@ -48,12 +53,12 @@ const ProductPage = () => {
             accessorKey: "unit.name",
             header: "Satuan Unit",
         },
-         {
+        {
             accessorKey: "stock_in",
             header: "Stock",
         },
         {
-            accessorKey: "price",
+            accessorFn: (row) => rupiah(row.price),
             header: "Harga",
         },
         {
