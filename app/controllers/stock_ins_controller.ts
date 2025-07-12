@@ -32,6 +32,12 @@ export default class StockInsController {
       const stockIn = await request.validateUsing(StockInValidator)
 
       await StockIn.create(stockIn)
+
+      const product = await Product.findOrFail(stockIn.product_id)
+      if (product) {
+        product.stock += stockIn.quantity;
+        await product.save();
+      }
       session.flash('success', 'Stock In berhasil ditambahkan')
       return response.redirect('/stock-in')
     } catch (error) {

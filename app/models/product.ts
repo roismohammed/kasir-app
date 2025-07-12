@@ -25,6 +25,9 @@ export default class Product extends BaseModel {
   @column()
   declare price: string
 
+  @column()
+  declare stock: string
+
   @belongsTo(() => Category)
   declare category: BelongsTo<typeof Category>
 

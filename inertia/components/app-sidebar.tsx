@@ -71,7 +71,7 @@ const data = {
       items: [
         {
           title: "Sales",
-          url: "#",
+          url: "/sales  ",
         },
         {
           title: "Stock in / purchase",

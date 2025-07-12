@@ -8,9 +8,6 @@ export default class ProductsController {
    * Display a list of resource
    */
   public async index({ inertia }: HttpContext) {
-    const product = await Product.find(1)
-    const quantity = await Product.query().where('stock', '>', 0).count('* as total')
-
     const products = await Product.query()
       .preload('category')
       .preload('unit')
