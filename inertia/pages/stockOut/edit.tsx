@@ -1,33 +1,33 @@
 import { Head } from "@inertiajs/react"
 import { PageTitle } from "~/components/page-title"
 import AppLayout from "~/layouts/app-layout"
-import { StockInProps, SupplierProps, ProductProps } from "~/types"
+import { SupplierProps, ProductProps, StockOutProps } from "~/types"
 import FormStockIn from "./partials/form"
-const EditStockIn = ({ stockIn, supplier, products }: { stockIn: StockInProps, supplier: SupplierProps[], products: ProductProps[] }) => {
+const EditStockOut = ({ stockOut, supplier, products }: { stockOut: StockOutProps, supplier: SupplierProps[], products: ProductProps[] }) => {
     const breadcrumbs = [
         {
             title: 'Beranda',
             url: '/'
         },
         {
-            title: 'Stock In',
-            url: '/stock-in'
+            title: 'Stock Out',
+            url: '/stock-out'
         },
         {
-            title: 'Edit Stock In',
+            title: 'Edit Stock Out',
             url: '#'
         },
     ]
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Edit Stock In" />
-            <PageTitle title="Edit Stock In" subtitle="Edit data stock in" />
+            <Head title="Edit Stock Out" />
+            <PageTitle title="Edit Stock Out" subtitle="Edit data stock Out" />
             <div className="max-w-lg">
                 <FormStockIn
                     method="PUT"
-                    url={`/stock-in/${stockIn.id}`}
-                    stockIn={stockIn}
+                    url={`/stock-out/${stockOut.id}`}
+                    stockOut={stockOut}
                     supplier={supplier}
                     products={products}
                 />
@@ -36,5 +36,5 @@ const EditStockIn = ({ stockIn, supplier, products }: { stockIn: StockInProps, s
     )
 }
 
-export default EditStockIn
+export default EditStockOut
 

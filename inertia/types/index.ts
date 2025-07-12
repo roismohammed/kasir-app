@@ -1,4 +1,5 @@
 import { HugeiconsIconProps } from "@hugeicons/react";
+import { description } from '../components/ui/chart-bar-default';
 
 export interface NavItem {
     title: string;
@@ -57,7 +58,18 @@ export interface ProductProps {
 }
 export interface StockInProps {
     id: number;
+    date:number
     product_id: number;
-    quantity: number;
     supplier_id: number;
+    description : string
+    quantity: number;
+}
+
+export interface StockOutProps {
+    id: number;
+    date:number
+    product_id: number;
+    supplier_id: number;
+    description : string
+    quantity: number;
 }

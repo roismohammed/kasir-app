@@ -8,7 +8,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import FormUnits from "./partials/form";
 import { toast } from "sonner";
-import { usePage } from "@inertiajs/react";
+import { Head, usePage } from "@inertiajs/react";
 import { PaginatedData } from "~/types/datatable";
 import { UnitsProps } from "~/types";
 import { ColumnDef } from "@tanstack/react-table";
@@ -74,6 +74,7 @@ const UnitsPage = () => {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Units"></Head>
             <div className="flex justify-between items-center">
                 <PageTitle title="Units" subtitle="Data untuk mengatur Unit Product" />
                 <Button className='flex gap-0'

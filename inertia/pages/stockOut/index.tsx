@@ -5,16 +5,16 @@ import { useState } from "react"
 import { PageTitle } from "~/components/page-title"
 import { Button } from "~/components/ui/button"
 import AppLayout from "~/layouts/app-layout"
-import { StockInProps } from "~/types"
+import { StockInProps, StockOutProps } from "~/types"
 import { PaginatedData } from "~/types/datatable"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
+// import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "~/components/datatable/table"
 import DeleteConfirmation from "~/components/delete-confirmation"
 import { Dialog, DialogContent, DialogTitle } from "~/components/ui/dialog"
 
-const IndexStockIn = () => {
-    const { stock_in } = usePage<{ stock_in: PaginatedData<StockInProps> }>().props
+const IndexStockOut = () => {
+    const { stock_out } = usePage<{ stock_out: PaginatedData<StockOutProps> }>().props
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedStockIn, setSelectedStockIn] = useState<StockInProps | null>(null);
     const [confirm, setConfirm] = useState({
@@ -59,7 +59,7 @@ const IndexStockIn = () => {
     header: "Action",
     enableSorting: false,
     cell: ({ row }) => {
-      const stockIn = row.original?.id || '';
+      const stockOut = row.original?.id || '';
       return (
         <div className="flex items-center justify-end space-x-2">
           <Button
@@ -70,7 +70,7 @@ const IndexStockIn = () => {
             <HugeiconsIcon icon={MoreHorizontalCircle01FreeIcons} size={14} />
           </Button>
 
-          <Link href={`/stock-in/${stockIn}/edit`}>
+          <Link href={`/stock-out/${stockOut}/edit`}>
             <Button
               variant={'outline'}
               size="xs"
@@ -86,7 +86,7 @@ const IndexStockIn = () => {
             onClick={() =>
               setConfirm({
                 open: true,
-                url: `/stock-in/${stockIn}`,
+                url: `/stock-out/${stockOut}`,
               })
             }
           >
@@ -101,14 +101,14 @@ const IndexStockIn = () => {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title=" Stock In" />
+            <Head title=" Stock Out" />
             <div className="flex items-center justify-between">
-                <PageTitle title="Data Stock In" subtitle=" data stock in" />
-                <Link href="/stock-in/create" >
-                    <Button> <HugeiconsIcon icon={AddIcon} className="h-5 w-5 " />StockIn Baru</Button>
+                <PageTitle title="Data Stock Out" subtitle="Daftar data stock out yang di input oleh bagian logistik" />
+                <Link href="/stock-out/create" >
+                    <Button> <HugeiconsIcon icon={AddIcon} className="h-5 w-5 " />StockOut Baru</Button>
                 </Link>
             </div>
-            <DataTable columns={columns} data={stock_in.data} />
+            <DataTable columns={columns} data={stock_out.data} />
             <DeleteConfirmation
                 url={confirm.url}
                 open={confirm.open}
@@ -120,13 +120,13 @@ const IndexStockIn = () => {
                 }
             />
 
-            <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+            {/* <Dialog open={modalOpen} onOpenChange={setModalOpen}>
                 <DialogContent>
                     <DialogTitle>Detail Produk</DialogTitle>
 
                     {selectedStockIn && (
                         <div className="space-y-2">
-                            <p><strong>Barcode:</strong> {selectedStockIn.product_id}</p>
+                            <p><strong>Barcode:</strong> {selectedStockIn.barcode}</p>
                             <p><strong>Nama Produk:</strong> {selectedStockIn.name}</p>
                             <p><strong>Stok:</strong> {selectedStockIn.stock}</p>
                             <p><strong>Satuan:</strong> {selectedStockIn.unit?.name}</p>
@@ -137,10 +137,10 @@ const IndexStockIn = () => {
                         </div>
                     )}
                 </DialogContent>
-            </Dialog>
+            </Dialog> */}
 
         </AppLayout>
     )
 }
 
-export default IndexStockIn
+export default IndexStockOut

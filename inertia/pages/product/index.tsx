@@ -14,11 +14,13 @@ import { ProductProps } from "~/types";
 import { PaginatedData } from "~/types/datatable";
 
 const ProductPage = () => {
-    const { products, } = usePage<{ products: PaginatedData<ProductProps> }>().props
+    const { products, totalStock} = usePage<{ products: PaginatedData<ProductProps> }>().props
     const [confirm, setConfirm] = useState({
         open: false,
         url: '',
     })
+    console.log(totalStock);
+    
 
     const rupiah = (number:number) => {
         return new Intl.NumberFormat("id-ID", {
@@ -54,7 +56,7 @@ const ProductPage = () => {
             header: "Satuan Unit",
         },
         {
-            accessorKey: "stock_in",
+            accessorKey: "stock.totalStock",
             header: "Stock",
         },
         {

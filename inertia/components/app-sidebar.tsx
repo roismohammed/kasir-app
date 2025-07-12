@@ -79,7 +79,7 @@ const data = {
         },
         {
           title: "Stock out",
-          url: "#",
+          url: "/stock-out",
         },
         {
           title: "Stock Opname",

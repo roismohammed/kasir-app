@@ -4,6 +4,7 @@ import { column, BaseModel, belongsTo, hasMany } from '@adonisjs/lucid/orm'
 import Category from './category.js'
 import Unit from './unit.js'
 import StockIn from './stock_in.js'
+import StockOut from './stock_out.js'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -31,8 +32,10 @@ export default class Product extends BaseModel {
   declare unit: BelongsTo<typeof Unit>
 
   @hasMany(() => StockIn)
-  public stocks: HasMany<typeof StockIn>
+  public stockIns: HasMany<typeof StockIn>
 
+  @hasMany(() => StockOut)
+  public stockouts: HasMany<typeof StockOut>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

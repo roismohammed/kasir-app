@@ -6,32 +6,33 @@ import { Button } from "~/components/ui/button";
 import SelectInput from "~/components/form/select-input";
 import TextareaInput from "~/components/form/textarea-input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { ProductProps, StockInProps, SupplierProps } from "~/types";
+import { ProductProps, StockOutProps, SupplierProps } from "~/types";
 import { DialogTitle } from "@radix-ui/react-dialog";
 
-interface FormStockInProps {
+interface FormStockOutProps {
   url: string;
   method: "POST" | "PUT";
-  stockIn?:StockInProps
+  stockOut?: StockOutProps;
   supplier: SupplierProps[];
   products: ProductProps[];
 }
 
-export default function FormStockIn({
+export default function FormStockOut({
   url,
   method,
-  stockIn,
+  stockOut,
   supplier,
   products,
-}: FormStockInProps) {
+}: FormStockOutProps) {
   const { data, setData, post, errors, processing } = useForm({
     _method: method,
-    date: stockIn?.date ?? "",
-    product_id: stockIn?.product_id ?? "",
-    supplier_id: stockIn?.supplier_id ?? "",
-    description: stockIn?.description ?? "",
-    quantity: stockIn?.quantity ? String(stockIn.quantity) : "",
+    date: stockOut?.date ?? "",
+    product_id: stockOut?.product_id ?? "",
+    supplier_id: stockOut?.supplier_id ?? "",
+    description: stockOut?.description ?? "",
+    quantity: stockOut?.quantity ? String(stockOut.quantity) : "",
   });
+  
 
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(null);

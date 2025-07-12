@@ -19,7 +19,6 @@ const CreateStockIn = ({ products, supplier }: { products: ProductProps[], suppl
             url: '#'
         },
     ]
-    console.log(products);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

@@ -8,12 +8,19 @@ export default class ProductsController {
    * Display a list of resource
    */
   public async index({ inertia }: HttpContext) {
-    const products = await Product.query().preload('category').preload('unit').paginate(1, 10)
-    // const stockin = await Product.query().where('stock' )
+    const product = await Product.find(1)
+    const quantity = await Product.query().where('stock', '>', 0).count('* as total')
 
-    // products.stock_in += hasil
-    return inertia.render('product/index', { products })
+    const products = await Product.query()
+      .preload('category')
+      .preload('unit')
+      .paginate(1, 10)
+
+    return inertia.render('product/index', {
+      products,
+    })
   }
+
 
   /**
    * Display form to create a new record
