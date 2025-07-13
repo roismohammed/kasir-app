@@ -41,9 +41,16 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
                       <Fragment key={item.url || index}>
                         <BreadcrumbItem className="flex items-center">
                           {isLast ? (
-                            <BreadcrumbPage className="truncate max-w-[200px] sm:max-w-none">{item.title}</BreadcrumbPage>
+                            <BreadcrumbPage className="truncate max-w-[200px] sm:max-w-none">
+                              {item.title}
+                            </BreadcrumbPage>
                           ) : (
-                            <BreadcrumbLink href={item.url} className="truncate max-w-[150px] sm:max-w-none hover:text-blue-600 dark:hover:text-blue-400">{item.title}</BreadcrumbLink>
+                            <BreadcrumbLink
+                              href={item.url}
+                              className="truncate max-w-[150px] sm:max-w-none hover:text-blue-600 dark:hover:text-blue-400"
+                            >
+                              {item.title}
+                            </BreadcrumbLink>
                           )}
                         </BreadcrumbItem>
                         {!isLast && <BreadcrumbSeparator className="shrink-0" />}
@@ -58,9 +65,7 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
 
         <main className="flex-1 overflow-hidden">
           <div className="h-full overflow-y-auto overflow-x-hidden">
-            <div className="min-h-full p-4 sm:p-6">
-              {children}
-            </div>
+            <div className="min-h-full p-4 sm:p-6">{children}</div>
           </div>
         </main>
       </SidebarInset>
