@@ -35,6 +35,12 @@ export default class StockOutsController {
       const stockOut = await request.validateUsing(StockOutValidator)
       await StockOut.create(stockOut)
 
+      const product = await Product.findOrFail(stockOut.product_id)
+      if(product){
+        product.stock -= stockOut.quantity;
+        await product.save();
+      }
+
       session.flash('Success', 'Data berhasil di simpan')
       return response.redirect('/stock-out')
     } catch (error) {
@@ -82,6 +88,13 @@ export default class StockOutsController {
     try {
       const stockOut = await StockOut.findOrFail(params.id)
       const data = await request.validateUsing(StockOutValidator)
+
+      const product = await Product.findOrFail(stockOut.productId)
+      if(product){
+        product.stock += stockOut.quantity;
+      }else{
+        product.stock -= stockOut.quantity;
+      }
 
       stockOut.merge(data)
       await stockOut.save()

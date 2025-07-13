@@ -14,113 +14,131 @@ import DeleteConfirmation from "~/components/delete-confirmation"
 import { Dialog, DialogContent, DialogTitle } from "~/components/ui/dialog"
 
 const IndexStockOut = () => {
-    const { stock_out } = usePage<{ stock_out: PaginatedData<StockOutProps> }>().props
-    const [modalOpen, setModalOpen] = useState(false);
-    const [selectedStockIn, setSelectedStockIn] = useState<StockInProps | null>(null);
-    const [confirm, setConfirm] = useState({
-        open: false,
-        url: '',
-    })
-    const breadcrumbs = [
-        {
-            title: 'Beranda',
-            url: '/'
-        },
-        {
-            title: 'Stock In',
-            url: '/stock-in'
-        },
-    ]
+  const { stock_out } = usePage<{ stock_out: PaginatedData<StockOutProps> }>().props
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedStockIn, setSelectedStockIn] = useState<StockInProps | null>(null);
+  const [confirm, setConfirm] = useState({
+    open: false,
+    url: '',
+  })
+  const breadcrumbs = [
+    {
+      title: 'Beranda',
+      url: '/'
+    },
+    {
+      title: 'Stock In',
+      url: '/stock-in'
+    },
+  ]
 
-    const handleOpenModal = (stock: StockInProps) => {
-        setSelectedStockIn(stock);
-        setModalOpen(true);
-    };
+  const handleOpenModal = (stock: StockInProps) => {
+    setSelectedStockIn(stock);
+    setModalOpen(true);
+  };
 
   const columns: ColumnDef<StockInProps>[] = [
-  {
-    accessorKey: "products.barcode",
-    header: "Barcode",
-  },
-  {
-    accessorKey: "products.name",
-    header: "Nama",
-  },
-  {
-    accessorKey: "quantity",
-    header: "Stock",
-  },
-  {
-    accessorKey: "products.price",
-    header: "Harga",
-  },
-  {
-    id: "actions",
-    header: "Action",
-    enableSorting: false,
-    cell: ({ row }) => {
-      const stockOut = row.original?.id || '';
-      return (
-        <div className="flex items-center justify-end space-x-2">
-          <Button
-            onClick={() => handleOpenModal(row.original)}
-            variant={'outline'}
-            size="xs"
-          >
-            <HugeiconsIcon icon={MoreHorizontalCircle01FreeIcons} size={14} />
-          </Button>
-
-          <Link href={`/stock-out/${stockOut}/edit`}>
+    {
+      accessorKey: "products.barcode",
+      header: "Barcode",
+    },
+    {
+      accessorKey: "products.name",
+      header: "Nama",
+    },
+    {
+      accessorKey: "quantity",
+      header: "Qty",
+    },
+      {
+      accessorKey: "description",
+      header: "Deskripsi",
+    },
+   {
+      accessorKey: "date",
+      header: "Tanggal",
+      cell: ({ getValue }) => {
+        const date = getValue() as string
+        return new Date(date).toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      }
+    },
+    {
+      id: "actions",
+      header: ({ table }) => {
+        return (
+          <p className="flex justify-end px-10">
+            Actions
+          </p>
+        )
+      },
+      enableSorting: false,
+      cell: ({ row }) => {
+        const stockOut = row.original?.id || '';
+        return (
+          <div className="flex items-center justify-end space-x-2">
             <Button
+              onClick={() => handleOpenModal(row.original)}
               variant={'outline'}
               size="xs"
             >
-              <HugeiconsIcon icon={EditIcon} size={14} />
+              <HugeiconsIcon icon={MoreHorizontalCircle01FreeIcons} size={14} />
             </Button>
-          </Link>
 
-          <Button
-            size="xs"
-            variant={'destructive'}
-            className="text-white"
-            onClick={() =>
-              setConfirm({
-                open: true,
-                url: `/stock-out/${stockOut}`,
-              })
-            }
-          >
-            <HugeiconsIcon icon={Delete02Icon} size={14} />
-          </Button>
-        </div>
-      );
+            <Link href={`/stock-out/${stockOut}/edit`}>
+              <Button
+                variant={'outline'}
+                size="xs"
+              >
+                <HugeiconsIcon icon={EditIcon} size={14} />
+              </Button>
+            </Link>
+
+            <Button
+              size="xs"
+              variant={'destructive'}
+              className="text-white"
+              onClick={() =>
+                setConfirm({
+                  open: true,
+                  url: `/stock-out/${stockOut}`,
+                })
+              }
+            >
+              <HugeiconsIcon icon={Delete02Icon} size={14} />
+            </Button>
+          </div>
+        );
+      },
     },
-  },
-];
+  ];
 
 
-    return (
-        <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title=" Stock Out" />
-            <div className="flex items-center justify-between">
-                <PageTitle title="Data Stock Out" subtitle="Daftar data stock out yang di input oleh bagian logistik" />
-                <Link href="/stock-out/create" >
-                    <Button> <HugeiconsIcon icon={AddIcon} className="h-5 w-5 " />StockOut Baru</Button>
-                </Link>
-            </div>
-            <DataTable columns={columns} data={stock_out.data} />
-            <DeleteConfirmation
-                url={confirm.url}
-                open={confirm.open}
-                handleClose={() =>
-                    setConfirm({
-                        open: false,
-                        url: '',
-                    })
-                }
-            />
+  return (
+    <AppLayout breadcrumbs={breadcrumbs}>
+      <Head title=" Stock Out" />
+      <div className="flex items-center justify-between">
+        <PageTitle title="Data Stock Out" subtitle="Daftar data stock out yang di input oleh bagian logistik" />
+        <Link href="/stock-out/create" >
+          <Button> <HugeiconsIcon icon={AddIcon} className="h-5 w-5 " />StockOut Baru</Button>
+        </Link>
+      </div>
+      <DataTable columns={columns} data={stock_out.data} />
+      <DeleteConfirmation
+        url={confirm.url}
+        open={confirm.open}
+        handleClose={() =>
+          setConfirm({
+            open: false,
+            url: '',
+          })
+        }
+      />
 
-            {/* <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+      {/* <Dialog open={modalOpen} onOpenChange={setModalOpen}>
                 <DialogContent>
                     <DialogTitle>Detail Produk</DialogTitle>
 
@@ -139,8 +157,8 @@ const IndexStockOut = () => {
                 </DialogContent>
             </Dialog> */}
 
-        </AppLayout>
-    )
+    </AppLayout>
+  )
 }
 
 export default IndexStockOut

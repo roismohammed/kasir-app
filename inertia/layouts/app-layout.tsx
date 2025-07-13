@@ -15,7 +15,7 @@ import {
   SidebarProvider,
   SidebarTrigger,
 } from "~/components/ui/sidebar";
-import { BreadcrumbProps } from "~/types"; 
+import { BreadcrumbProps } from "~/types";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -46,7 +46,7 @@ export default function AppLayout({
           {hasBreadcrumbs && (
             <Breadcrumb>
               <BreadcrumbList>
-                {breadcrumbs.map((item:any, index) => {
+                {breadcrumbs.map((item: any, index) => {
                   const isLast = index === breadcrumbs.length - 1;
                   return (
                     <Fragment key={item.url || index}>
@@ -66,9 +66,9 @@ export default function AppLayout({
           )}
         </header>
 
-        <div className="flex flex-1 flex-col gap-4 px-4 pt-0">
-          <Toaster position="top-center" richColors />
+        <div className="flex flex-1 flex-col gap-4 px-4 pt-0 overflow-x-hidden overflow-y-auto">
           {children}
+          <Toaster position="top-center" richColors />
         </div>
       </SidebarInset>
     </SidebarProvider>

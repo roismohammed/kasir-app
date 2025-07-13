@@ -53,10 +53,24 @@ const IndexStockIn = () => {
     {
       accessorKey: "date",
       header: "Tanggal",
+      cell: ({ getValue }) => {
+        const date = getValue() as string
+        return new Date(date).toLocaleDateString('id-ID', {
+          year: 'numeric',
+          month: 'long',
+          day: 'numeric'
+        })
+      }
     },
     {
       id: "actions",
-      header: "Actions",
+      header: ({ table }) => {
+        return (
+          <p className="flex justify-end px-10">
+            Aksi
+          </p>
+        )
+      },
       enableSorting: false,
       cell: ({ row }) => {
         const stockIn = row.original?.id || '';
