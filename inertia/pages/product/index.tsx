@@ -1,4 +1,4 @@
-import { AddIcon, MoreHorizontalCircle01FreeIcons } from "@hugeicons/core-free-icons";
+import { AddIcon, Delete02Icon, EditIcon, MoreHorizontalCircle01FreeIcons } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -39,10 +39,7 @@ const ProductPage = () => {
         },
     ]
     const columns: ColumnDef<ProductProps>[] = [
-        {
-            accessorKey: "name",
-            header: "Nama",
-        },
+
         {
             accessorKey: "image",
             header: "Gambar",
@@ -61,7 +58,10 @@ const ProductPage = () => {
                 )
             }
         },
-
+        {
+            accessorKey: "name",
+            header: "Nama",
+        },
         {
             accessorKey: "barcode",
             header: "Barcode",
@@ -88,35 +88,29 @@ const ProductPage = () => {
             cell: ({ row }) => {
                 const productId = row.original?.id || '';
                 return (
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
+                    <div className="flex gap-2">
+                        <Link href={`/products/${productId}/edit`}>
                             <Button
-                                variant="ghost"
-                                className="data-[state=open]:bg-muted text-muted-foreground flex size-8"
-                                size="icon"
+                                variant={'outline'}
+                                size="xs"
                             >
-                                <HugeiconsIcon icon={MoreHorizontalCircle01FreeIcons} />
-                                <span className="sr-only">Open menu</span>
+                                <HugeiconsIcon icon={EditIcon} size={14} />
                             </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-32">
-                            <DropdownMenuItem>
-                                <Link href={`/products/${productId}/edit`}>Edit</Link>
-                            </DropdownMenuItem>
-                            <DropdownMenuSeparator />
-                            <DropdownMenuItem
-                                variant="destructive"
-                                onClick={() =>
-                                    setConfirm({
-                                        open: true,
-                                        url: `/products/${productId}`,
-                                    })
-                                }
-                            >
-                                Delete
-                            </DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                        </Link>
+                        <Button
+                            size="sm"
+                            variant="destructive"
+                            className="text-white"
+                            onClick={() =>
+                                setConfirm({
+                                    open: true,
+                                    url: `/products/${productId}`,
+                                })
+                            }
+                        >
+                            <HugeiconsIcon icon={Delete02Icon} size={14} />
+                        </Button>
+                    </div>
                 )
             },
         },
@@ -129,7 +123,7 @@ const ProductPage = () => {
                 <Link href="/products/create">
                     <Button className='flex gap-0'>
                         <HugeiconsIcon icon={AddIcon} className="h-5 w-5 mr-2" />
-                        Item Baru</Button>
+                        Product Baru</Button>
                 </Link>
             </div>
             <DataTable columns={columns} data={products.data} />
