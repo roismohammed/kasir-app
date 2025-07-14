@@ -12,6 +12,7 @@ interface ProductProps {
     method: "POST" | "PUT";
     product?: {
         id: number
+        image: string
         barcode?: string;
         name?: string;
         price?: number;
@@ -28,12 +29,15 @@ interface ProductProps {
 export default function FormProduct({ url, method, product, onSuccess, categories, unit }: ProductProps) {
     const { data, setData, post, errors, processing } = useForm({
         _method: method,
+        image: product?.image || "",
         barcode: product?.barcode || "",
         name: product?.name || "",
         price: product?.price?.toString() || "",
         category_id: product?.category_id?.toString() ?? product?.category?.id?.toString() ?? "",
         unit_id: product?.unit_id?.toString() ?? product?.unit?.id?.toString() ?? "",
     });
+    console.log(data);
+
 
 
     const submit = (e: React.FormEvent) => {
@@ -66,9 +70,22 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
             error: 'Kesalahan saat menyimpan data',
         });
     };
+    
 
     return (
         <form onSubmit={submit} className="space-y-2">
+            <div>
+                <TextInput
+                    label="Image"
+                    className="mt-1"
+                    type="file"
+                    onChange={(e) => setData("image", e.target.files?.[0] || data.image)}
+                    error={errors.image}
+                />
+                {method === 'PUT' && product?.image && (
+                    <img src={product?.image} className="mt-2" />
+                )}
+            </div>
             <div>
                 <TextInput
                     label="Barcode"
@@ -97,7 +114,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
                     placeholder="Masukan harga"
                     defaultValue={data.price}
                     decimalsLimit={2}
-                    onValueChange={(value:any) => setData("price", value)}
+                    onValueChange={(value: any) => setData("price", value)}
                     className="mt-1 border border-gray-300 shadow-xm rounded-sm py-2 px-2 text-sm focus:border-indigo-500 focus:ring-indigo-500 w-full"
                     prefix="Rp "
                 />

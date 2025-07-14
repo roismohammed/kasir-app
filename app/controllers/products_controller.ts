@@ -3,6 +3,7 @@ import Product from '#models/product'
 import Unit from '#models/unit'
 import { ProductValidator } from '#validators/product'
 import type { HttpContext } from '@adonisjs/core/http'
+import app from '@adonisjs/core/services/app'
 export default class ProductsController {
   /**
    * Display a list of resource
@@ -25,6 +26,7 @@ export default class ProductsController {
   public async create({ inertia }: HttpContext) {
     const categories = await Category.all()
     const unit = await Unit.all()
+
     return inertia.render('product/create', {
       categories,
       unit
@@ -36,15 +38,14 @@ export default class ProductsController {
    */
   public async store({ request, response, session }: HttpContext) {
     const data = await request.validateUsing(ProductValidator)
+    const image = request.file('image')
 
-    const validateBarcode = await Product.findBy('barcode', data.barcode)
-    // if (validateBarcode) {
-    //   session.flash('errors', {
-    //     barcode: ['Barcode sudah dipakai']
-    //   })
-    //   return response.redirect().back()
-    // }
+    if (image) {
+      await image.move(app.makePath('storage/products'))
 
+      // Simpan nama file ke dalam data sebelum disimpan
+      data.image = image.fileName!
+    }
     await Product.create(data)
     session.flash('success', 'Product berhasil ditambahkan')
     return response.redirect('/products')

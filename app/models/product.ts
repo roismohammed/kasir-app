@@ -14,6 +14,9 @@ export default class Product extends BaseModel {
   declare barcode: string
 
   @column()
+  declare image: string
+
+  @column()
   declare name: string
 
   @column({ columnName: 'category_id' })
@@ -38,7 +41,7 @@ export default class Product extends BaseModel {
   public stockIns: HasMany<typeof StockIn>
 
   @hasMany(() => StockOut)
-  public stockouts: HasMany<typeof StockOut>
+  public stockOuts: HasMany<typeof StockOut>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

@@ -2,12 +2,11 @@ import AppLayout from "~/layouts/app-layout";
 import FormProduct from "./partials/form";
 import { PageTitle } from '../../components/page-title';
 import { Head, usePage } from "@inertiajs/react";
-import { CategoriesProps } from "~/types";
+import { CategoriesProps, UnitsProps } from "~/types";
 import { PaginatedData } from "~/types/datatable";
 
 const CreateCategory = () => {
-    const {categories,unit:units} = usePage<{categories:PaginatedData<CategoriesProps>}>().props
-    console.log(categories);
+    const {categories,unit:units} = usePage<{categories:CategoriesProps[],unit:UnitsProps[]}>().props
     
     const breadcrumbs = [
         {
