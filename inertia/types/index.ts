@@ -73,3 +73,9 @@ export interface StockOutProps {
     description : string
     quantity: number;
 }
+
+export interface UserProps {
+  name: string;
+  email: string;
+  avatar: string;
+}

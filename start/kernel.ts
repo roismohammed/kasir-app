@@ -41,6 +41,14 @@ router.use([
   () => import('@adonisjs/auth/initialize_auth_middleware')
 ])
 
+export const app = {
+  providers: [
+    () => import('@adonisjs/core'),
+    () => import('@adonisjs/lucid'),
+    () => import('@verful/permissions'), // <<== Tambahkan ini
+  ],
+}
+
 /**
  * Named middleware collection must be explicitly assigned to
  * the routes or the routes group.

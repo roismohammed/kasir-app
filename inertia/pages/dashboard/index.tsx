@@ -30,22 +30,23 @@ const stats = [
   },
 ];
 
-  const breadcrumbs = [
-    {
-      title: "Beranda",
-      url: "/",
-    },
-  ]
+const breadcrumbs = [
+  {
+    title: "Beranda",
+    url: "/",
+  },
+]
 const DashboardPage = () => {
-    const {allProduct} = usePage().props
-    console.log(allProduct);
-    
+  const { allProduct } = usePage().props
+  console.log(allProduct);
+
   return (
+
     <AppLayout breadcrumbs={breadcrumbs}>
       <Head title="Dashboard Admin" />
       <PageTitle title="Dashboard" subtitle="Anda bisa melihat statistik dashboard" />
-      
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 ">
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
         {stats.map((stat) => (
           <Card key={stat.title} className="shadow-md py-1 hover:shadow-lg transition duration-300">
             <CardContent className="p-4 flex items-center space-x-4">
@@ -53,7 +54,7 @@ const DashboardPage = () => {
                 {stat.icon}
               </div>
               <div>
-                <NumberTicker className="text-2xl font-bold" value={Number(stat.count)}/>
+                <NumberTicker className="text-2xl font-bold" value={Number(stat.count)} />
                 {/* <p className="text-xl font-bold">{stat.count}</p> */}
                 <p className="text-sm text-muted-foreground">{stat.title}</p>
               </div>
@@ -61,8 +62,8 @@ const DashboardPage = () => {
           </Card>
         ))}
       </div>
-      <div>
-        <ChartBarDefault/>
+      <div className="mt-4">
+        <ChartBarDefault />
       </div>
     </AppLayout>
   );

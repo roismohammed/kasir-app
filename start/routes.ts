@@ -1,3 +1,4 @@
+import AuthController from '#controllers/auth_controller'
 import CategoriesController from '#controllers/categories_controller'
 import CustomersController from '#controllers/customers_controller'
 import DashboardController from '#controllers/dashboard_controller'
@@ -7,6 +8,7 @@ import StockInsController from '#controllers/stock_ins_controller'
 import StockOutsController from '#controllers/stock_outs_controller'
 import SuppliersController from '#controllers/suppliers_controller'
 import UnitsController from '#controllers/units_controller'
+import UsersController from '#controllers/users_controller'
 import router from '@adonisjs/core/services/router'
 router.on('/').renderInertia('home')
 
@@ -19,3 +21,6 @@ router.resource('/units', UnitsController).as('units')
 router.resource('/stock-in', StockInsController).as('stock-in')
 router.resource('/stock-out', StockOutsController).as('stock-out')
 router.resource('/sales', SalesController).as('sales')
+router.resource('/login', AuthController).as('login')
+router.resource('/user', UsersController).as('user')
+

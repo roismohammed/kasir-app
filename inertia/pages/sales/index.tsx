@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import AppLayout from "~/layouts/app-layout";
 import sajiku from '../../assets/image/makanan.jpeg'
+import { Head } from "@inertiajs/react";
 // Data untuk kategori menu
 const menuCategories = [
     { name: "Breakfast", icon: <Coffee size={20} />, stock: 12, active: false },
@@ -94,7 +95,7 @@ const menuItems = [
 
 const breadcrumbs = [
     {
-        title: "Home",
+        title: "Beranda",
         url: "/",
     },
     {
@@ -110,6 +111,7 @@ const breadcrumbs = [
 export default function CashierAppStatic() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}> 
+        <Head title="Penjualan" />
             <div className="flex gap-4">
                 <div className="flex-1 overflow-y-auto">
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -171,7 +173,7 @@ export default function CashierAppStatic() {
                                             ${item.price}
                                         </span>
                                         <button
-                                            className="w-8 h-8 rounded-full bg-blue-600 text-white hover:bg-blue-700 flex items-center justify-center transition-colors"
+                                            className="w-8 h-8 rounded-full bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center transition-colors"
                                         >
                                             <Plus size={16} />
                                         </button>
@@ -182,8 +184,8 @@ export default function CashierAppStatic() {
                     </div>
                 </div>
 
-                <div className="w-96 border-l shadow-lg">
-                    <div className=" flex flex-col sticky top-4 bg-white ">
+                <div className="w-96 ">
+                    <div className=" flex flex-col sticky top-4 border rounded-lg shadow-lg bg-white">
                         <div className="p-6 flex-1 flex flex-col overflow-hidden">
                             <h2 className="text-xl font-semibold mb-6 text-gray-800">Invoice</h2>
 

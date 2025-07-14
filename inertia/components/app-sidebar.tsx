@@ -110,7 +110,7 @@ const data = {
    settings: [
     {
       title: "User / Employes",
-      url: "/dashboard",
+      url: "/user",
       icon: () => <HugeiconsIcon icon={UserSearch01FreeIcons} className="w-10 h-10" />,
       isActive: true,
     },
@@ -126,7 +126,7 @@ const data = {
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>

@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react'
 import { Toaster } from 'sonner'
 import { AppSidebar } from '~/components/app-sidebar'
+import { ModeToggle } from '~/components/mode-toggle'
+import { ThemeProvider } from '~/components/theme-provider'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -26,9 +28,10 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
       <AppSidebar />
       <SidebarInset className="flex flex-col h-screen overflow-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm z-10">
-          <div className="flex items-center gap-2 px-4">
+          <div className="flex items-center gap-2 px-4 justify-between">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="-mr-3 data-[orientation=vertical]:h-4" />
+
           </div>
 
           {hasBreadcrumbs && (
@@ -61,13 +64,21 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
               </Breadcrumb>
             </div>
           )}
+
+          <div className='px-4'>
+            <ModeToggle />
+          </div>
         </header>
 
-        <main className="flex-1 overflow-hidden">
-          <div className="h-full overflow-y-auto overflow-x-hidden">
-            <div className="min-h-full p-4 sm:p-6">{children}</div>
-          </div>
-        </main>
+        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+          <main className="flex-1 overflow-hidden">
+            <div className="h-full overflow-y-auto overflow-x-hidden">
+              <div className="min-h-full p-4 sm:p-6">
+                {children}
+              </div>
+            </div>
+          </main>
+        </ThemeProvider>
       </SidebarInset>
       <Toaster position="top-center" richColors />
     </SidebarProvider>
