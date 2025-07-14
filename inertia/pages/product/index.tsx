@@ -98,7 +98,7 @@ const ProductPage = () => {
                             </Button>
                         </Link>
                         <Button
-                            size="sm"
+                            size="xs"
                             variant="destructive"
                             className="text-white"
                             onClick={() =>

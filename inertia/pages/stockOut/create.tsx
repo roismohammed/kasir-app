@@ -23,7 +23,7 @@ const CreateStockOut = ({suppliers, products}:{suppliers: SupplierProps[], produ
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title=" Stock Out" />
             <PageTitle title="Create Data Stock out" subtitle=" data stock out yang di input oleh bagian logistik secara profesional" />
-            <div className="max-w-lg">
+            <div className="max-w-lg mt-4">
                 <FormStockOut url={'/stock-out'} method="POST" supplier={suppliers} products={products}/>
             </div>
         </AppLayout>

@@ -8,11 +8,21 @@ import TextareaInput from "~/components/form/textarea-input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ProductProps, StockInProps, SupplierProps } from "~/types";
 import { DialogTitle } from "@radix-ui/react-dialog";
-
+import {
+  Command,
+  CommandDialog,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command"
 interface FormStockInProps {
   url: string;
   method: "POST" | "PUT";
-  stockIn?:StockInProps
+  stockIn?: StockInProps
   supplier: SupplierProps[];
   products: ProductProps[];
 }
@@ -144,22 +154,26 @@ export default function FormStockIn({
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent>
           <DialogTitle>Pilih Produk</DialogTitle>
-          <div className="space-y-2 max-h-72 overflow-y-auto">
-            {products.map((product:ProductProps) => (
-              <div
+          <ul className="space-y-2 max-h-72 overflow-y-auto">
+            {products.map((product: ProductProps) => (  
+              <li
                 key={product.id}
                 onClick={() => handleProductSelect(product)}
-                className="cursor-pointer px-3 py-2 rounded hover:bg-gray-100 border"
+                className="cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100 border flex items-center"
               >
-                <p className="font-medium">
-                  {product.barcode} - {product.name}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Stok: {product.stock} • Satuan: {product.unit?.name}
-                </p>
-              </div>
+                <img src={'/storage/products/' + product.image} className="h-10 w-10 mr-2 object-cover rounded-md" />
+                <div className="flex flex-col">
+                  <p className="font-medium">
+                    {product.barcode} - {product.name}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    Stok: {product.stock} • Satuan: {product.unit?.name}
+                  </p>
+                </div>
+              </li>
             ))}
-          </div>
+          </ul>
+
         </DialogContent>
       </Dialog>
     </form>

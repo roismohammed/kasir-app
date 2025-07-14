@@ -145,22 +145,25 @@ export default function FormStockOut({
       <Dialog open={modalOpen} onOpenChange={setModalOpen}>
         <DialogContent>
           <DialogTitle>Pilih Produk</DialogTitle>
-          <div className="space-y-2 max-h-72 overflow-y-auto">
-            {products.map((product:ProductProps) => (
-              <div
-                key={product.id}
-                onClick={() => handleProductSelect(product)}
-                className="cursor-pointer px-3 py-2 rounded hover:bg-gray-100 border"
-              >
-                <p className="font-medium">
-                  {product.barcode} - {product.name}
-                </p>
-                <p className="text-sm text-gray-500">
-                  Stok: {product.stock} • Satuan: {product.unit?.name}
-                </p>
-              </div>
-            ))}
-          </div>
+              <ul className="space-y-2 max-h-72 overflow-y-auto">
+                   {products.map((product: ProductProps) => (  
+                     <li
+                       key={product.id}
+                       onClick={() => handleProductSelect(product)}
+                       className="cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100 border flex items-center"
+                     >
+                       <img src={'/storage/products/' + product.image} className="h-10 w-10 mr-2 object-cover rounded-md" />
+                       <div className="flex flex-col">
+                         <p className="font-medium">
+                           {product.barcode} - {product.name}
+                         </p>
+                         <p className="text-sm text-gray-500">
+                           Stok: {product.stock} • Satuan: {product.unit?.name}
+                         </p>
+                       </div>
+                     </li>
+                   ))}
+                 </ul>
         </DialogContent>
       </Dialog>
     </form>

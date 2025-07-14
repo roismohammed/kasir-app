@@ -51,6 +51,7 @@ export interface UnitsProps {
 export interface ProductProps {
     id: number;
     barcode: string;
+    image:string
     name: string;
     price: number;
     unit_id: number;
@@ -58,24 +59,26 @@ export interface ProductProps {
 }
 export interface StockInProps {
     id: number;
-    date:number
+    date: number
     product_id: number;
     supplier_id: number;
-    description : string
+    description: string
     quantity: number;
 }
 
 export interface StockOutProps {
     id: number;
-    date:number
+    date: number
     product_id: number;
     supplier_id: number;
-    description : string
+    description: string
     quantity: number;
 }
 
 export interface UserProps {
-  name: string;
-  email: string;
-  avatar: string;
+    name?: string;
+    email?: string;
+    password?: string;
+    password_confirmation?: string;
+    roles?: string[];
 }
