@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import {
-  Command,
   Settings2,
 } from "lucide-react"
 
@@ -17,9 +16,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "~/components/ui/sidebar"
-import { AddInvoiceIcon, Home01Icon, Home07Icon, Settings01FreeIcons, Tag01Icon, Trolley02Icon, TwitterFreeIcons, TwitterIcon, UserAccountIcon, UserSearch01FreeIcons } from "@hugeicons/core-free-icons"
+import { AddInvoiceIcon, Home01Icon, Settings01FreeIcons, Tag01Icon, Trolley02Icon, UserAccountIcon, UserSearch01FreeIcons } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
-
+import logo from '../assets/image/logo2.png'
 const data = {
   user: {
     name: "shadcn",
@@ -132,12 +131,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
+                <div className="bg-sidebar- bg-muted text-sidebar-primary-foreground flex aspect-square size-10 items-center justify-center rounded-lg">
+                  <img src={logo}/>
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-medium">PayLoop</span>
+                  <span className="truncate text-xs">Mangement Kasir</span>
                 </div>
               </a>
             </SidebarMenuButton>

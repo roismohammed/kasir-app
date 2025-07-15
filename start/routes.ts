@@ -10,17 +10,20 @@ import SuppliersController from '#controllers/suppliers_controller'
 import UnitsController from '#controllers/units_controller'
 import UsersController from '#controllers/users_controller'
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
 router.on('/').renderInertia('home')
 
-router.get('/dashboard', [DashboardController,'index']).as('dashboard')
-router.resource('/suppliers', SuppliersController).as('suppliers')
-router.resource('/customers', CustomersController).as('customers')
-router.resource('/products', ProductsController).as('products')
-router.resource('/categories', CategoriesController).as('categories')
-router.resource('/units', UnitsController).as('units')
-router.resource('/stock-in', StockInsController).as('stock-in')
-router.resource('/stock-out', StockOutsController).as('stock-out')
-router.resource('/sales', SalesController).as('sales')
+router.group(() => {
+    router.get('/dashboard', [DashboardController, 'index']).as('dashboard')
+    router.resource('/suppliers', SuppliersController).as('suppliers')
+    router.resource('/customers', CustomersController).as('customers')
+    router.resource('/products', ProductsController).as('products')
+    router.resource('/categories', CategoriesController).as('categories')
+    router.resource('/units', UnitsController).as('units')
+    router.resource('/stock-in', StockInsController).as('stock-in')
+    router.resource('/stock-out', StockOutsController).as('stock-out')
+    router.resource('/sales', SalesController).as('sales')
+    router.post('/logout', [AuthController, 'logout']).as('logout')
+    router.resource('/user', UsersController).as('user')
+}).use(middleware.auth())
 router.resource('/login', AuthController).as('login')
-router.resource('/user', UsersController).as('user')
-

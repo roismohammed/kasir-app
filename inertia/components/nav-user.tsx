@@ -1,5 +1,6 @@
 "use client"
 
+import { Link, router, usePage } from "@inertiajs/react"
 import {
   BadgeCheck,
   Bell,
@@ -40,6 +41,9 @@ export function NavUser({
   }
 }) {
   const { isMobile } = useSidebar()
+  const handleLogout = () => {
+    router.post('logout')
+  }
 
   return (
     <SidebarMenu>
@@ -102,10 +106,10 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
-              <LogOut />
-              Log out
-            </DropdownMenuItem>
+            <DropdownMenuItem  onClick={handleLogout}>
+                <LogOut />
+                Log out
+              </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>

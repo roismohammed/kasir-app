@@ -1,31 +1,54 @@
+import User from '#models/user'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class AuthController {
   /**
-   * Display a list of resource
+   * Tampilkan halaman login
    */
   async index({ inertia }: HttpContext) {
     return inertia.render('auth/login')
   }
 
-  async check({ request, auth, session, inertia }: HttpContext) {
+  /**
+   * Proses login
+   */
+  async store({ request, auth, response, session }: HttpContext) {
+    try {
+      // Ambil data dari form
+      const { email, password } = request.only(['email', 'password'])
 
-    /**
-     * get data from form
-     */
-    const { email, password } = request.all()
+      // Verifikasi kredensial
+      const user = await User.verifyCredentials(email, password)
 
-    /**
-     * attemp auth
-     */
-    await auth.attempt(email, password)
+      // Login
+      await auth.use('web').login(user)
 
-    return inertia.visit('dashboard')
-
+      // Redirect ke dashboard
+      return response.redirect('/dashboard')
+    } catch (error) {
+      session.flash('error', 'Email atau password salah')
+      return response.redirect().back()
+    }
   }
 
-  async logout({ auth, inertia }:HttpContext) {
-    await auth.logout()
-    return inertia.visit('login.index')
+  /**
+   * Ambil data user yang sedang login
+   */
+  async me({ auth, response }: HttpContext) {
+    const user = auth.use('web').user!
+
+    return response.ok({
+      id: user.id,
+      name: user.name || user.name, // tergantung kolom database kamu
+      email: user.email,
+    })
+  }
+
+  /**
+   * Logout user
+   */
+  async logout({ auth, response }: HttpContext) {
+    await auth.use('web').logout()
+    return response.redirect('/login')
   }
 }
