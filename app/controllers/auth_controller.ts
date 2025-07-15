@@ -4,37 +4,28 @@ export default class AuthController {
   /**
    * Display a list of resource
    */
-  async index({inertia}: HttpContext) {
+  async index({ inertia }: HttpContext) {
     return inertia.render('auth/login')
   }
 
-  /**
-   * Display form to create a new record
-   */
-  async create({}: HttpContext) {}
+  async check({ request, auth, session, inertia }: HttpContext) {
 
-  /**
-   * Handle form submission for the create action
-   */
-  async store({ request }: HttpContext) {}
+    /**
+     * get data from form
+     */
+    const { email, password } = request.all()
 
-  /**
-   * Show individual record
-   */
-  async show({ params }: HttpContext) {}
+    /**
+     * attemp auth
+     */
+    await auth.attempt(email, password)
 
-  /**
-   * Edit individual record
-   */
-  async edit({ params }: HttpContext) {}
+    return inertia.visit('dashboard')
 
-  /**
-   * Handle form submission for the edit action
-   */
-  async update({ params, request }: HttpContext) {}
+  }
 
-  /**
-   * Delete record
-   */
-  async destroy({ params }: HttpContext) {}
+  async logout({ auth, inertia }:HttpContext) {
+    await auth.logout()
+    return inertia.visit('login.index')
+  }
 }
