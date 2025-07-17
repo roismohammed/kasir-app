@@ -23,7 +23,7 @@ const CraeteCustomers = () => {
             <div className="flex justify-between items-center">
                 <PageTitle title="Customers " subtitle="klik simpan untuk membuat data customers" />
             </div>
-            <div className='max-w-lg'>
+            <div className='max-w-lg mt-6'>
                 <FormCustomers method={'POST'} url='/customers' />
             </div>
         </AppLayout>

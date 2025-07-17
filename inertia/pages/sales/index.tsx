@@ -15,6 +15,7 @@ import {
 import AppLayout from "~/layouts/app-layout";
 import sajiku from '../../assets/image/makanan.jpeg'
 import { Head } from "@inertiajs/react";
+import React from "react";
 // Data untuk kategori menu
 const menuCategories = [
     { name: "Breakfast", icon: <Coffee size={20} />, stock: 12, active: false },
@@ -110,56 +111,58 @@ const breadcrumbs = [
 
 export default function CashierAppStatic() {
     return (
-        <AppLayout breadcrumbs={breadcrumbs}> 
-        <Head title="Penjualan" />
-            <div className="flex gap-4">
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Penjualan" />
+            <div className="flex flex-col md:flex-row gap-4 ">
+                {/* Main Content */}
                 <div className="flex-1 overflow-y-auto">
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
                         {menuCategories.map((category) => (
                             <button
                                 key={category.name}
-                                className={`flex items-center w-full px-4 py-3 rounded-lg shadow-sm transition-colors text-left ${category.active
-                                    ? "bg-purple-600 text-white"
-                                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+                                className={`flex flex-col sm:flex-row items-center justify-center sm:justify-start w-full px-2 sm:px-3 py-2 sm:py-3 rounded-lg shadow-sm transition-colors ${category.active
+                                        ? "bg-purple-600 text-white"
+                                        : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                                     }`}
                             >
-                                {/* Icon */}
-                                <div className={`mr-3 ${category.active ? "bg-white text-purple-700" : "bg-purple-700 text-white"} rounded-md p-2`}>
-                                    {category.icon}
+                                {/* Icon - Smaller on mobile */}
+                                <div className={`mb-1 sm:mb-0 sm:mr-2 md:mr-3 p-1 sm:p-2 rounded-md ${category.active
+                                        ? "bg-white text-purple-700"
+                                        : "bg-purple-700 text-white"
+                                    }`}>
+                                    {React.cloneElement(category.icon, {
+                                        className: "w-4 h-4 sm:w-5 sm:h-5"
+                                    })}
                                 </div>
 
-                                {/* Text */}
-                                <div className="flex flex-col">
-                                    <span className="text-sm font-medium">{category.name}</span>
-                                    <span
-                                        className={`text-xs ${category.active ? "text-purple-100" : "text-gray-500"
-                                            }`}
-                                    >
-                                        {category.stock} Menu In Stock
+                                {/* Text - Centered on mobile */}
+                                <div className="flex flex-col items-center sm:items-start">
+                                    <span className="text-xs sm:text-sm font-medium whitespace-nowrap">
+                                        {category.name}
+                                    </span>
+                                    <span className={`text-[10px] sm:text-xs ${category.active ? "text-purple-100" : "text-gray-500"
+                                        }`}>
+                                        {category.stock}
                                     </span>
                                 </div>
                             </button>
-
                         ))}
                     </div>
+                    <h2 className="text-xl font-semibold mb-4 text-gray-800">Lunch Menu</h2>
 
-                    <h2 className="text-xl font-semibold mb-4 text-gray-800">
-                        Lunch Menu
-                    </h2>
-
-                    {/* Menu Items Grid */}
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                    {/* Menu Items Grid - Changes on mobile */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                         {menuItems.map((item) => (
                             <div
                                 key={item.id}
-                                className="flex flex-col rounded-lg overflow-hidden shadow-md bg-white"
+                                className="flex flex-row md:flex-col rounded-lg overflow-hidden shadow-md bg-white py-0 px-2 lg:px-0 border border-slate-200 lg:p-0 "
                             >
                                 <img
                                     src={item.image}
                                     alt={item.name}
-                                    className="w-full h- object-cover"
+                                    className=" h-[100px] w-[130px] md:w-full md:h-auto object-cover flex-shrink-0 rounded-lg lg:rounded-tr-lg  mt-3 md:mt-0 lg:mt-0"
                                 />
-                                <div className="p-4 flex flex-col justify-between flex-grow">
+                                <div className="p-3 md:p-4 flex flex-col justify-between flex-grow">
                                     <div>
                                         <h3 className="font-semibold text-gray-800 mb-1">
                                             {item.name}
@@ -184,8 +187,9 @@ export default function CashierAppStatic() {
                     </div>
                 </div>
 
-                <div className="w-96 ">
-                    <div className=" flex flex-col sticky top-4 border rounded-lg shadow-lg bg-white">
+                {/* Desktop Sidebar */}
+                <div className="w-full md:w-96 hidden md:block">
+                    <div className="flex flex-col sticky top-4 border rounded-lg shadow-lg bg-white">
                         <div className="p-6 flex-1 flex flex-col overflow-hidden">
                             <h2 className="text-xl font-semibold mb-6 text-gray-800">Invoice</h2>
 
@@ -223,7 +227,7 @@ export default function CashierAppStatic() {
                         </div>
 
                         {/* Payment Summary */}
-                        <div className="p-6 border-t ">
+                        <div className="p-6 border-t">
                             <h3 className="font-semibold text-lg mb-4 text-gray-800">Payment Summary</h3>
                             <div className="space-y-2 text-sm text-gray-700">
                                 <div className="flex justify-between">
@@ -256,13 +260,45 @@ export default function CashierAppStatic() {
                                 </button>
                             </div>
 
-                            <button className="w-full h-12 bg-purple-600 text-white text-lg font-semibold hover:bg-purple-700 rounded-lg transition-colors ">
+                            <button className="w-full h-12 bg-purple-600 text-white text-lg font-semibold hover:bg-purple-700 rounded-lg transition-colors">
                                 Place An Order
                             </button>
                         </div>
                     </div>
                 </div>
 
+                {/* Mobile Bottom Panel */}
+                <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t shadow-lg p-4">
+                    {/* Mobile Invoice Items - Horizontal Scroll */}
+                    <div className="overflow-x-auto whitespace-nowrap pb-2">
+                        <div className="inline-flex space-x-3">
+                            {[1, 2].map((item) => (
+                                <div key={item} className="inline-flex items-center space-x-2 p-2 border rounded-lg">
+                                    <img
+                                        src={sajiku}
+                                        alt="Spicy Fried Chicken"
+                                        className="w-12 h-12 object-cover rounded-md"
+                                    />
+                                    <div>
+                                        <div className="font-medium">Spicy Fried Chicken</div>
+                                        <div className="text-xs text-gray-500">2x • $45.7</div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                    <div className="flex justify-between items-center mb-3">
+                        <div>
+                            <span className="text-gray-600">Total</span>
+                            <span className="font-bold text-lg ml-2">$136.4</span>
+                        </div>
+                        <button className="bg-purple-600 text-white px-6 py-3 rounded-lg font-semibold">
+                            Place Order
+                        </button>
+                    </div>
+
+
+                </div>
             </div>
         </AppLayout>
     );

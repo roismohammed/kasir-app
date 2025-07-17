@@ -11,7 +11,7 @@ const EditProduct = ({
 }: {
     categories: CategoriesProps[],
     unit: UnitsProps[],
-    product: ProductProps
+    product: ProductProps[]
 }) => {
 
 
@@ -33,7 +33,7 @@ const EditProduct = ({
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Product" />
             <PageTitle title="Edit Product" subtitle="Edit data product" />
-            <div className="max-w-lg">
+            <div className="max-w-lg mt-6">
                 <FormProduct method={"PUT"} url={`/products/${product.id}`} categories={categories} unit={unit} product={product} />
             </div>
         </AppLayout>

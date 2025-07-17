@@ -6,7 +6,7 @@ import { PageTitle } from "~/components/page-title";
 import { Button } from "~/components/ui/button";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "~/components/ui/dialog";
 import AppLayout from "~/layouts/app-layout";
-import { UserProps } from "~/types";
+import { RoleProps, UserProps } from "~/types";
 import FormUser from "./partials/form";
 import DeleteConfirmation from "~/components/delete-confirmation";
 import { PaginatedData } from "~/types/datatable";
@@ -28,7 +28,9 @@ const breadcrumbs = [
 
 
 const UserComponent = () => {
-  const { users } = usePage<{ users: PaginatedData<UserProps> }>().props
+  const { users, role: roles } = usePage<{ users: PaginatedData<UserProps>; role: PaginatedData<RoleProps> }>().props
+  console.log(roles);
+  
   const [isOpen, setIsOpen] = useState(false);
   const [editData, setEditData] = useState<UserProps | null>(null);
   const [confirm, setConfirm] = useState({ open: false, url: "" });
@@ -43,7 +45,13 @@ const UserComponent = () => {
       header: "Email",
     },
     {
-      accessorKey: "role",
+      accessorKey: "role.name",
+      cell: (info) => {
+        const value = info.getValue<string>();
+        return (
+          <span className="px-2 py-1 rounded-md bg-gray-300 text-gray-800">{value}</span>
+        );
+      },
       header: "Role",
     },
 
@@ -103,8 +111,8 @@ const UserComponent = () => {
         </Button>
       </div>
       <DataTable columns={columns} data={users.data} />
-      <Dialog open={isOpen} onOpenChange={setIsOpen} >
-        <DialogContent className="w-[450px]">
+      <Dialog  open={isOpen} onOpenChange={setIsOpen} >
+        <DialogContent className="w-[450px] -mt-40">
           <DialogHeader>
             <DialogTitle>{editData ? "Edit" : "Tambah"} User</DialogTitle>
           </DialogHeader>
@@ -112,6 +120,7 @@ const UserComponent = () => {
             method={editData ? "PUT" : "POST"}
             url={editData ? `/user/${editData.id}` : "/user"}
             user={editData}
+            roles={roles}
             onSuccess={() => {
               handleSuccess(editData ? "Berhasil diperbarui" : "Berhasil ditambahkan");
               setIsOpen(false);

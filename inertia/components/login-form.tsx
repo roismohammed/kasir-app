@@ -19,15 +19,15 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"div">) 
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} action={'/login'}>
         <Card className="overflow-hidden p-3 bg-white rounded-3xl">
           <CardContent className="grid p-0 md:grid-cols-2">
             <div className="p-6 md:p-8">
               <div className="flex flex-col gap-6">
                 <div className="flex flex-col items-center text-center">
-                  <h1 className="text-2xl font-bold">Welcome back</h1>
+                  <h1 className="text-2xl font-bold">Welcome to Payloop</h1>
                   <p className="text-muted-foreground text-balance">
-                    Login to your Acme Inc account
+                    Login to your Payloop account
                   </p>
                 </div>
 

@@ -36,7 +36,7 @@ export default function FormStockIn({
 }: FormStockInProps) {
   const { data, setData, post, errors, processing } = useForm({
     _method: method,
-    date: stockIn?.date ?? "",
+    date: stockIn?.date ?? new Date().toISOString().split('T')[0],
     product_id: stockIn?.product_id ?? "",
     supplier_id: stockIn?.supplier_id ?? "",
     description: stockIn?.description ?? "",
@@ -179,3 +179,4 @@ export default function FormStockIn({
     </form>
   );
 }
+

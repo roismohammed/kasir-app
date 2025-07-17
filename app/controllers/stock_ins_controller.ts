@@ -87,18 +87,29 @@ export default class StockInsController {
   async update({ params, request, session, response }: HttpContext) {
     try {
       const stockIn = await StockIn.findOrFail(params.id)
+      const oldQty = stockIn.quantity
       const data = await request.validateUsing(StockInValidator)
 
+      // Update stok produk
+      const product = await Product.findOrFail(data.product_id)
+
+      // Kurangi stok lama, tambahkan stok baru
+      product.stock = product.stock - oldQty + data.quantity
+      await product.save()
+
+      // Simpan perubahan data stock-in
       stockIn.merge(data)
       await stockIn.save()
 
       session.flash('success', 'Stock In berhasil diperbarui')
       return response.redirect('/stock-in')
     } catch (error) {
+      console.log(error)
       session.flash('error', 'Stock In gagal diperbarui')
       return response.redirect('/stock-in')
     }
   }
+
 
   /**
    * Delete record

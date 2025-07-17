@@ -21,7 +21,7 @@ const CreateSupplier = () => {
             <div className="flex justify-between items-center">
                 <PageTitle title="Create Supplier" subtitle="Create data supplier" />
             </div>
-            <div className='max-w-lg'>
+            <div className='max-w-lg mt-6'>
                 <FormSupplier method="POST" url="/suppliers" />
             </div>
         </AppLayout>

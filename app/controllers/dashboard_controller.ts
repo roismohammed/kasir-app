@@ -5,17 +5,24 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class DashboardController {
 
-async index({ inertia }: HttpContext) {
+async index({ inertia,auth }: HttpContext) {
   const [totalProduct, totalSupplier, totalCustomer] = await Promise.all([
     Product.query().count('* as total'),
     Supplier.query().count('* as total'),
     Customer.query().count('* as total'),
   ])
+
+  await auth.user?.load('role')
+
   return inertia.render('dashboard/index', {
+    auth: {
+      user: auth.user
+    },
     totalProduct: Number(totalProduct[0].total),
     totalSupplier: Number(totalSupplier[0].total),
     totalCustomer: Number(totalCustomer[0].total),
   })
 }
+
 
 }

@@ -19,6 +19,14 @@ import {
 import { AddInvoiceIcon, Home01Icon, Settings01FreeIcons, Tag01Icon, Trolley02Icon, UserAccountIcon, UserSearch01FreeIcons } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import logo from '../assets/image/logo2.png'
+import { usePage } from "@inertiajs/react"
+
+
+// const { auth } = usePage().props
+// const role = auth?.user?.role?.name
+// if (role !== 'admin') {
+//   settings = settings.filter((item: string) => item.name !== 'Users')
+// }
 const data = {
   user: {
     name: "shadcn",
@@ -38,7 +46,7 @@ const data = {
       icon: () => <HugeiconsIcon icon={Tag01Icon} />,
       isActive: true,
     },
-        {
+    {
       title: "Customers",
       url: "/customers",
       icon: () => <HugeiconsIcon icon={UserAccountIcon} />,
@@ -67,6 +75,7 @@ const data = {
       title: "Transactions",
       url: "#",
       icon: () => <HugeiconsIcon icon={AddInvoiceIcon} />,
+      active: true,
       items: [
         {
           title: "Sales",
@@ -84,7 +93,7 @@ const data = {
           title: "Stock Opname",
           url: "#",
         },
-         {
+        {
           title: "Stock Return",
           url: "#",
         },
@@ -106,14 +115,14 @@ const data = {
       ],
     },
   ],
-   settings: [
+  settings: [
     {
-      title: "User / Employes",
-      url: "/user",
+      title: "Users",
+      url: "/users",
       icon: () => <HugeiconsIcon icon={UserSearch01FreeIcons} className="w-10 h-10" />,
       isActive: true,
     },
-      {
+    {
       title: "Pengaturan",
       url: "/dashboard",
       icon: () => <HugeiconsIcon icon={Settings01FreeIcons} className="w-10 h-10" />,
@@ -124,6 +133,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+
   return (
     <Sidebar collapsible="icon" {...props} >
       <SidebarHeader>
@@ -132,7 +142,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
                 <div className="bg-sidebar- bg-muted text-sidebar-primary-foreground flex aspect-square size-10 items-center justify-center rounded-lg">
-                  <img src={logo}/>
+                  <img src={logo} />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
                   <span className="truncate font-medium">PayLoop</span>

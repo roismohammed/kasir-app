@@ -73,7 +73,7 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
           <main className="flex-1 overflow-hidden">
             <div className="h-full overflow-y-auto overflow-x-hidden">
-              <div className="min-h-full p-4 sm:p-6">
+              <div className="min-h-full p-4 ">
                 {children}
               </div>
             </div>

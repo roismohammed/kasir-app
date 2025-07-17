@@ -22,8 +22,8 @@ const EditStockIn = ({ stockIn, supplier, products }: { stockIn: StockInProps, s
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Stock In" />
-            <PageTitle title="Edit Stock In" subtitle="Edit data stock in" />
-            <div className="max-w-lg">
+            <PageTitle title="Edit Stock In" subtitle="Edit data stock in yang di input oleh bagian logistik secara profesional" />
+            <div className="max-w-lg mt-4">
                 <FormStockIn
                     method="PUT"
                     url={`/stock-in/${stockIn.id}`}

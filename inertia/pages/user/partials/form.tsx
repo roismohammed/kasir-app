@@ -4,7 +4,7 @@ import { toast } from "sonner";
 import TextInput from "~/components/form/text-input";
 import { Button } from "~/components/ui/button";
 import SelectInput from "~/components/form/select-input";
-import TextareaInput from "~/components/form/textarea-input";
+import { RoleProps } from "~/types";
 
 interface UserProps {
     url: string;
@@ -14,19 +14,22 @@ interface UserProps {
         email?: string;
         password?: string;
         password_confirmation?: string;
-        // roles?: string[];
+        role_id?: string[];
     };
+    roles: RoleProps[]
 }
 
-export default function FormUser({ url, method, user }: UserProps) {
+export default function FormUser({ url, method, user, roles }: UserProps) {
     const { data, setData, post, errors, processing } = useForm({
         _method: method,
         name: user?.name || "",
         email: user?.email || "",
         password: user?.password || "",
         password_confirmation: user?.password_confirmation || "",
-        // roles: user?.roles || [],
+        role_id: user?.role_id || [],
     });
+    console.log(data);
+
 
     const submit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -82,31 +85,20 @@ export default function FormUser({ url, method, user }: UserProps) {
                     error={errors.password}
                 />
             </div>
-            <div>
-                <TextInput
-                    label="Konfirmasi Password"
-                    type="password"
-                    // value={data.password_confirmation}
-                    // onChange={(e) => setData("password_confirmation", e.currentTarget.value)}
-                    placeholder=" konfirmasi password "
-                    // error={errors.password_confirmation}
-                />
-            </div>
-            {/*
+
             <div>
                 <SelectInput
-                    label="Pilih Role"
-                    options={[
-                        { value: "admin", label: "Admin" },
-                        { value: "user", label: "User" }
-                    ]}
-                    value={data.roles}
-                    onSelect={(value) => setData("roles", value)}
+                    label="Level Users"
+                    value={data.role_id}
+                    onSelect={(value) => setData("role_id", value)}
+                    options={roles.map(role => ({
+                        label: role.name,
+                        value: role.id.toString()
+                    }))}
                     placeholder="Pilih role"
-                    multiple
-                    errors={errors.roles}
+                    errors={errors.role_id}
                 />
-            </div> */}
+            </div>
 
             <div className="flex justify-end gap-2">
                 <Button variant={"outline"} disabled={processing}>

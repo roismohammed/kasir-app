@@ -4,14 +4,10 @@ import Navbar from "~/components/navbar";
 
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div>
-      <Navbar />
-      <div className="pt-">
-        {children}
-      </div>
-      <div className="-mt-">
-        <Footer />
-      </div>
+    <div className="px-0">
+      {/* <Navbar /> */}
+       {children}
+        {/* <Footer /> */}
     </div>
   )
 }

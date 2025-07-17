@@ -26,7 +26,7 @@ export default function FormStockOut({
 }: FormStockOutProps) {
   const { data, setData, post, errors, processing } = useForm({
     _method: method,
-    date: stockOut?.date ?? "",
+    date: stockOut?.date ?? new Date().toISOString().split('T')[0],
     product_id: stockOut?.product_id ?? "",
     supplier_id: stockOut?.supplier_id ?? "",
     description: stockOut?.description ?? "",

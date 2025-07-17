@@ -9,12 +9,13 @@ export default function Home() {
 
   return (
     <GuestLayout>
-      <div className="min-h-screen  bg-gradient-to-b from-gray-50 to-gray-100">
-        <Head title="SwiftTill" />
+      <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 overflow-x-hidden">
+
+        <Head title="Payloop" />
         {/* Hero Section */}
         <section className="py-20 px-6 max-w-6xl mx-auto text-center">
           <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold  mb-6 drop-shadow-xl animate-fade-in-up">
-            Revolusi Sistem Kasir Anda dengan <span className="text-orange-600">SwiftTill</span>
+            Revolusi Sistem Kasir Anda dengan <span className="text-purple-600">Payloop</span>
           </h1>
           <p className="text-xl text-gray-600 mb-10 max-w-3xl mx-auto">
             Solusi Point of Sale modern yang cepat, intuitif, dan penuh fitur untuk mengubah cara Anda berbisnis.
@@ -30,14 +31,14 @@ export default function Home() {
           <div className="mt-16 rounded-xl overflow-hidden shadow-2xl border border-gray-200">
             <img
               src={dashboardPng}
-              alt="SwiftTill Dashboard"
+              alt="Payloop Dashboard"
               className="w-full h-auto object-cover"
             />
           </div>
         </section>
 
         {/* Features Section */}
-        <section id="features" className="py-20 px-10 bg-white">
+        {/* <section id="features" className="py-20 px-10 bg-white">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-600 mb-4">
@@ -141,13 +142,13 @@ export default function Home() {
               </Card>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Demo Video Section */}
-        <section className="py-20 px-6 bg-gradient-to-br from-gray-50 to-slate-50">
+        {/* <section className="py-20 px-6 bg-gradient-to-br from-gray-50 to-slate-50">
           <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-3xl font-bold text-gray-900 mb-6">
-              Lihat SwiftTill Pro dalam Aksi
+              Lihat Payloop Pro dalam Aksi
             </h2>
             <p className="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
               Sistem POS yang mengubah cara ribuan bisnis beroperasi
@@ -166,10 +167,10 @@ export default function Home() {
               </div>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Pricing Section */}
-        <section id="pricing" className="py-20 px-6 bg-white">
+        {/* <section id="pricing" className="py-20 px-6 bg-white">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-600 mb-4">
@@ -275,10 +276,10 @@ export default function Home() {
               </Card>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Testimonials */}
-        <section id="testimonials" className="py-20 px-6 bg-gray-50">
+        {/* <section id="testimonials" className="py-20 px-6 bg-gray-50">
           <div className="max-w-7xl mx-auto">
             <div className="text-center mb-16">
               <span className="inline-block px-3 py-1 text-sm font-medium rounded-full bg-blue-100 text-blue-600 mb-4">
@@ -288,7 +289,7 @@ export default function Home() {
                 Dipercaya oleh Ribuan Bisnis
               </h2>
               <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                Dengarkan apa kata mereka tentang SwiftTill Pro
+                Dengarkan apa kata mereka tentang Payloop Pro
               </p>
             </div>
 
@@ -303,7 +304,7 @@ export default function Home() {
                     </div>
                   </div>
                   <p className="text-gray-600">
-                    "Transaksi jadi 3x lebih cepat dengan SwiftTill Pro. Sistem inventaris real-time membantu kami mengurangi waste bahan baku hingga 20%."
+                    "Transaksi jadi 3x lebih cepat dengan Payloop Pro. Sistem inventaris real-time membantu kami mengurangi waste bahan baku hingga 20%."
                   </p>
                   <div className="flex mt-4">
                     {[...Array(5)].map((_, i) => (
@@ -363,15 +364,15 @@ export default function Home() {
               </Card>
             </div>
           </div>
-        </section>
+        </section> */}
 
         {/* Final CTA */}
-        <div className="px-30 pb-8 mt-10">
+        {/* <div className="px-30 pb-8 mt-10">
           <section className="py-20 px-6 bg-gradient-to-r rounded-3xl from-orange-200 to-orange-400 text-white mb-10">
             <div className="max-w-4xl mx-auto text-center">
               <h2 className="text-3xl font-bold mb-6">Siap Mengubah Bisnis Anda?</h2>
               <p className="text-xl mb-10 opacity-90">
-                Bergabung dengan 5.000+ bisnis yang sudah menggunakan SwiftTill Pro
+                Bergabung dengan 5.000+ bisnis yang sudah menggunakan Payloop Pro
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4">
                 <Button size="lg" className="px-8 bg-white  hover:bg-white/90">
@@ -383,7 +384,7 @@ export default function Home() {
               </div>
             </div>
           </section>
-        </div>
+        </div> */}
 
       
       </div>

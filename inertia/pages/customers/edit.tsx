@@ -22,7 +22,7 @@ const EditCustomers = ({ customers }: { customers: CustomersProps }) => {
             <div className="flex justify-between items-center">
                 <PageTitle title="Customers " subtitle="klik simpan untuk membuat data customers" />
             </div>
-            <div className='max-w-lg'>
+            <div className='max-w-lg mt-6'>
                 <FormCustomers method={'PUT'} url={`/customers/${customers?.id}`} customers={customers} />
             </div>
         </AppLayout>

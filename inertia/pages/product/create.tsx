@@ -26,7 +26,7 @@ const CreateCategory = () => {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Product"/>
             <PageTitle title="Create Product" subtitle="Create data product"/>
-            <div className="max-w-lg ">
+            <div className="max-w-lg mt-6">
                 <FormProduct method={'POST'} url={'/products'} categories={categories} unit={units}/>
             </div>
         </AppLayout>

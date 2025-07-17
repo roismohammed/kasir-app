@@ -23,7 +23,7 @@ const EditSupplier = ({ supplier }:{ supplier: SupplierProps}) => {
       <div className="flex justify-between items-center">
         <PageTitle title="Edit Supplier" subtitle="Edit data supplier" />
       </div>
-      <div className='max-w-lg'>
+      <div className='max-w-lg mt-6'>
         <FormSupplier
           method="PUT"
           url={`/suppliers/${supplier?.id}`}

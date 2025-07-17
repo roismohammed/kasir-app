@@ -1,3 +1,4 @@
+import Role from '#models/role'
 import User from '#models/user'
 import { UserValidator } from '#validators/user'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -6,8 +7,10 @@ export default class UsersController {
    * Display a list of resource
    */
   public async index({ inertia }: HttpContext) {
+    const role = await Role.all()
     return inertia.render('user/index',{
-      users: await User.query().paginate(1,10)
+      users: await User.query().preload('role').paginate(1,10),
+      role
     })
   }
 

@@ -91,9 +91,21 @@ export default class ProductsController {
   public async destroy({ params, response, session }: HttpContext) {
     const product = await Product.findOrFail(params.id)
 
+    // Ambil semua data stock-in yang terkait dengan produk ini
+    const stockIns = await product.related('stockIns').query()
+
+    // Hitung total quantity dari stock-in
+    const totalStockIn = stockIns.reduce((total, stockIn) => total + stockIn.quantity, 0)
+
+    // Kurangi total dari stok sekarang
+    product.stock -= totalStockIn
+    await product.save()
+
+    // Setelah stok dikurangi, baru produk dihapus
     await product.delete()
 
-    session.flash('success', 'Product berhasil dihapus')
+    session.flash('success', 'Product berhasil dihapus & stok dikurangi')
     return response.redirect('/products')
   }
+
 }

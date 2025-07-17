@@ -82,3 +82,7 @@ export interface UserProps {
     password_confirmation?: string;
     roles?: string[];
 }
+export interface RoleProps{
+    id: number;
+    name: string;
+}

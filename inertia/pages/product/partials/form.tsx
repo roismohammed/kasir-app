@@ -7,7 +7,7 @@ import SelectInput from "~/components/form/select-input";
 import { CategoriesProps, UnitsProps } from "~/types";
 import CurrencyInput from 'react-currency-input-field';
 import { Label } from "~/components/ui/label";
-interface ProductProps {
+interface ProductFormProps {
     url: string;
     method: "POST" | "PUT";
     product?: {
@@ -26,7 +26,7 @@ interface ProductProps {
     unit: UnitsProps[];
 }
 
-export default function FormProduct({ url, method, product, onSuccess, categories, unit }: ProductProps) {
+export default function FormProduct({ url, method, product, onSuccess, categories, unit }: ProductFormProps) {
     const { data, setData, post, errors, processing } = useForm({
         _method: method,
         image: product?.image || "",

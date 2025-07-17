@@ -38,10 +38,10 @@ export default class Product extends BaseModel {
   declare unit: BelongsTo<typeof Unit>
 
   @hasMany(() => StockIn)
-  public stockIns: HasMany<typeof StockIn>
+  declare stockIns: HasMany<typeof StockIn>
 
   @hasMany(() => StockOut)
-  public stockOuts: HasMany<typeof StockOut>
+  declare stockOuts: HasMany<typeof StockOut>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
