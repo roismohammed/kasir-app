@@ -22,7 +22,9 @@ export default class SalesController {
       productsQuery.where('category_id', selectedCategoryId)
     }
     const products = await productsQuery.exec()
-    const categories = await Category.all()
+    const categories = await Category.query().preload('products', (product) => {
+      product.select('id', 'name', 'stock').where('stock', '>', 0)
+    })
     return inertia.render('sales/index', { sales, products, categories })
   }
 

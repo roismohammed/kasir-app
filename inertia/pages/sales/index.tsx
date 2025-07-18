@@ -20,6 +20,7 @@ import AppLayout from "~/layouts/app-layout";
 import sajiku from '../../assets/image/makanan.jpeg'
 import { Head, router, usePage } from '@inertiajs/react';
 import { CategoriesProps, ProductProps, SalesProps } from "~/types";
+import { useEffect, useState } from "react";
 
 
 const breadcrumbs = [
@@ -38,7 +39,46 @@ const breadcrumbs = [
 ];
 
 export default function CashierAppStatic() {
-    const { sales, products, categories } = usePage<{ sales: SalesProps, products: ProductProps, categories: CategoriesProps }>().props
+    const { sales, products, categories } = usePage<{
+        sales: SalesProps,
+        products: ProductProps,
+        categories: CategoriesProps
+    }>().props
+    const [activeCategory, setActiveCategory] = useState<number | null>(null);
+    const [cartItems, setCartItems] = useState<ProductProps[]>([])
+    useEffect(() => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryId = urlParams.get('category_id');
+        if (categoryId) {
+            setActiveCategory(parseInt(categoryId));
+        }
+    }, []);
+
+    const isActive = (id: number) => {
+        return activeCategory === id;
+    }
+
+    const handleAddToCart = (product: ProductProps) => {
+        const existing = cartItems.find(item => item.id === product.id);
+
+        if (existing) {
+            setCartItems(cartItems.map(item =>
+                item.id === product.id
+                    ? { ...item, quantity: (item.quantity || 1) + 1 }
+                    : item
+            ));
+        } else {
+            setCartItems([...cartItems, { ...product, quantity: 1 }]);
+        }
+    };
+
+    const handleRemove = (id: number) => {
+        setCartItems(cartItems.filter((item) => item.id !== id));
+    }
+
+    const handleDecrement = (id: number) => {
+        setCartItems(cartItems.map(item => item.id === id ? { ...item, quantity: (item.quantity || 1) - 1 } : item))
+    }
 
 
     return (
@@ -52,18 +92,18 @@ export default function CashierAppStatic() {
                             <button
                                 key={categories.id}
                                 onClick={() => {
-                                    router.visit(`/sales?category_id=${categories.id}`)
+                                    router.visit(`/sales?category_id=${categories.id}`,{
+                                        preserveState: true,
+                                        preserveScroll: true,
+                                    })
                                 }}
-                                className={`flex flex-col sm:flex-row cursor-pointer items-center justify-center sm:justify-start w-full px-1 sm:px-2 py-2 sm:py-2 rounded-lg shadow-sm transition-colors ${categories.active
-                                    ? "bg-purple-600 text-white"
-                                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+                                className={`flex flex-col sm:flex-row cursor-pointer items-center justify-center sm:justify-start w-full px-1 sm:px-2 py-2 sm:py-2 rounded-lg shadow-sm transition-colors ${isActive(categories.id) ? "bg-white text-purple-600 border border-purple-600" : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                                     }`}
                             >
                                 {/* Text - Centered on mobile */}
                                 <div className="flex flex-col items-center sm:items-start">
                                     <span className="text-xs sm:text-sm flex gap-2 font-medium whitespace-nowrap">
-
-                                        <div className="bg-purple-600 text-white rounded-md p-1">
+                                        <div className={`bg-purple-600 text-white rounded-md p-1 ${isActive(categories.id) ? " bg-text-purple-600" : ""}`}>
                                             {(() => {
                                                 switch (categories.name.toLowerCase()) {
                                                     case "makanan":
@@ -81,7 +121,7 @@ export default function CashierAppStatic() {
                                     </span>
                                     <span className={`text-[10px] sm:text-xs ${categories.active ? "text-purple-100" : "text-gray-500"
                                         }`}>
-                                        {products.stock}
+                                        {categories.stock}
                                     </span>
                                 </div>
                             </button>
@@ -118,6 +158,7 @@ export default function CashierAppStatic() {
                                                 </span>
                                                 <button
                                                     className="w-8 h-8 rounded-full shadow-md cursor-pointer bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center transition-colors"
+                                                    onClick={() => handleAddToCart(item)}
                                                 >
                                                     <Plus size={16} />
                                                 </button>
@@ -126,8 +167,8 @@ export default function CashierAppStatic() {
                                     </div>
                                 ))
                             ) : (
-                                <div className="p-4 w-full flex flex-col items-center justify-center">
-                                    <h3 className="font-semibold text-gray-800 mb-1 text-center">
+                                <div className="p-4 w-full flex flex-col items-center justify-center border border-slate-200 ">
+                                    <h3 className="font-semibold text-gray-800 mb-1 text-center self-center">
                                         Belum ada produk
                                     </h3>
                                 </div>
@@ -141,84 +182,51 @@ export default function CashierAppStatic() {
                     <div className="flex flex-col sticky top-4 border rounded-lg shadow-lg bg-white">
                         <div className="p-6 flex-1 flex flex-col overflow-hidden">
                             <h2 className="text-xl font-semibold mb-6 text-gray-800">Invoice</h2>
-
-                            {/* Scrollable Invoice Items */}
-                            <div className="flex-1 overflow-y-auto pr-2">
-                                {/* Invoice Items */}
-
-                                <div className="flex items-start space-x-3 mb-4 p-2 rounded-lg border border-purple-600/50">
-                                    <img
-                                        src={sajiku}
-                                        alt="Spicy Fried Chicken"
-                                        className="w-16 h-16 object-cover rounded-md flex-shrink-0"
-                                    />
-                                    <div className="flex-grow">
-                                        <h3 className="font-medium text-gray-800">Spicy Fried Chicken</h3>
-                                        <div className="flex items-center justify-between mt-3">
-                                            <div className="flex items-center space-x-2">
-                                                <button
-                                                    className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-
-                                                >
-                                                    <Minus size={16} />
-                                                </button>
-                                                <span className="text-xs text-gray-500">2</span>
-                                                <button
-                                                    className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-
-                                                >
-                                                    <PlusIcon size={16} />
-                                                </button>
+                            <div className="flex-1 pr-2 max-h-[280px] overflow-y-scroll">
+                                {cartItems.length > 0 ? (
+                                    cartItems.map((product) => (
+                                        <div key={product.id} className="flex items-start space-x-3 mb-4 p-2 rounded-lg border border-purple-600/50">
+                                            <img
+                                                src={`/storage/products/${product.image}`}
+                                                alt={product.name}
+                                                className="w-16 h-16 object-cover rounded-md flex-shrink-0"
+                                            />
+                                            <div className="flex-grow">
+                                                <h3 className="font-medium text-gray-800">{product.name}</h3>
+                                                <div className="flex items-center justify-between mt-3">
+                                                    <div className="flex items-center space-x-2">
+                                                        <button
+                                                            onClick={() => handleDecrement(product.id)}
+                                                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                                                        >
+                                                            <Minus size={16} />
+                                                        </button>
+                                                        <span className="text-xs text-gray-500">{product.quantity}</span>
+                                                        <button
+                                                            onClick={() => handleAddToCart(product)}
+                                                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                                                        >
+                                                            <PlusIcon size={16} />
+                                                        </button>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleRemove(product.id)}
+                                                        className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                                                    >
+                                                        <Trash size={16} className="text-red-500" />
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div>
-                                                <button
-                                                    className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-
-                                                >
-                                                    <Trash size={16} className="text-red-500" />
-                                                </button>
-                                            </div>
+                                            <span className="font-semibold text-gray-900">
+                                                ${(product.price * (product.quantity || 1)).toFixed(2)}
+                                            </span>
                                         </div>
+                                    ))
+                                ) : (
+                                    <div className="h-full flex items-center justify-center">
+                                        <div className="text-gray-400 text-sm text-center">Belum ada item di keranjang</div>
                                     </div>
-                                    <span className="font-semibold text-gray-900">$45.7</span>
-                                </div>
-
-                                <div className="flex items-start space-x-3 mb-4 p-2 rounded-lg border border-purple-600/50">
-                                    <img
-                                        src={sajiku}
-                                        alt="Spicy Fried Chicken"
-                                        className="w-16 h-16 object-cover rounded-md flex-shrink-0"
-                                    />
-                                    <div className="flex-grow">
-                                        <h3 className="font-medium text-gray-800">Spicy Fried Chicken</h3>
-                                        <div className="flex items-center justify-between mt-3">
-                                            <div className="flex items-center space-x-2">
-                                                <button
-                                                    className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-
-                                                >
-                                                    <Minus size={16} />
-                                                </button>
-                                                <span className="text-xs text-gray-500">2</span>
-                                                <button
-                                                    className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-
-                                                >
-                                                    <PlusIcon size={16} />
-                                                </button>
-                                            </div>
-                                            <div>
-                                                <button
-                                                    className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-
-                                                >
-                                                    <Trash size={16} className="text-red-500" />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <span className="font-semibold text-gray-900">$45.7</span>
-                                </div>
+                                )}
                             </div>
                         </div>
 
