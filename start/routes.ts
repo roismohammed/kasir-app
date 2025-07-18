@@ -25,6 +25,6 @@ router.group(() => {
     router.resource('/sales', SalesController).as('sales')
     router.post('/logout', [AuthController, 'logout']).as('logout')
     router.resource('/users', UsersController).as('users').middleware(['auth', 'role:admin'])
-}).use(middleware.auth())
+})
 router.get('/login', [AuthController, 'index']).as('login')
 router.post('/login', [AuthController, 'store']).as('login.store')  

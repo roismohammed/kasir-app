@@ -86,3 +86,16 @@ export interface RoleProps{
     id: number;
     name: string;
 }
+
+export interface SalesProps {
+    id: number;
+    date: number
+    product_id: number;
+    customer_id: number;
+    payment_type: string
+    discount: number;
+    grand_total: number;
+    total_price: number;
+    tax: number;
+    notes: string
+}
