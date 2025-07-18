@@ -70,15 +70,15 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
           </div>
         </header>
 
-        <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-          <main className="flex-1 overflow-hidden">
-            <div className="h-full overflow-y-auto overflow-x-hidden">
-              <div className="min-h-full p-4 ">
+        <main className="flex-1 overflow-hidden">
+          <div className="h-full overflow-y-auto overflow-x-hidden">
+            <div className="min-h-full p-4 ">
+              <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
                 {children}
-              </div>
+              </ThemeProvider>
             </div>
-          </main>
-        </ThemeProvider>
+          </div>
+        </main>
       </SidebarInset>
       <Toaster position="top-center" richColors />
     </SidebarProvider>

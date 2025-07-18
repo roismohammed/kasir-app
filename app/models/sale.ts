@@ -1,9 +1,38 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import Customer from './customer.js'
+import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 
 export default class Sale extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
+
+  @column()
+  declare invoice_number: string
+
+  @column()
+  declare customer_id: number
+
+  @column()
+  declare discount: number
+
+  @column()
+  declare grand_total: number
+
+  @column()
+  declare total_price: number
+
+  @column()
+  declare tax: number
+
+  @column()
+  declare payment_type: string
+
+  @column()
+  declare notes: string
+
+  @belongsTo(() => Customer)
+  declare customer: BelongsTo<typeof Customer>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

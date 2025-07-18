@@ -120,7 +120,7 @@ export default function CashierAppStatic() {
                         {menuCategories.map((category) => (
                             <button
                                 key={category.name}
-                                className={`flex flex-col sm:flex-row items-center justify-center sm:justify-start w-full px-2 sm:px-3 py-2 sm:py-3 rounded-lg shadow-sm transition-colors ${category.active
+                                className={`flex flex-col sm:flex-row items-center justify-center sm:justify-start w-full px-1 sm:px-2 py-2 sm:py-2 rounded-lg shadow-sm transition-colors ${category.active
                                         ? "bg-purple-600 text-white"
                                         : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                                     }`}
