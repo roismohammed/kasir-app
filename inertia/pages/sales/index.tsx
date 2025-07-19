@@ -2,15 +2,9 @@ import {
     Utensils,
     BookOpen,
     Plus,
-    Sandwich,
-    Soup,
-    Coffee,
     GlassWater,
-    Beef,
-    Carrot,
     CreditCard,
     Wallet,
-    Cake,
     Minus,
     Trash,
     PlusIcon,
@@ -60,11 +54,11 @@ export default function CashierAppStatic() {
 
     const handleAddToCart = (product: ProductProps) => {
         const existing = cartItems.find(item => item.id === product.id);
-
         if (existing) {
+            const quantity = existing ? existing.quantity + 1 : 1;
             setCartItems(cartItems.map(item =>
                 item.id === product.id
-                    ? { ...item, quantity: (item.quantity || 1) + 1 }
+                    ? { ...item, quantity }
                     : item
             ));
         } else {
@@ -80,6 +74,16 @@ export default function CashierAppStatic() {
         setCartItems(cartItems.map(item => item.id === id ? { ...item, quantity: (item.quantity || 1) - 1 } : item))
     }
 
+    useEffect(() => {
+        const storedCart = localStorage.getItem('cartItems');
+        if (storedCart) {
+            setCartItems(JSON.parse(storedCart));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem('cartItems', JSON.stringify(cartItems));
+    }, [cartItems]);
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -92,10 +96,7 @@ export default function CashierAppStatic() {
                             <button
                                 key={categories.id}
                                 onClick={() => {
-                                    router.visit(`/sales?category_id=${categories.id}`,{
-                                        preserveState: true,
-                                        preserveScroll: true,
-                                    })
+                                    router.visit(`/sales?category_id=${categories.id}`)
                                 }}
                                 className={`flex flex-col sm:flex-row cursor-pointer items-center justify-center sm:justify-start w-full px-1 sm:px-2 py-2 sm:py-2 rounded-lg shadow-sm transition-colors ${isActive(categories.id) ? "bg-white text-purple-600 border border-purple-600" : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                                     }`}
@@ -133,7 +134,7 @@ export default function CashierAppStatic() {
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             {products.length > 0 ? (
-                                products.map((item) => (
+                                products.map((item: any) => (
                                     <div
                                         key={item.id}
                                         className="flex flex-row md:flex-col rounded-lg overflow-hidden shadow-md bg-white py-0 px-2 lg:px-0 border border-slate-200 lg:p-0 "
@@ -179,9 +180,9 @@ export default function CashierAppStatic() {
 
                 {/* Desktop Sidebar */}
                 <div className="w-full md:w-96 hidden md:block">
-                    <div className="flex flex-col sticky top-4 border rounded-lg shadow-lg bg-white">
+                    <div className="flex flex-col h-[calc(92vh-32px)] border rounded-lg shadow-lg bg-white sticky top-4">
                         <div className="p-6 flex-1 flex flex-col overflow-hidden">
-                            <h2 className="text-xl font-semibold mb-6 text-gray-800">Invoice</h2>
+                            <h2 className="text-xl font-semibold mb-6 text-gray-800">Order Items ({cartItems.length})</h2>
                             <div className="flex-1 pr-2 max-h-[280px] overflow-y-scroll">
                                 {cartItems.length > 0 ? (
                                     cartItems.map((product) => (
@@ -223,7 +224,7 @@ export default function CashierAppStatic() {
                                         </div>
                                     ))
                                 ) : (
-                                    <div className="h-full flex items-center justify-center">
+                                    <div className="h-full flex items-center justify-center min-h-[280px]">
                                         <div className="text-gray-400 text-sm text-center">Belum ada item di keranjang</div>
                                     </div>
                                 )}

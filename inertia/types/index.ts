@@ -52,6 +52,7 @@ export interface ProductProps {
     id: number;
     barcode: string;
     image:string
+    quantity: number;
     name: string;
     price: number;
     unit_id: number;
