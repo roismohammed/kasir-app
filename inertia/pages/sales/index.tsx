@@ -15,6 +15,7 @@ import sajiku from '../../assets/image/makanan.jpeg'
 import { Head, router, usePage } from '@inertiajs/react';
 import { CategoriesProps, ProductProps, SalesProps } from "~/types";
 import { useEffect, useState } from "react";
+import { Input } from "~/components/ui/input";
 
 
 const breadcrumbs = [
@@ -36,7 +37,7 @@ export default function CashierAppStatic() {
     const { sales, products, categories } = usePage<{
         sales: SalesProps,
         products: ProductProps,
-        categories: CategoriesProps
+        categories: CategoriesProps[]
     }>().props
     const [activeCategory, setActiveCategory] = useState<number | null>(null);
     const [cartItems, setCartItems] = useState<ProductProps[]>([])
@@ -85,12 +86,23 @@ export default function CashierAppStatic() {
         localStorage.setItem('cartItems', JSON.stringify(cartItems));
     }, [cartItems]);
 
+    const subTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
+    const pajak = subTotal - subTotal / 1.1;
+    const grandTotal = subTotal;
+
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
+    }
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Penjualan" />
             <div className="flex flex-col md:flex-row gap-4 ">
                 {/* Main Content */}
                 <div className="flex-1 overflow-y-auto">
+                    {/* <div className="mb-4">
+                        <Input placeholder="Cari product di sini.."  className="shadow-none"/>
+                    </div> */}
                     <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
                         {categories.map((categories: CategoriesProps) => (
                             <button
@@ -130,6 +142,7 @@ export default function CashierAppStatic() {
                     </div>
                     <h2 className="text-lg font-semibold mb-3 text-gray-800">Lunch Menu</h2>
 
+
                     {/* Menu Items Grid - Changes on mobile */}
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
@@ -155,7 +168,7 @@ export default function CashierAppStatic() {
                                             </div>
                                             <div className="flex items-center justify-between mt-auto">
                                                 <span className="font-bold text-gray-900">
-                                                    ${item.price}
+                                                    {formatPrice(item.price)}
                                                 </span>
                                                 <button
                                                     className="w-8 h-8 rounded-full shadow-md cursor-pointer bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center transition-colors"
@@ -180,13 +193,13 @@ export default function CashierAppStatic() {
 
                 {/* Desktop Sidebar */}
                 <div className="w-full md:w-96 hidden md:block">
-                    <div className="flex flex-col h-[calc(92vh-32px)] border rounded-lg shadow-lg bg-white sticky top-4">
+                    <div className="flex flex-col h-[calc(92vh-32px)] border border-gray-200 rounded-lg shadow-lg bg-white sticky top-4">
                         <div className="p-6 flex-1 flex flex-col overflow-hidden">
                             <h2 className="text-xl font-semibold mb-6 text-gray-800">Order Items ({cartItems.length})</h2>
                             <div className="flex-1 pr-2 max-h-[280px] overflow-y-scroll">
                                 {cartItems.length > 0 ? (
                                     cartItems.map((product) => (
-                                        <div key={product.id} className="flex items-start space-x-3 mb-4 p-2 rounded-lg border border-purple-600/50">
+                                        <div key={product.id} className="flex items-start space-x-3 mb-4 p-2 rounded-lg border  border-purple-600/50">
                                             <img
                                                 src={`/storage/products/${product.image}`}
                                                 alt={product.name}
@@ -219,7 +232,7 @@ export default function CashierAppStatic() {
                                                 </div>
                                             </div>
                                             <span className="font-semibold text-gray-900">
-                                                ${(product.price * (product.quantity || 1)).toFixed(2)}
+                                                {formatPrice(product.price * (product.quantity || 1))}
                                             </span>
                                         </div>
                                     ))
@@ -233,19 +246,19 @@ export default function CashierAppStatic() {
 
                         {/* Payment Summary */}
                         <div className="p-6 border-t">
-                            <h3 className="font-semibold text-lg mb-4 text-gray-800">Payment Summary</h3>
-                            <div className="space-y-2 text-sm text-gray-700">
+                            {/* <h3 className="font-semibold text-lg mb-4 text-gray-800 ">Payment Summary</h3> */}
+                            <div className="space-y-2 text-sm text-gray-700 bg-muted p-4 rounded-xl">
                                 <div className="flex justify-between">
                                     <span>Sub Total</span>
-                                    <span>$131.2</span>
+                                    <span>{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(subTotal)}</span>
                                 </div>
                                 <div className="flex justify-between">
                                     <span>Tax</span>
                                     <span>$5.2</span>
                                 </div>
-                                <div className="flex justify-between font-bold text-lg text-gray-900 mt-4">
+                                <div className="flex justify-between font-bold text-lg text-gray-900 mt-4 border-t border-gray-300 pt-4">
                                     <span>Total Payment</span>
-                                    <span>$136.4</span>
+                                    <span>{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal)}</span>
                                 </div>
                             </div>
 
@@ -301,8 +314,6 @@ export default function CashierAppStatic() {
                             Place Order
                         </button>
                     </div>
-
-
                 </div>
             </div>
         </AppLayout>

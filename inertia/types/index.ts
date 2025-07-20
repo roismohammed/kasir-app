@@ -40,6 +40,8 @@ export interface CategoriesProps {
     id: number;
     name: string;
     description: string;
+    active?: boolean
+    stock?: number
 }
 
 export interface UnitsProps {
@@ -53,6 +55,7 @@ export interface ProductProps {
     barcode: string;
     image:string
     quantity: number;
+    stock: number;
     name: string;
     price: number;
     unit_id: number;
