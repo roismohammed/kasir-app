@@ -1,6 +1,5 @@
 import {
     Utensils,
-    BookOpen,
     Plus,
     GlassWater,
     CreditCard,
@@ -9,15 +8,41 @@ import {
     Trash,
     PlusIcon,
     BoxIcon,
+    Banknote,
+    CheckCircle,
+    RefreshCw,
+    Circle,
+    Printer,
 } from "lucide-react";
 import AppLayout from "~/layouts/app-layout";
 import sajiku from '../../assets/image/makanan.jpeg'
 import { Head, router, usePage } from '@inertiajs/react';
 import { CategoriesProps, ProductProps, SalesProps } from "~/types";
 import { useEffect, useState } from "react";
-import { Input } from "~/components/ui/input";
-
-
+import {
+    Sheet,
+    SheetContent,
+    SheetFooter,
+    SheetHeader,
+    SheetTitle,
+    SheetTrigger,
+} from "@/components/ui/sheet"
+import { Button } from "~/components/ui/button";
+import { Label } from "~/components/ui/label";
+import { Badge } from "~/components/ui/badge";
+import { CreditCardIcon, CreditCardValidationIcon } from "@hugeicons/core-free-icons";
+import { HugeiconsIcon } from "@hugeicons/react";
+import CurrencyInput from "react-currency-input-field";
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -41,6 +66,20 @@ export default function CashierAppStatic() {
     }>().props
     const [activeCategory, setActiveCategory] = useState<number | null>(null);
     const [cartItems, setCartItems] = useState<ProductProps[]>([])
+    const [amountPaid, setAmountPaid] = useState(0);
+    const [customerName, setCustomerName] = useState('');
+    const [openModal, setOpenModal] = useState(false)
+
+    const handleSubmitOrder = () => {
+        if (amountPaid < grandTotal) {
+            alert('Jumlah uang tidak cukup!')
+            return
+        }
+
+        console.log({ customerName, amountPaid, total: grandTotal })
+        setOpenModal(true)
+    }
+
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const categoryId = urlParams.get('category_id');
@@ -196,7 +235,7 @@ export default function CashierAppStatic() {
                     <div className="flex flex-col h-[calc(92vh-32px)] border border-gray-200 rounded-lg shadow-lg bg-white sticky top-4">
                         <div className="p-6 flex-1 flex flex-col overflow-hidden">
                             <h2 className="text-xl font-semibold mb-6 text-gray-800">Order Items ({cartItems.length})</h2>
-                            <div className="flex-1 pr-2 max-h-[280px] overflow-y-scroll">
+                            <div className="flex-1 pr-2 max-h-[350px] overflow-y-scroll">
                                 {cartItems.length > 0 ? (
                                     cartItems.map((product) => (
                                         <div key={product.id} className="flex items-start space-x-3 mb-4 p-2 rounded-lg border  border-purple-600/50">
@@ -246,8 +285,7 @@ export default function CashierAppStatic() {
 
                         {/* Payment Summary */}
                         <div className="p-6 border-t">
-                            {/* <h3 className="font-semibold text-lg mb-4 text-gray-800 ">Payment Summary</h3> */}
-                            <div className="space-y-2 text-sm text-gray-700 bg-muted p-4 rounded-xl">
+                            <div className="space-y-2 text-sm text-gray-700 bg-muted p-4 rounded-xl mb-4">
                                 <div className="flex justify-between">
                                     <span>Sub Total</span>
                                     <span>{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(subTotal)}</span>
@@ -262,25 +300,140 @@ export default function CashierAppStatic() {
                                 </div>
                             </div>
 
-                            {/* Payment Methods */}
-                            <div className="grid grid-cols-3 gap-2 mt-6 mb-4">
-                                <button className="h-14 flex flex-col items-center justify-center text-blue-600 border-blue-600 bg-blue-50 border rounded-lg hover:bg-blue-100 transition-colors">
-                                    <CreditCard size={20} />
-                                    <span className="text-xs mt-1">Credit Card</span>
-                                </button>
-                                <button className="h-14 flex flex-col items-center justify-center text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                                    <Wallet size={20} />
-                                    <span className="text-xs mt-1">Cashier</span>
-                                </button>
-                                <button className="h-14 flex flex-col items-center justify-center text-gray-600 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors">
-                                    <BookOpen size={20} />
-                                    <span className="text-xs mt-1">Cash Pay Out</span>
-                                </button>
-                            </div>
+                            <Sheet>
+                                <SheetTrigger asChild>
+                                    <button className="w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all  hover:shadow-xl active:scale-[0.98]">
+                                        Bayar {formatPrice(grandTotal)}
+                                    </button>
+                                </SheetTrigger>
 
-                            <button className="w-full h-12 bg-purple-600 text-white text-lg font-semibold hover:bg-purple-700 rounded-lg transition-colors">
-                                Place An Order
-                            </button>
+                                <SheetContent className="bg-white max-w-xl w-full p-0 overflow-y-auto">
+                                    <div className="sticky top-0 bg-white z-10 border-b px-4 pb-4 shadow-sm">
+                                        <SheetHeader>
+                                            <SheetTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
+                                                <HugeiconsIcon icon={CreditCardValidationIcon} className="w-6 -mt-1 h-6 text-purple-600" />
+                                                Pembayaran
+                                            </SheetTitle>
+                                        </SheetHeader>
+
+                                        <div className="mt-2 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-5 border border-purple-100 ">
+                                            <div className="flex justify-between items-center mb-1">
+                                                <span className="text-gray-600">Total Tagihan</span>
+                                                <span className="font-medium text-gray-800 text-lg">
+                                                    {Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal)}
+                                                </span>
+                                            </div>
+                                            <div className="flex justify-between items-center mt-3 pt-3 border-t border-purple-100">
+                                                <span className="text-gray-600">Status Pembayaran</span>
+                                                <Badge variant="outline" className="border-purple-200 bg-purple-50 text-purple-600">
+                                                    <Circle className="w-2 h-2 mr-2 animate-pulse" />
+                                                    Belum Dibayar
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    {/* Main Content */}
+                                    <div className="p-6 space-y-8">
+                                        <div>
+                                            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                                                <HugeiconsIcon icon={CreditCardIcon} className="w-5 h-5 text-purple-600" />
+                                                Pilih Metode Pembayaran
+                                            </h3>
+                                            <div className="grid grid-cols-3 gap-3">
+                                                <button className="p-3 flex flex-col items-center justify-center border rounded-xl hover:border-purple-300 hover:bg-purple-50 transition-all">
+                                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+                                                        <CreditCard className="w-5 h-5 text-blue-600" />
+                                                    </div>
+                                                    <span className="text-sm font-medium">Kartu</span>
+                                                </button>
+                                                <button className="p-3 flex flex-col items-center justify-center border rounded-xl hover:border-green-300 hover:bg-green-50 transition-all">
+                                                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                                                        <Wallet className="w-5 h-5 text-green-600" />
+                                                    </div>
+                                                    <span className="text-sm font-medium">Transfer</span>
+                                                </button>
+                                                <button className="p-3 flex flex-col items-center justify-center border rounded-xl bg-blue-50 border-blue-200 hover:bg-blue-100 transition-all">
+                                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
+                                                        <Banknote className="w-5 h-5 text-blue-600" />
+                                                    </div>
+                                                    <span className="text-sm font-medium">Tunai</span>
+                                                </button>
+                                            </div>
+                                        </div>
+
+
+                                        <div className="space-y-4">
+                                            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                <Banknote className="w-5 h-5 text-purple-600" />
+                                                Pembayaran Tunai
+                                            </h3>
+
+                                            <div className="space-y-2">
+                                                <Label htmlFor="amount-paid" className="text-gray-700 font-medium">
+                                                    Jumlah Uang Diterima
+                                                </Label>
+                                                <div className="relative">
+                                                    {/* Label "Rp" di dalam input */}
+                                                    <span className="absolute text-lg left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none select-none ">
+                                                        Rp
+                                                    </span>
+
+                                                    <CurrencyInput
+                                                        name="amount-paid"
+                                                        autoComplete="off"
+                                                        value={amountPaid}
+                                                        onValueChange={(value) => setAmountPaid(value)}
+                                                        id="amount-paid"
+                                                        type="text"
+                                                        placeholder="0"
+                                                        className="w-full text-lg py-2 pl-10 pr-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
+    focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
+                                                    />
+                                                </div>
+
+                                            </div>
+
+                                            {/* Change Calculation */}
+                                            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 shadow-sm">
+                                                <div className="flex justify-between items-center">
+                                                    <div className="flex items-center gap-2">
+                                                        <RefreshCw className="w-4 h-4 text-green-600" />
+                                                        <span className="font-medium text-gray-700">Kembalian</span>
+                                                    </div>
+                                                    <span className="text-2xl font-bold text-green-600">
+                                                        {formatPrice(Math.max(0, amountPaid - grandTotal))}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                    {/* Sticky Footer */}
+                                    <div className="fixed w-96 bottom-0 bg-white border-t pt- shadow-lg">
+                                        <SheetFooter>
+                                            <button
+                                                onClick={handleSubmitOrder}
+                                                className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
+            hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
+            flex items-center justify-center active:scale-[0.98]"
+                                            >
+                                                <CheckCircle className="w-5 h-5 mr-2" />
+                                                <span>Bayar Sekarang</span>
+                                            </button>
+                                            {/* <SheetClose asChild>
+                                                <Button
+                                                    variant="outline"
+                                                    className="w-full mt-3 h-12 rounded-xl border-gray-300 text-gray-700 hover:bg-gray-100"
+                                                >
+                                                    Batalkan Transaksi
+                                                </Button>
+                                            </SheetClose> */}
+                                        </SheetFooter>
+                                    </div>
+                                </SheetContent>
+                            </Sheet>
                         </div>
                     </div>
                 </div>
@@ -316,6 +469,65 @@ export default function CashierAppStatic() {
                     </div>
                 </div>
             </div>
+
+            <AlertDialog open={openModal} onOpenChange={setOpenModal}>
+                <AlertDialogContent className="max-w-md rounded-2xl">
+                    <div className="p-6 text-center">
+                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mb-4">
+                            <CheckCircle className="h-10 w-10 text-green-600" />
+                        </div>
+
+                        <AlertDialogHeader className="space-y-2">
+                            <AlertDialogTitle className="text-2xl text-center font-bold text-gray-900">
+                                Transaksi Berhasil!
+                            </AlertDialogTitle>
+                            <AlertDialogDescription className="text-gray-600">
+                                Pembayaran sebesar{' '}
+                                <span className="font-semibold text-purple-600">
+                                    {Intl.NumberFormat('id-ID', {
+                                        style: 'currency',
+                                        currency: 'IDR'
+                                    }).format(grandTotal)}
+                                </span>{' '}
+                                telah berhasil diproses.
+                            </AlertDialogDescription>
+                        </AlertDialogHeader>
+
+                        <div className="mt-6 space-y-3 text-sm text-left bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">No. Transaksi</span>
+                                <span className="font-medium">TRX-{Date.now().toString().slice(-6)}</span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Tanggal</span>
+                                <span className="font-medium">
+                                    {new Date().toLocaleDateString('id-ID', {
+                                        day: 'numeric',
+                                        month: 'long',
+                                        year: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit'
+                                    })}
+                                </span>
+                            </div>
+                            <div className="flex justify-between">
+                                <span className="text-gray-500">Metode</span>
+                                <span className="font-medium">Tunai</span>
+                            </div>
+                        </div>
+
+                        <AlertDialogFooter className="mt-6 flex flex-col sm:flex-row gap-3">
+                            <AlertDialogCancel className="w-full bg-white border-gray-300 hover:bg-gray-50 text-gray-700">
+                                Tutup
+                            </AlertDialogCancel>
+                            <Button className="w-full bg-purple-600 hover:bg-purple-700 gap-2">
+                                <Printer className="h-4 w-4" />
+                                Cetak Struk
+                            </Button>
+                        </AlertDialogFooter>
+                    </div>
+                </AlertDialogContent>
+            </AlertDialog>
         </AppLayout>
     );
 }
