@@ -13,6 +13,9 @@ import {
     RefreshCw,
     Circle,
     Printer,
+    ArrowRight,
+    Hash,
+    Calendar,
 } from "lucide-react";
 import AppLayout from "~/layouts/app-layout";
 import sajiku from '../../assets/image/makanan.jpeg'
@@ -422,14 +425,7 @@ export default function CashierAppStatic() {
                                                 <CheckCircle className="w-5 h-5 mr-2" />
                                                 <span>Bayar Sekarang</span>
                                             </button>
-                                            {/* <SheetClose asChild>
-                                                <Button
-                                                    variant="outline"
-                                                    className="w-full mt-3 h-12 rounded-xl border-gray-300 text-gray-700 hover:bg-gray-100"
-                                                >
-                                                    Batalkan Transaksi
-                                                </Button>
-                                            </SheetClose> */}
+
                                         </SheetFooter>
                                     </div>
                                 </SheetContent>
@@ -471,60 +467,116 @@ export default function CashierAppStatic() {
             </div>
 
             <AlertDialog open={openModal} onOpenChange={setOpenModal}>
-                <AlertDialogContent className="max-w-md rounded-2xl">
-                    <div className="p-6 text-center">
-                        <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-green-100 mb-4">
-                            <CheckCircle className="h-10 w-10 text-green-600" />
+                <AlertDialogContent className="max-w-md rounded-3xl border-0 p-0 overflow-hidden shadow-xl">
+                    {/* Gradient Header */}
+                    <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-center text-white relative">
+                        {/* Animated Checkmark */}
+                        <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm mb-4 animate-pulse">
+                            <CheckCircle className="h-10 w-10 text-white" strokeWidth={2} />
                         </div>
-
-                        <AlertDialogHeader className="space-y-2">
-                            <AlertDialogTitle className="text-2xl text-center font-bold text-gray-900">
+                        <AlertDialogHeader className="space-y-1 mb-2">
+                            <AlertDialogTitle className="text-2xl font-bold text-center">
                                 Transaksi Berhasil!
                             </AlertDialogTitle>
-                            <AlertDialogDescription className="text-gray-600">
-                                Pembayaran sebesar{' '}
-                                <span className="font-semibold text-purple-600">
-                                    {Intl.NumberFormat('id-ID', {
-                                        style: 'currency',
-                                        currency: 'IDR'
-                                    }).format(grandTotal)}
-                                </span>{' '}
-                                telah berhasil diproses.
+                            <AlertDialogDescription className="text-white/90 text-center -mt-2">
+                                Pembayaran telah berhasil diproses
                             </AlertDialogDescription>
                         </AlertDialogHeader>
 
-                        <div className="mt-6 space-y-3 text-sm text-left bg-gray-50 p-4 rounded-lg border border-gray-200">
-                            <div className="flex justify-between">
-                                <span className="text-gray-500">No. Transaksi</span>
-                                <span className="font-medium">TRX-{Date.now().toString().slice(-6)}</span>
+                        {/* Floating Amount Bubble */}
+                        <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-white rounded-full px-6 py-2 shadow-lg">
+                            <span className="font-bold text-purple-600 whitespace-nowrap">
+                                {Intl.NumberFormat('id-ID', {
+                                    style: 'currency',
+                                    currency: 'IDR'
+                                }).format(grandTotal)}
+                            </span>
+                        </div>
+                    </div>
+
+                    {/* Content Area */}
+                    <div className="p-6 pt-8">
+                        {/* Money Return Section - Modern Design */}
+                        <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-100 relative overflow-hidden">
+                            {/* Decorative Elements */}
+                            <div className="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-green-200/20"></div>
+                            <div className="absolute -left-2 -bottom-2 w-16 h-16 rounded-full bg-emerald-200/20"></div>
+
+                            <div className="relative z-10">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-green-800 font-medium">Uang Diterima</p>
+                                        <p className="text-lg font-bold text-green-600">
+                                            {Intl.NumberFormat('id-ID', {
+                                                style: 'currency',
+                                                currency: 'IDR'
+                                            }).format(amountPaid)}
+                                        </p>
+                                    </div>
+                                    <ArrowRight className="h-5 w-5 text-green-600 mx-2" />
+                                    <div>
+                                        <p className="text-sm text-red-500 font-medium">Kembalian</p>
+                                        <p className="text-2xl font-bold text-red-500">
+                                            {Intl.NumberFormat('id-ID', {
+                                                style: 'currency',
+                                                currency: 'IDR'
+                                            }).format(amountPaid - grandTotal)}
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div className="flex justify-between">
-                                <span className="text-gray-500">Tanggal</span>
-                                <span className="font-medium">
+                        </div>
+
+                        {/* Transaction Details - Modern Minimalist */}
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                    <Hash className="h-4 w-4" />
+                                    <span>No. Transaksi</span>
+                                </div>
+                                <span className="font-medium text-gray-900">TRX-{Date.now().toString().slice(-6)}</span>
+                            </div>
+
+                            <div className="flex justify-between items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                    <Calendar className="h-4 w-4" />
+                                    <span>Tanggal</span>
+                                </div>
+                                <span className="font-medium text-gray-900">
                                     {new Date().toLocaleDateString('id-ID', {
                                         day: 'numeric',
-                                        month: 'long',
+                                        month: 'short',
                                         year: 'numeric',
                                         hour: '2-digit',
                                         minute: '2-digit'
                                     })}
                                 </span>
                             </div>
-                            <div className="flex justify-between">
-                                <span className="text-gray-500">Metode</span>
-                                <span className="font-medium">Tunai</span>
+
+                            <div className="flex justify-between items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
+                                <div className="flex items-center gap-2 text-gray-500">
+                                    <CreditCard className="h-4 w-4" />
+                                    <span>Metode</span>
+                                </div>
+                                <span className="font-medium text-gray-900">Tunai</span>
                             </div>
                         </div>
+                    </div>
 
-                        <AlertDialogFooter className="mt-6 flex flex-col sm:flex-row gap-3">
-                            <AlertDialogCancel className="w-full bg-white border-gray-300 hover:bg-gray-50 text-gray-700">
+                    {/* Footer Actions */}
+                    <div className="bg-gray-50 px-6 py-4 border-t border-gray-100">
+                        <div className="flex flex-col sm:flex-row gap-3">
+                            <AlertDialogCancel className="w-full bg-white border-gray-200 hover:bg-gray-100 text-gray-700 h-12 rounded-xl transition-all hover:shadow-sm">
                                 Tutup
                             </AlertDialogCancel>
-                            <Button className="w-full bg-purple-600 hover:bg-purple-700 gap-2">
-                                <Printer className="h-4 w-4" />
+                            <button
+                                //   onClick={handlePrintReceipt}
+                                className="w-full h-12 flex items-center justify-center rounded-xl bg-gradient-to-r text-white from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-sm gap-2 transition-all hover:shadow-md"
+                            >
+                                <Printer className="h-5 w-5" />
                                 Cetak Struk
-                            </Button>
-                        </AlertDialogFooter>
+                            </button>
+                        </div>
                     </div>
                 </AlertDialogContent>
             </AlertDialog>
