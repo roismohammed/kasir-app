@@ -70,12 +70,13 @@ export default function CashierAppStatic() {
     const [cartItems, setCartItems] = useState<ProductProps[]>([])
     const [amountPaid, setAmountPaid] = useState(0);
     const [openModal, setOpenModal] = useState(false)
+    const [openSheet,setOpenSheet] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(null)
     const { data, setData, post, processing, reset, errors } = useForm({
         invoice_number: 'INV-' + Date.now(),
         customer_id: '',
         quantity: 1,
-        amount_paid: '',
+        amount_paid: amountPaid,
         payment_type: 'cash',
         discount: 0,
         tax: 0,
@@ -85,53 +86,52 @@ export default function CashierAppStatic() {
         items: [],
     })
 
-   const handleSubmitOrder = (e?: React.FormEvent) => {
-    e?.preventDefault?.()
+    const handleSubmitOrder = (e?: React.FormEvent) => {
+        e?.preventDefault?.()
 
-    if (!cartItems.length) {
-        toast.error('Keranjang masih kosong!')
-        return
+        if (!cartItems.length) {
+            toast.error('Keranjang masih kosong!')
+            return
+        }
+
+        if (!amountPaid || amountPaid < grandTotal) {
+            toast.error('Uang yang dibayar tidak cukup!')
+            return
+        }
+
+        // Proses semua items di cart
+        const orderData = {
+            invoice_number: 'INV-' + Date.now(),
+            items: cartItems.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity || 1,
+                price: item.price,
+                subtotal: item.price * (item.quantity || 1)
+            })),
+            amount_paid: '',
+            payment_type: 'cash',
+            discount: 0,
+            tax: 0,
+            total_price: grandTotal,
+            grand_total: grandTotal,
+            notes: '',
+        }
+
+        console.log('Data yang dikirim:', orderData)
+
+        post('/sales', {
+            data: orderData,
+            preserveScroll: true,
+            onSuccess: () => {
+                setOpenModal(true)
+                setOpenSheet(false)
+            },
+            onError: (errors) => {
+                console.error(errors)
+                toast.error('Terjadi kesalahan saat menyimpan transaksi.')
+            },
+        })
     }
-
-    if (!amountPaid || amountPaid < grandTotal) {
-        toast.error('Uang yang dibayar tidak cukup!')
-        return
-    }
-
-    // Proses semua items di cart
-    const orderData = {
-        invoice_number: 'INV-' + Date.now(),
-        items: cartItems.map(item => ({
-            product_id: item.id,
-            quantity: item.quantity || 1,
-            price: item.price,
-            subtotal: item.price * (item.quantity || 1)
-        })),
-        amount_paid: amountPaid,
-        payment_type: 'cash',
-        discount: 0,
-        tax: 0,
-        total_price: grandTotal,
-        grand_total: grandTotal,
-        notes: '',
-    }
-
-    console.log('Data yang dikirim:', orderData)
-
-    post('/sales', {
-        data:orderData,
-        preserveScroll: true,
-        onSuccess: () => {
-            toast.success('Pembayaran berhasil!')
-            reset()
-            setAmountPaid(0)
-        },
-        onError: (errors) => {
-            console.error(errors)
-            toast.error('Terjadi kesalahan saat menyimpan transaksi.')
-        },
-    })
-}
 
 
 
@@ -356,7 +356,7 @@ export default function CashierAppStatic() {
                                 </div>
                             </div>
 
-                            <Sheet>
+                            <Sheet open={openSheet} onOpenChange={setOpenSheet}>
                                 <SheetTrigger asChild>
                                     <button className="w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all  hover:shadow-xl active:scale-[0.98]">
                                         Bayar {formatPrice(grandTotal)}
