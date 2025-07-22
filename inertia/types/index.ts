@@ -103,3 +103,23 @@ export interface SalesProps {
     tax: number;
     notes: string
 }
+
+export interface OrderData {
+  invoice_number: string
+  customer_id: string
+  amount_paid: number
+  payment_type: string
+  discount: number
+  tax: number
+  total_price: number
+  grand_total: number
+  notes: string
+  items:OrderItem[]
+}
+
+export interface OrderItem {
+  product_id: number
+  quantity: number
+  price: number
+  subtotal: number
+}

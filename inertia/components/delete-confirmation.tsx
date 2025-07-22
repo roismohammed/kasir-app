@@ -33,7 +33,7 @@ const DeleteConfirmation: React.FC<DeleteConfirmationProps> = ({ url, open, hand
           onSuccess: (props) => {
             resolve(props);
             handleClose();
-            onConfirm?.(); // ✅ Panggil di sini setelah berhasil hapus
+            onConfirm?.(); 
           },
           onError: (errors) => {
             handleClose();

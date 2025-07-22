@@ -38,7 +38,24 @@ export default class SalesController {
   /**
    * Handle form submission for the create action
    */
-  async store({ request }: HttpContext) { }
+  // Di controller backend
+  async store({ request, response }: HttpContext) {
+    const {
+      invoice_number,
+      customer_id,
+      payment_type,
+      discount,
+      tax,
+      amount_paid,
+      grand_total,
+      total_price,
+      notes,
+      items,
+    } = request.all()
+
+    return response.redirect().toRoute('sales.index')
+  }
+
 
   /**
    * Show individual record

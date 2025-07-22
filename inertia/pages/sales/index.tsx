@@ -19,8 +19,8 @@ import {
 } from "lucide-react";
 import AppLayout from "~/layouts/app-layout";
 import sajiku from '../../assets/image/makanan.jpeg'
-import { Head, router, usePage } from '@inertiajs/react';
-import { CategoriesProps, ProductProps, SalesProps } from "~/types";
+import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { CategoriesProps, OrderData, ProductProps, SalesProps } from "~/types";
 import { useEffect, useState } from "react";
 import {
     Sheet,
@@ -41,11 +41,10 @@ import {
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogDescription,
-    AlertDialogFooter,
     AlertDialogHeader,
     AlertDialogTitle,
-    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { toast } from "sonner";
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -64,24 +63,78 @@ const breadcrumbs = [
 export default function CashierAppStatic() {
     const { sales, products, categories } = usePage<{
         sales: SalesProps,
-        products: ProductProps,
+        products: ProductProps[],
         categories: CategoriesProps[]
     }>().props
     const [activeCategory, setActiveCategory] = useState<number | null>(null);
     const [cartItems, setCartItems] = useState<ProductProps[]>([])
     const [amountPaid, setAmountPaid] = useState(0);
-    const [customerName, setCustomerName] = useState('');
     const [openModal, setOpenModal] = useState(false)
+    const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(null)
+    const { data, setData, post, processing, reset, errors } = useForm({
+        invoice_number: 'INV-' + Date.now(),
+        customer_id: '',
+        quantity: 1,
+        amount_paid: '',
+        payment_type: 'cash',
+        discount: 0,
+        tax: 0,
+        total_price: 0,
+        grand_total: 0,
+        notes: '',
+        items: [],
+    })
 
-    const handleSubmitOrder = () => {
-        if (amountPaid < grandTotal) {
-            alert('Jumlah uang tidak cukup!')
-            return
-        }
+   const handleSubmitOrder = (e?: React.FormEvent) => {
+    e?.preventDefault?.()
 
-        console.log({ customerName, amountPaid, total: grandTotal })
-        setOpenModal(true)
+    if (!cartItems.length) {
+        toast.error('Keranjang masih kosong!')
+        return
     }
+
+    if (!amountPaid || amountPaid < grandTotal) {
+        toast.error('Uang yang dibayar tidak cukup!')
+        return
+    }
+
+    // Proses semua items di cart
+    const orderData = {
+        invoice_number: 'INV-' + Date.now(),
+        items: cartItems.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity || 1,
+            price: item.price,
+            subtotal: item.price * (item.quantity || 1)
+        })),
+        amount_paid: amountPaid,
+        payment_type: 'cash',
+        discount: 0,
+        tax: 0,
+        total_price: grandTotal,
+        grand_total: grandTotal,
+        notes: '',
+    }
+
+    console.log('Data yang dikirim:', orderData)
+
+    post('/sales', {
+        data:orderData,
+        preserveScroll: true,
+        onSuccess: () => {
+            toast.success('Pembayaran berhasil!')
+            reset()
+            setAmountPaid(0)
+        },
+        onError: (errors) => {
+            console.error(errors)
+            toast.error('Terjadi kesalahan saat menyimpan transaksi.')
+        },
+    })
+}
+
+
+
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -189,7 +242,7 @@ export default function CashierAppStatic() {
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             {products.length > 0 ? (
-                                products.map((item: any) => (
+                                products.map((item) => (
                                     <div
                                         key={item.id}
                                         className="flex flex-row md:flex-col rounded-lg overflow-hidden shadow-md bg-white py-0 px-2 lg:px-0 border border-slate-200 lg:p-0 "
@@ -204,9 +257,9 @@ export default function CashierAppStatic() {
                                                 <h3 className="font-semibold text-gray-800 mb-1">
                                                     {item.name}
                                                 </h3>
-                                                <p className="text-xs text-gray-500 mb-2 line-clamp-2">
+                                                {/* <p className="text-xs text-gray-500 mb-2 line-clamp-2">
                                                     {item.description}
-                                                </p>
+                                                </p> */}
                                             </div>
                                             <div className="flex items-center justify-between mt-auto">
                                                 <span className="font-bold text-gray-900">
@@ -234,7 +287,7 @@ export default function CashierAppStatic() {
                 </div>
 
                 {/* Desktop Sidebar */}
-                <div className="w-full md:w-96 hidden md:block">
+                <div className="w-full md:hidden lg:block lg:w-96 hidden ">
                     <div className="flex flex-col h-[calc(92vh-32px)] border border-gray-200 rounded-lg shadow-lg bg-white sticky top-4">
                         <div className="p-6 flex-1 flex flex-col overflow-hidden">
                             <h2 className="text-xl font-semibold mb-6 text-gray-800">Order Items ({cartItems.length})</h2>
@@ -326,7 +379,7 @@ export default function CashierAppStatic() {
                                                     {Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal)}
                                                 </span>
                                             </div>
-                                            <div className="flex justify-between items-center mt-3 pt-3 border-t border-purple-100">
+                                            <div className="flex justify-between items-center mt-3 pt-3 border-t shadow-none border-purple-100">
                                                 <span className="text-gray-600">Status Pembayaran</span>
                                                 <Badge variant="outline" className="border-purple-200 bg-purple-50 text-purple-600">
                                                     <Circle className="w-2 h-2 mr-2 animate-pulse" />
@@ -386,7 +439,10 @@ export default function CashierAppStatic() {
                                                         name="amount-paid"
                                                         autoComplete="off"
                                                         value={amountPaid}
-                                                        onValueChange={(value) => setAmountPaid(value)}
+                                                        onValueChange={(value) => {
+                                                            const numericValue = Number(value || 0)
+                                                            setAmountPaid(numericValue)
+                                                        }}
                                                         id="amount-paid"
                                                         type="text"
                                                         placeholder="0"
@@ -414,20 +470,17 @@ export default function CashierAppStatic() {
                                     </div>
 
                                     {/* Sticky Footer */}
-                                    <div className="fixed w-96 bottom-0 bg-white border-t pt- shadow-lg">
-                                        <SheetFooter>
-                                            <button
-                                                onClick={handleSubmitOrder}
-                                                className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
-            hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
-            flex items-center justify-center active:scale-[0.98]"
-                                            >
-                                                <CheckCircle className="w-5 h-5 mr-2" />
-                                                <span>Bayar Sekarang</span>
-                                            </button>
-
-                                        </SheetFooter>
-                                    </div>
+                                    <SheetFooter>
+                                        <button
+                                            onClick={handleSubmitOrder}
+                                            className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
+        hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
+        flex items-center justify-center active:scale-[0.98]"
+                                        >
+                                            <CheckCircle className="w-5 h-5 mr-2" />
+                                            <span>Bayar Sekarang</span>
+                                        </button>
+                                    </SheetFooter>
                                 </SheetContent>
                             </Sheet>
                         </div>
@@ -435,8 +488,7 @@ export default function CashierAppStatic() {
                 </div>
 
                 {/* Mobile Bottom Panel */}
-                <div className="fixed bottom-0 left-0 right-0 md:hidden bg-white border-t shadow-lg p-4">
-                    {/* Mobile Invoice Items - Horizontal Scroll */}
+                <div className="fixed bottom-0 left-0 right-0 md:block lg:hidden bg-white border-t shadow-lg p-4">
                     <div className="overflow-x-auto whitespace-nowrap pb-2">
                         <div className="inline-flex space-x-3">
                             {[1, 2].map((item) => (
@@ -494,11 +546,9 @@ export default function CashierAppStatic() {
                         </div>
                     </div>
 
-                    {/* Content Area */}
+
                     <div className="p-6 pt-8">
-                        {/* Money Return Section - Modern Design */}
                         <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-100 relative overflow-hidden">
-                            {/* Decorative Elements */}
                             <div className="absolute -right-4 -top-4 w-20 h-20 rounded-full bg-green-200/20"></div>
                             <div className="absolute -left-2 -bottom-2 w-16 h-16 rounded-full bg-emerald-200/20"></div>
 
@@ -527,7 +577,6 @@ export default function CashierAppStatic() {
                             </div>
                         </div>
 
-                        {/* Transaction Details - Modern Minimalist */}
                         <div className="space-y-3">
                             <div className="flex justify-between items-center p-3 rounded-lg hover:bg-gray-50 transition-colors">
                                 <div className="flex items-center gap-2 text-gray-500">
@@ -563,7 +612,6 @@ export default function CashierAppStatic() {
                         </div>
                     </div>
 
-                    {/* Footer Actions */}
                     <div className="bg-gray-50 px-6 py-4 border-t border-gray-100">
                         <div className="flex flex-col sm:flex-row gap-3">
                             <AlertDialogCancel className="w-full bg-white border-gray-200 hover:bg-gray-100 text-gray-700 h-12 rounded-xl transition-all hover:shadow-sm">
