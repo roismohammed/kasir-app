@@ -29,7 +29,6 @@ export default class Product extends BaseModel {
   @column({ columnName: 'sale_id' })
   declare saleId: number
 
-
   @column()
   declare price: string
 
@@ -48,9 +47,9 @@ export default class Product extends BaseModel {
   @hasMany(() => StockOut)
   declare stockOuts: HasMany<typeof StockOut>
 
-  @belongsTo(() => Sale)
-  declare sales: BelongsTo<typeof Sale>
-
+  @hasMany(() => Sale)
+  declare sales: HasMany<typeof Sale> 
+  
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

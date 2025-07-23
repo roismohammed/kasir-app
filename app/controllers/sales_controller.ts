@@ -39,22 +39,63 @@ export default class SalesController {
    * Handle form submission for the create action
    */
   // Di controller backend
-  async store({ request, response }: HttpContext) {
-    const {
+async store({ request, response, session }: HttpContext) {
+  const {
+    invoice_number,
+    customer_id,
+    payment_type,
+    discount,
+    grand_total,
+    total_price,
+    tax,
+    notes,
+    items,
+  } = request.all();
+
+  if (!items || items.length === 0) {
+    session.flash('error', 'Tidak ada produk yang dipilih');
+    return response.redirect().back();
+  }
+
+  try {
+    const sale = await Sale.create({
       invoice_number,
-      customer_id,
+      customerId: customer_id,
       payment_type,
       discount,
-      tax,
-      amount_paid,
       grand_total,
       total_price,
+      tax,
       notes,
-      items,
-    } = request.all()
+    });
 
-    return response.redirect().toRoute('sales.index')
+    for (const item of items) {
+      // Simpan detail item penjualan
+      await sale.related('product').create({
+        productId: item.product_id,
+        quantity: item.quantity,
+        price: item.price,
+        subtotal: item.subtotal,
+      });
+
+      // Kurangi stok produk
+      const product = await Product.find(item.product_id);
+      if (product) {
+        product.stock = product.stock - item.quantity;
+        await product.save();
+      }
+    }
+
+    session.flash('success', 'Penjualan berhasil disimpan');
+    return response.redirect().toRoute('sales.index');
+
+  } catch (error) {
+    console.error(error);
+    session.flash('error', 'Terjadi kesalahan saat menyimpan penjualan.');
+    return response.redirect().back();
   }
+}
+
 
 
   /**

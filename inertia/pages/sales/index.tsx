@@ -86,52 +86,45 @@ export default function CashierAppStatic() {
         items: [],
     })
 
-    const handleSubmitOrder = (e?: React.FormEvent) => {
-        e?.preventDefault?.()
+ const handleSubmitOrder = (e?: React.FormEvent) => {
+    e?.preventDefault?.()
 
-        if (!cartItems.length) {
-            toast.error('Keranjang masih kosong!')
-            return
-        }
-
-        if (!amountPaid || amountPaid < grandTotal) {
-            toast.error('Uang yang dibayar tidak cukup!')
-            return
-        }
-
-        // Proses semua items di cart
-        const orderData = {
-            invoice_number: 'INV-' + Date.now(),
-            items: cartItems.map(item => ({
-                product_id: item.id,
-                quantity: item.quantity || 1,
-                price: item.price,
-                subtotal: item.price * (item.quantity || 1)
-            })),
-            amount_paid: '',
-            payment_type: 'cash',
-            discount: 0,
-            tax: 0,
-            total_price: grandTotal,
-            grand_total: grandTotal,
-            notes: '',
-        }
-
-        console.log('Data yang dikirim:', orderData)
-
-        post('/sales', {
-            data: orderData,
-            preserveScroll: true,
-            onSuccess: () => {
-                setOpenModal(true)
-                setOpenSheet(false)
-            },
-            onError: (errors) => {
-                console.error(errors)
-                toast.error('Terjadi kesalahan saat menyimpan transaksi.')
-            },
-        })
+    if (!cartItems.length) {
+        toast.error('Keranjang masih kosong!')
+        return
     }
+
+    if (!amountPaid || amountPaid < grandTotal) {
+        toast.error('Uang yang dibayar tidak cukup!')
+        return
+    }
+
+    // Update data sebelum kirim
+    setData((prev) => ({
+        ...prev,
+        items: cartItems.map(item => ({
+            product_id: item.id,
+            quantity: item.quantity || 1,
+            price: item.price,
+            subtotal: item.price * (item.quantity || 1)
+        })),
+        total_price: grandTotal,
+        grand_total: grandTotal,
+        amount_paid: amountPaid,
+    }))
+
+    post('/sales', {
+        preserveScroll: true,
+        onSuccess: () => {
+            setOpenModal(true)
+            setOpenSheet(false)
+        },
+        onError: (errors) => {
+            console.error(errors)
+            toast.error('Terjadi kesalahan saat menyimpan transaksi.')
+        },
+    })
+}
 
 
 
@@ -473,7 +466,7 @@ export default function CashierAppStatic() {
                                     <SheetFooter>
                                         <button
                                             onClick={handleSubmitOrder}
-                                            className="w-full h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
+                                            className="w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
         hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
         flex items-center justify-center active:scale-[0.98]"
                                         >
@@ -619,7 +612,7 @@ export default function CashierAppStatic() {
                             </AlertDialogCancel>
                             <button
                                 //   onClick={handlePrintReceipt}
-                                className="w-full h-12 flex items-center justify-center rounded-xl bg-gradient-to-r text-white from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-sm gap-2 transition-all hover:shadow-md"
+                                className="w-full h-12 cursor-pointer flex items-center justify-center rounded-xl bg-gradient-to-r text-white from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-sm gap-2 transition-all hover:shadow-md"
                             >
                                 <Printer className="h-5 w-5" />
                                 Cetak Struk
