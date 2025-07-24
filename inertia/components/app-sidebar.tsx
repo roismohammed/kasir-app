@@ -110,7 +110,7 @@ const data = {
         },
         {
           title: "Stock In/Out",
-          url: "#",
+          url: "/report_stockin",
         },
       ],
     },

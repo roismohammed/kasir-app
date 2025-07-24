@@ -39,28 +39,42 @@ import {
     Clock,
 } from "lucide-react"
 import AppLayout from "~/layouts/app-layout"
-
+const breadcrumbs = [
+    {
+        title: "Beranda",
+        url: "/",
+    },
+    {
+        title: "Laporan",
+        url: "/sales",
+    },
+    {
+        title: "Penjualan",
+        url: "/sales/order",
+    },
+];
 export default function SalesReportPage() {
+
     return (
-        <AppLayout>
+        <AppLayout breadcrumbs={breadcrumbs}>
             <div className="min-h-screen bg-background">
-                {/* Header */}
-                <div className="border-b">
-                    <div className="">
+                {/* Modern Purple Header */}
+                <div className="bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-8 shadow-lg rounded-lg">
+                    <div className="max-w-7xl mx-auto">
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                            <div className="space-y-1">
-                                <h1 className="text-3xl font-bold tracking-tight">Laporan Penjualan</h1>
-                                <p className="text-muted-foreground">
+                            <div className="space-y-2">
+                                <h1 className="text-2xl font-bold text-white tracking-tight">Laporan Penjualan</h1>
+                                <p className="text-purple-100">
                                     Dashboard komprehensif untuk analisis penjualan dan performa bisnis
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Select defaultValue="30days">
-                                    <SelectTrigger className="w-[140px]">
-                                        <Calendar className="w-4 h-4 mr-2" />
-                                        <SelectValue />
+                                    <SelectTrigger className="w-[140px] bg-white/10 text-white border-white/20 hover:bg-white/20">
+                                        <Calendar className="w-4 h-4 mr-2 text-purple-100" />
+                                        <SelectValue className="text-white" />
                                     </SelectTrigger>
-                                    <SelectContent>
+                                    <SelectContent className="bg-white border-gray-200">
                                         <SelectItem value="today">Hari Ini</SelectItem>
                                         <SelectItem value="7days">7 Hari</SelectItem>
                                         <SelectItem value="30days">30 Hari</SelectItem>
@@ -68,11 +82,11 @@ export default function SalesReportPage() {
                                         <SelectItem value="1year">1 Tahun</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <Button variant="outline">
+                                <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white">
                                     <Download className="w-4 h-4 mr-2" />
                                     Export
                                 </Button>
-                                <Button>
+                                <Button className="bg-white text-white  hover:bg-white/90">
                                     <BarChart3 className="w-4 h-4 mr-2" />
                                     Analisis
                                 </Button>
@@ -81,90 +95,106 @@ export default function SalesReportPage() {
                     </div>
                 </div>
 
-                <div className="container mx-auto  py-6">
+                <div className=" mx-auto py-6 ">
                     <Tabs defaultValue="overview" className="space-y-6">
-                        <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value="overview">Overview</TabsTrigger>
-                            <TabsTrigger value="products">Produk</TabsTrigger>
-                            <TabsTrigger value="customers">Pelanggan</TabsTrigger>
-                            <TabsTrigger value="analytics">Analitik</TabsTrigger>
+                        <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-gray-800">
+                            <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:text-purple-900 dark:data-[state=active]:bg-gray-900">
+                                Overview
+                            </TabsTrigger>
+                            <TabsTrigger value="products" className="data-[state=active]:bg-white data-[state=active]:text-purple-900 dark:data-[state=active]:bg-gray-900">
+                                Produk
+                            </TabsTrigger>
+                            <TabsTrigger value="customers" className="data-[state=active]:bg-white data-[state=active]:text-purple-900 dark:data-[state=active]:bg-gray-900">
+                                Pelanggan
+                            </TabsTrigger>
+                            <TabsTrigger value="analytics" className="data-[state=active]:bg-white data-[state=active]:text-purple-900 dark:data-[state=active]:bg-gray-900">
+                                Analitik
+                            </TabsTrigger>
                         </TabsList>
 
                         <TabsContent value="overview" className="space-y-6">
                             {/* Key Metrics */}
                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                                <Card>
+                                <Card className="border-0 shadow-lg">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">Total Penjualan</CardTitle>
-                                        <DollarSign className="h-4 w-4 text-muted-foreground" />
+                                        <CardTitle className="text-sm font-medium text-gray-500">Total Penjualan</CardTitle>
+                                        <div className="p-2 rounded-full bg-purple-100">
+                                            <DollarSign className="h-4 w-4 text-purple-600" />
+                                        </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">Rp 2.847.500.000</div>
+                                        <div className="text-2xl font-bold text-purple-900">Rp 2.847.500.000</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +12.5% dari bulan lalu
                                         </div>
-                                        <Progress value={75} className="mt-2" />
+                                        {/* <Progress value={75} className="mt-2 bg-purple-100" indicatorClassName="bg-purple-600" /> */}
                                     </CardContent>
                                 </Card>
 
-                                <Card>
+                                <Card className="border-0 shadow-lg">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">Total Pesanan</CardTitle>
-                                        <ShoppingCart className="h-4 w-4 text-muted-foreground" />
+                                        <CardTitle className="text-sm font-medium text-gray-500">Total Pesanan</CardTitle>
+                                        <div className="p-2 rounded-full bg-purple-100">
+                                            <ShoppingCart className="h-4 w-4 text-purple-600" />
+                                        </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">1.247</div>
+                                        <div className="text-2xl font-bold text-purple-900">1.247</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +8.2% dari bulan lalu
                                         </div>
-                                        <Progress value={68} className="mt-2" />
+                                        {/* <Progress value={68} className="mt-2 bg-purple-100" indicatorClassName="bg-purple-600" /> */}
                                     </CardContent>
                                 </Card>
 
-                                <Card>
+                                <Card className="border-0 shadow-lg">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">Pelanggan Baru</CardTitle>
-                                        <Users className="h-4 w-4 text-muted-foreground" />
+                                        <CardTitle className="text-sm font-medium text-gray-500">Pelanggan Baru</CardTitle>
+                                        <div className="p-2 rounded-full bg-purple-100">
+                                            <Users className="h-4 w-4 text-purple-600" />
+                                        </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">342</div>
+                                        <div className="text-2xl font-bold text-purple-900">342</div>
                                         <div className="flex items-center text-xs text-red-600 mt-1">
                                             <ArrowDownRight className="w-3 h-3 mr-1" />
                                             -2.1% dari bulan lalu
                                         </div>
-                                        <Progress value={45} className="mt-2" />
+                                        {/* <Progress value={45} className="mt-2 bg-purple-100" indicatorClassName="bg-purple-600" /> */}
                                     </CardContent>
                                 </Card>
 
-                                <Card>
+                                <Card className="border-0 shadow-lg">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium">Rata-rata Pesanan</CardTitle>
-                                        <Activity className="h-4 w-4 text-muted-foreground" />
+                                        <CardTitle className="text-sm font-medium text-gray-500">Rata-rata Pesanan</CardTitle>
+                                        <div className="p-2 rounded-full bg-purple-100">
+                                            <Activity className="h-4 w-4 text-purple-600" />
+                                        </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold">Rp 2.284.500</div>
+                                        <div className="text-2xl font-bold text-purple-900">Rp 2.284.500</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +4.7% dari bulan lalu
                                         </div>
-                                        <Progress value={82} className="mt-2" />
+                                        {/* <Progress value={82} className="mt-2 bg-purple-100" indicatorClassName="bg-purple-600" /> */}
                                     </CardContent>
                                 </Card>
                             </div>
 
                             <div className="grid gap-6 lg:grid-cols-7">
                                 {/* Sales Chart */}
-                                <Card className="lg:col-span-4">
+                                <Card className="lg:col-span-4 border-0 shadow-lg">
                                     <CardHeader>
-                                        <CardTitle>Tren Penjualan</CardTitle>
-                                        <CardDescription>Grafik penjualan dalam 30 hari terakhir</CardDescription>
+                                        <CardTitle className="text-purple-900">Tren Penjualan</CardTitle>
+                                        <CardDescription className="text-gray-500">Grafik penjualan dalam 30 hari terakhir</CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="h-[350px] flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 rounded-lg border-2 border-dashed border-blue-200">
+                                        <div className="h-[350px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-dashed border-purple-200">
                                             <div className="text-center">
-                                                <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                                                     <BarChart3 className="w-8 h-8 text-white" />
                                                 </div>
                                                 <p className="font-medium text-gray-700">Grafik Tren Penjualan</p>
@@ -175,10 +205,10 @@ export default function SalesReportPage() {
                                 </Card>
 
                                 {/* Top Products */}
-                                <Card className="lg:col-span-3">
+                                <Card className="lg:col-span-3 border-0 shadow-lg">
                                     <CardHeader>
-                                        <CardTitle>Produk Terlaris</CardTitle>
-                                        <CardDescription>5 produk dengan penjualan tertinggi</CardDescription>
+                                        <CardTitle className="text-purple-900">Produk Terlaris</CardTitle>
+                                        <CardDescription className="text-gray-500">5 produk dengan penjualan tertinggi</CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <ScrollArea className="h-[350px]">
@@ -188,17 +218,17 @@ export default function SalesReportPage() {
                                                         name: "Laptop Gaming ROG",
                                                         sales: 127,
                                                         revenue: "25.5M",
-                                                        color: "bg-blue-500",
+                                                        color: "bg-purple-500",
                                                         trend: "+15%",
                                                     },
                                                     {
                                                         name: "iPhone 15 Pro Max",
                                                         sales: 89,
                                                         revenue: "18.2M",
-                                                        color: "bg-emerald-500",
+                                                        color: "bg-blue-500",
                                                         trend: "+12%",
                                                     },
-                                                    { name: "MacBook Pro M3", sales: 76, revenue: "15.8M", color: "bg-purple-500", trend: "+8%" },
+                                                    { name: "MacBook Pro M3", sales: 76, revenue: "15.8M", color: "bg-emerald-500", trend: "+8%" },
                                                     {
                                                         name: "Samsung Galaxy S24",
                                                         sales: 64,
@@ -208,18 +238,18 @@ export default function SalesReportPage() {
                                                     },
                                                     { name: 'iPad Pro 12.9"', sales: 52, revenue: "9.8M", color: "bg-red-500", trend: "+3%" },
                                                 ].map((product, index) => (
-                                                    <div key={index} className="flex items-center justify-between p-3 rounded-lg border">
+                                                    <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors">
                                                         <div className="flex items-center space-x-3">
                                                             <div className={`w-10 h-10 ${product.color} rounded-lg flex items-center justify-center`}>
                                                                 <Package className="w-5 h-5 text-white" />
                                                             </div>
                                                             <div>
-                                                                <p className="font-medium text-sm">{product.name}</p>
-                                                                <p className="text-xs text-muted-foreground">{product.sales} terjual</p>
+                                                                <p className="font-medium text-sm text-gray-900">{product.name}</p>
+                                                                <p className="text-xs text-gray-500">{product.sales} terjual</p>
                                                             </div>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="font-semibold text-sm">Rp {product.revenue}</p>
+                                                            <p className="font-semibold text-sm text-purple-900">Rp {product.revenue}</p>
                                                             <p className="text-xs text-emerald-600">{product.trend}</p>
                                                         </div>
                                                     </div>
@@ -231,19 +261,24 @@ export default function SalesReportPage() {
                             </div>
 
                             {/* Recent Sales */}
-                            <Card>
+                            <Card className="border-0 shadow-lg">
                                 <CardHeader>
                                     <div className="flex items-center justify-between">
                                         <div>
-                                            <CardTitle>Transaksi Terbaru</CardTitle>
-                                            <CardDescription>Daftar transaksi penjualan terbaru</CardDescription>
+                                            <CardTitle className="text-lg text-purple-900">Transaksi Terbaru</CardTitle>
+                                            <CardDescription className="text-gray-500">
+                                                Daftar transaksi penjualan terbaru
+                                            </CardDescription>
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <div className="relative">
-                                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                                <Input placeholder="Cari transaksi..." className="pl-8 w-[250px]" />
+                                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-gray-400" />
+                                                <Input
+                                                    placeholder="Cari transaksi..."
+                                                    className="pl-8 w-[250px] bg-white"
+                                                />
                                             </div>
-                                            <Button variant="outline" size="sm">
+                                            <Button variant="outline" size="sm" className="bg-white">
                                                 <Filter className="w-4 h-4 mr-2" />
                                                 Filter
                                             </Button>
@@ -251,156 +286,200 @@ export default function SalesReportPage() {
                                     </div>
                                 </CardHeader>
                                 <CardContent>
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead>Pesanan</TableHead>
-                                                <TableHead>Pelanggan</TableHead>
-                                                <TableHead>Produk</TableHead>
-                                                <TableHead>Tanggal</TableHead>
-                                                <TableHead>Status</TableHead>
-                                                <TableHead className="text-right">Total</TableHead>
-                                                <TableHead className="w-[50px]"></TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {[
-                                                {
-                                                    id: "#ORD-2024-001",
-                                                    customer: { name: "Ahmad Rizki", email: "ahmad.rizki@email.com", avatar: "AR" },
-                                                    product: "Laptop Gaming ROG Strix",
-                                                    date: "24 Jan 2024",
-                                                    status: "completed",
-                                                    total: "25,500,000",
-                                                    location: "Jakarta",
-                                                },
-                                                {
-                                                    id: "#ORD-2024-002",
-                                                    customer: { name: "Siti Nurhaliza", email: "siti.nur@email.com", avatar: "SN" },
-                                                    product: "iPhone 15 Pro Max 256GB",
-                                                    date: "24 Jan 2024",
-                                                    status: "processing",
-                                                    total: "22,999,000",
-                                                    location: "Bandung",
-                                                },
-                                                {
-                                                    id: "#ORD-2024-003",
-                                                    customer: { name: "Budi Santoso", email: "budi.santoso@email.com", avatar: "BS" },
-                                                    product: 'MacBook Pro M3 14"',
-                                                    date: "23 Jan 2024",
-                                                    status: "shipped",
-                                                    total: "28,999,000",
-                                                    location: "Surabaya",
-                                                },
-                                                {
-                                                    id: "#ORD-2024-004",
-                                                    customer: { name: "Maya Sari", email: "maya.sari@email.com", avatar: "MS" },
-                                                    product: "Samsung Galaxy S24 Ultra",
-                                                    date: "23 Jan 2024",
-                                                    status: "completed",
-                                                    total: "18,999,000",
-                                                    location: "Medan",
-                                                },
-                                                {
-                                                    id: "#ORD-2024-005",
-                                                    customer: { name: "Dedi Kurniawan", email: "dedi.k@email.com", avatar: "DK" },
-                                                    product: 'iPad Pro 12.9" M2',
-                                                    date: "22 Jan 2024",
-                                                    status: "cancelled",
-                                                    total: "16,999,000",
-                                                    location: "Yogyakarta",
-                                                },
-                                            ].map((order) => (
-                                                <TableRow key={order.id}>
-                                                    <TableCell className="font-medium">{order.id}</TableCell>
-                                                    <TableCell>
-                                                        <div className="flex items-center space-x-3">
-                                                            <Avatar className="h-8 w-8">
-                                                                <AvatarFallback className="text-xs">{order.customer.avatar}</AvatarFallback>
-                                                            </Avatar>
-                                                            <div>
-                                                                <p className="font-medium text-sm">{order.customer.name}</p>
-                                                                <p className="text-xs text-muted-foreground">{order.customer.email}</p>
-                                                            </div>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div>
-                                                            <p className="font-medium text-sm">{order.product}</p>
-                                                            <div className="flex items-center text-xs text-muted-foreground mt-1">
-                                                                <MapPin className="w-3 h-3 mr-1" />
-                                                                {order.location}
-                                                            </div>
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <div className="flex items-center text-sm">
-                                                            <Clock className="w-3 h-3 mr-1 text-muted-foreground" />
-                                                            {order.date}
-                                                        </div>
-                                                    </TableCell>
-                                                    <TableCell>
-                                                        <Badge
-                                                            variant={
-                                                                order.status === "completed"
-                                                                    ? "default"
-                                                                    : order.status === "processing"
-                                                                        ? "secondary"
-                                                                        : order.status === "shipped"
-                                                                            ? "outline"
-                                                                            : "destructive"
-                                                            }
-                                                        >
-                                                            {order.status === "completed"
-                                                                ? "Selesai"
-                                                                : order.status === "processing"
-                                                                    ? "Diproses"
-                                                                    : order.status === "shipped"
-                                                                        ? "Dikirim"
-                                                                        : "Dibatalkan"}
-                                                        </Badge>
-                                                    </TableCell>
-                                                    <TableCell className="text-right font-semibold">Rp {order.total}</TableCell>
-                                                    <TableCell>
-                                                        <DropdownMenu>
-                                                            <DropdownMenuTrigger asChild>
-                                                                <Button variant="ghost" className="h-8 w-8 p-0">
-                                                                    <MoreHorizontal className="h-4 w-4" />
-                                                                </Button>
-                                                            </DropdownMenuTrigger>
-                                                            <DropdownMenuContent align="end">
-                                                                <DropdownMenuLabel>Aksi</DropdownMenuLabel>
-                                                                <DropdownMenuItem>
-                                                                    <Eye className="mr-2 h-4 w-4" />
-                                                                    Lihat Detail
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuItem>
-                                                                    <FileText className="mr-2 h-4 w-4" />
-                                                                    Download Invoice
-                                                                </DropdownMenuItem>
-                                                                <DropdownMenuSeparator />
-                                                                <DropdownMenuItem className="text-red-600">Batalkan Pesanan</DropdownMenuItem>
-                                                            </DropdownMenuContent>
-                                                        </DropdownMenu>
-                                                    </TableCell>
+                                    <div className="rounded-lg border border-gray-200 overflow-hidden">
+                                        <Table>
+                                            <TableHeader className="bg-purple-50">
+                                                <TableRow className="hover:bg-transparent">
+                                                    <TableHead className="font-medium text-gray-500">Pesanan</TableHead>
+                                                    <TableHead className="font-medium text-gray-500">Pelanggan</TableHead>
+                                                    <TableHead className="font-medium text-gray-500">Produk</TableHead>
+                                                    <TableHead className="font-medium text-gray-500">Tanggal</TableHead>
+                                                    <TableHead className="font-medium text-gray-500">Status</TableHead>
+                                                    <TableHead className="font-medium text-gray-500 text-right">Total</TableHead>
+                                                    <TableHead className="w-[50px]"></TableHead>
                                                 </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
+                                            </TableHeader>
+                                            <TableBody className="bg-white">
+                                                {[
+                                                    {
+                                                        id: "#ORD-2024-001",
+                                                        customer: { name: "Ahmad Rizki", email: "ahmad.rizki@email.com", avatar: "AR" },
+                                                        product: "Laptop Gaming ROG Strix",
+                                                        date: "24 Jan 2024",
+                                                        status: "completed",
+                                                        total: "25,500,000",
+                                                        location: "Jakarta",
+                                                    },
+                                                    {
+                                                        id: "#ORD-2024-002",
+                                                        customer: { name: "Siti Nurhaliza", email: "siti.nur@email.com", avatar: "SN" },
+                                                        product: "iPhone 15 Pro Max 256GB",
+                                                        date: "24 Jan 2024",
+                                                        status: "processing",
+                                                        total: "22,999,000",
+                                                        location: "Bandung",
+                                                    },
+                                                    {
+                                                        id: "#ORD-2024-003",
+                                                        customer: { name: "Budi Santoso", email: "budi.santoso@email.com", avatar: "BS" },
+                                                        product: 'MacBook Pro M3 14"',
+                                                        date: "23 Jan 2024",
+                                                        status: "shipped",
+                                                        total: "28,999,000",
+                                                        location: "Surabaya",
+                                                    },
+                                                    {
+                                                        id: "#ORD-2024-004",
+                                                        customer: { name: "Maya Sari", email: "maya.sari@email.com", avatar: "MS" },
+                                                        product: "Samsung Galaxy S24 Ultra",
+                                                        date: "23 Jan 2024",
+                                                        status: "completed",
+                                                        total: "18,999,000",
+                                                        location: "Medan",
+                                                    },
+                                                    {
+                                                        id: "#ORD-2024-005",
+                                                        customer: { name: "Dedi Kurniawan", email: "dedi.k@email.com", avatar: "DK" },
+                                                        product: 'iPad Pro 12.9" M2',
+                                                        date: "22 Jan 2024",
+                                                        status: "cancelled",
+                                                        total: "16,999,000",
+                                                        location: "Yogyakarta",
+                                                    },
+                                                ].map((order) => (
+                                                    <TableRow
+                                                        key={order.id}
+                                                        className="border-t hover:bg-purple-50 transition-colors"
+                                                    >
+                                                        <TableCell className="font-medium text-purple-900">
+                                                            {order.id}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center space-x-3">
+                                                                <Avatar className="h-8 w-8 bg-purple-100">
+                                                                    <AvatarFallback className="text-xs text-purple-600">
+                                                                        {order.customer.avatar}
+                                                                    </AvatarFallback>
+                                                                </Avatar>
+                                                                <div>
+                                                                    <p className="font-medium text-sm text-gray-900">
+                                                                        {order.customer.name}
+                                                                    </p>
+                                                                    <p className="text-xs text-gray-500">
+                                                                        {order.customer.email}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div>
+                                                                <p className="font-medium text-sm text-gray-900">
+                                                                    {order.product}
+                                                                </p>
+                                                                <div className="flex items-center text-xs text-gray-500 mt-1">
+                                                                    <MapPin className="w-3 h-3 mr-1" />
+                                                                    {order.location}
+                                                                </div>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center text-sm text-gray-500">
+                                                                <Clock className="w-3 h-3 mr-1" />
+                                                                {order.date}
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <Badge
+                                                                variant={
+                                                                    order.status === "completed"
+                                                                        ? "default"
+                                                                        : order.status === "processing"
+                                                                            ? "secondary"
+                                                                            : order.status === "shipped"
+                                                                                ? "outline"
+                                                                                : "destructive"
+                                                                }
+                                                                className="capitalize"
+                                                            >
+                                                                {order.status === "completed"
+                                                                    ? "Selesai"
+                                                                    : order.status === "processing"
+                                                                        ? "Diproses"
+                                                                        : order.status === "shipped"
+                                                                            ? "Dikirim"
+                                                                            : "Dibatalkan"}
+                                                            </Badge>
+                                                        </TableCell>
+                                                        <TableCell className="text-right font-semibold text-purple-900">
+                                                            Rp {order.total}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <DropdownMenu>
+                                                                <DropdownMenuTrigger asChild>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        className="h-8 w-8 p-0 hover:bg-purple-100"
+                                                                    >
+                                                                        <MoreHorizontal className="h-4 w-4" />
+                                                                        <span className="sr-only">Open menu</span>
+                                                                    </Button>
+                                                                </DropdownMenuTrigger>
+                                                                <DropdownMenuContent
+                                                                    align="end"
+                                                                    className="w-48 bg-white border-gray-200"
+                                                                >
+                                                                    <DropdownMenuLabel className="text-gray-900">
+                                                                        Aksi
+                                                                    </DropdownMenuLabel>
+                                                                    <DropdownMenuItem className="hover:bg-purple-50">
+                                                                        <Eye className="mr-2 h-4 w-4" />
+                                                                        <span>Lihat Detail</span>
+                                                                    </DropdownMenuItem>
+                                                                    <DropdownMenuItem className="hover:bg-purple-50">
+                                                                        <FileText className="mr-2 h-4 w-4" />
+                                                                        <span>Download Invoice</span>
+                                                                    </DropdownMenuItem>
+                                                                    <DropdownMenuSeparator className="bg-gray-200" />
+                                                                    <DropdownMenuItem className="text-red-600 hover:bg-red-50">
+                                                                        <span>Batalkan Pesanan</span>
+                                                                    </DropdownMenuItem>
+                                                                </DropdownMenuContent>
+                                                            </DropdownMenu>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+
+                                    {/* Pagination */}
+                                    <div className="flex items-center justify-between mt-4">
+                                        <div className="text-sm text-gray-500">
+                                            Menampilkan 1 sampai 5 dari 25 transaksi
+                                        </div>
+                                        <div className="flex space-x-2">
+                                            <Button variant="outline" size="sm" className="bg-white">
+                                                Sebelumnya
+                                            </Button>
+                                            <Button variant="outline" size="sm" className="bg-white">
+                                                Selanjutnya
+                                            </Button>
+                                        </div>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </TabsContent>
 
                         <TabsContent value="products" className="space-y-6">
-                            <Card>
+                            <Card className="border-0 shadow-lg">
                                 <CardHeader>
-                                    <CardTitle>Analisis Produk</CardTitle>
-                                    <CardDescription>Performa dan statistik produk secara detail</CardDescription>
+                                    <CardTitle className="text-purple-900">Analisis Produk</CardTitle>
+                                    <CardDescription className="text-gray-500">Performa dan statistik produk secara detail</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-[400px] flex items-center justify-center bg-gradient-to-br from-green-50 to-emerald-100 rounded-lg border-2 border-dashed border-green-200">
+                                    <div className="h-[400px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-dashed border-purple-200">
                                         <div className="text-center">
-                                            <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                                                 <Package className="w-8 h-8 text-white" />
                                             </div>
                                             <p className="font-medium text-gray-700">Analisis Produk</p>
@@ -412,15 +491,15 @@ export default function SalesReportPage() {
                         </TabsContent>
 
                         <TabsContent value="customers" className="space-y-6">
-                            <Card>
+                            <Card className="border-0 shadow-lg">
                                 <CardHeader>
-                                    <CardTitle>Analisis Pelanggan</CardTitle>
-                                    <CardDescription>Segmentasi dan perilaku pelanggan</CardDescription>
+                                    <CardTitle className="text-purple-900">Analisis Pelanggan</CardTitle>
+                                    <CardDescription className="text-gray-500">Segmentasi dan perilaku pelanggan</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="h-[400px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-violet-100 rounded-lg border-2 border-dashed border-purple-200">
+                                    <div className="h-[400px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-dashed border-purple-200">
                                         <div className="text-center">
-                                            <div className="w-16 h-16 bg-purple-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                            <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                                                 <Users className="w-8 h-8 text-white" />
                                             </div>
                                             <p className="font-medium text-gray-700">Analisis Pelanggan</p>
@@ -433,15 +512,15 @@ export default function SalesReportPage() {
 
                         <TabsContent value="analytics" className="space-y-6">
                             <div className="grid gap-6 lg:grid-cols-2">
-                                <Card>
+                                <Card className="border-0 shadow-lg">
                                     <CardHeader>
-                                        <CardTitle>Analisis Mendalam</CardTitle>
-                                        <CardDescription>Insights dan prediksi bisnis</CardDescription>
+                                        <CardTitle className="text-purple-900">Analisis Mendalam</CardTitle>
+                                        <CardDescription className="text-gray-500">Insights dan prediksi bisnis</CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="h-[300px] flex items-center justify-center bg-gradient-to-br from-orange-50 to-amber-100 rounded-lg border-2 border-dashed border-orange-200">
+                                        <div className="h-[300px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-dashed border-purple-200">
                                             <div className="text-center">
-                                                <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                                                <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                                                     <PieChart className="w-8 h-8 text-white" />
                                                 </div>
                                                 <p className="font-medium text-gray-700">Advanced Analytics</p>
@@ -451,40 +530,40 @@ export default function SalesReportPage() {
                                     </CardContent>
                                 </Card>
 
-                                <Card>
+                                <Card className="border-0 shadow-lg">
                                     <CardHeader>
-                                        <CardTitle>Performance Metrics</CardTitle>
-                                        <CardDescription>KPI dan target pencapaian</CardDescription>
+                                        <CardTitle className="text-purple-900">Performance Metrics</CardTitle>
+                                        <CardDescription className="text-gray-500">KPI dan target pencapaian</CardDescription>
                                     </CardHeader>
                                     <CardContent>
                                         <div className="space-y-4">
                                             <div className="space-y-2">
                                                 <div className="flex items-center justify-between text-sm">
-                                                    <span>Target Penjualan Bulanan</span>
-                                                    <span className="font-medium">75%</span>
+                                                    <span className="text-gray-500">Target Penjualan Bulanan</span>
+                                                    <span className="font-medium text-purple-900">75%</span>
                                                 </div>
-                                                <Progress value={75} />
+                                                <Progress value={75} className="bg-purple-100"/>
                                             </div>
                                             <div className="space-y-2">
                                                 <div className="flex items-center justify-between text-sm">
-                                                    <span>Kepuasan Pelanggan</span>
-                                                    <span className="font-medium">92%</span>
+                                                    <span className="text-gray-500">Kepuasan Pelanggan</span>
+                                                    <span className="font-medium text-purple-900">92%</span>
                                                 </div>
-                                                <Progress value={92} />
+                                                <Progress value={92} className="bg-purple-100" />
                                             </div>
                                             <div className="space-y-2">
                                                 <div className="flex items-center justify-between text-sm">
-                                                    <span>Conversion Rate</span>
-                                                    <span className="font-medium">68%</span>
+                                                    <span className="text-gray-500">Conversion Rate</span>
+                                                    <span className="font-medium text-purple-900">68%</span>
                                                 </div>
-                                                <Progress value={68} />
+                                                <Progress value={68} className="bg-purple-100" />
                                             </div>
                                             <div className="space-y-2">
                                                 <div className="flex items-center justify-between text-sm">
-                                                    <span>Return Rate</span>
-                                                    <span className="font-medium">15%</span>
+                                                    <span className="text-gray-500">Return Rate</span>
+                                                    <span className="font-medium text-purple-900">15%</span>
                                                 </div>
-                                                <Progress value={15} />
+                                                <Progress value={15} className="bg-purple-100" />
                                             </div>
                                         </div>
                                     </CardContent>

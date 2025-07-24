@@ -12,6 +12,7 @@ import UsersController from '#controllers/users_controller'
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import ReportSalesController from '#controllers/report_sales_controller'
+import ReportStockInsController from '#controllers/report_stock_ins_controller'
 router.on('/').renderInertia('home')
 
 router.group(() => {
@@ -27,6 +28,8 @@ router.group(() => {
     router.post('/logout', [AuthController, 'logout']).as('logout')
     router.resource('/users', UsersController).as('users').middleware(['auth', 'role:admin'])
     router.get('/report', [ReportSalesController, 'index']).as('report')
+    router.get('/report_stockin', [ReportStockInsController, 'index']).as('report_stock_in')
+
 })
 router.get('/login', [AuthController, 'index']).as('login')
 router.post('/login', [AuthController, 'store']).as('login.store')  

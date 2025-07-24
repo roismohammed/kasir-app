@@ -85,6 +85,8 @@ export default function CashierAppStatic() {
         notes: '',
         items: [],
     })
+    console.log(data);
+    
 
  const handleSubmitOrder = (e?: React.FormEvent) => {
     e?.preventDefault?.()
@@ -137,9 +139,11 @@ export default function CashierAppStatic() {
         }
     }, []);
 
+
     const isActive = (id: number) => {
         return activeCategory === id;
     }
+
 
     const handleAddToCart = (product: ProductProps) => {
         const existing = cartItems.find(item => item.id === product.id);

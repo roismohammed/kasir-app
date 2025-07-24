@@ -39,62 +39,64 @@ export default class SalesController {
    * Handle form submission for the create action
    */
   // Di controller backend
-async store({ request, response, session }: HttpContext) {
-  const {
-    invoice_number,
-    customer_id,
-    payment_type,
-    discount,
-    grand_total,
-    total_price,
-    tax,
-    notes,
-    items,
-  } = request.all();
-
-  if (!items || items.length === 0) {
-    session.flash('error', 'Tidak ada produk yang dipilih');
-    return response.redirect().back();
-  }
-
-  try {
-    const sale = await Sale.create({
+  async store({ request, response, session }: HttpContext) {
+    const {
       invoice_number,
-      customerId: customer_id,
+      customer_id,
       payment_type,
+      product_id,
       discount,
       grand_total,
       total_price,
       tax,
       notes,
-    });
+      items,
+    } = request.all();
 
-    for (const item of items) {
-      // Simpan detail item penjualan
-      await sale.related('product').create({
-        productId: item.product_id,
-        quantity: item.quantity,
-        price: item.price,
-        subtotal: item.subtotal,
-      });
-
-      // Kurangi stok produk
-      const product = await Product.find(item.product_id);
-      if (product) {
-        product.stock = product.stock - item.quantity;
-        await product.save();
-      }
+    if (!items || items.length === 0) {
+      session.flash('error', 'Tidak ada produk yang dipilih');
+      return response.redirect().back();
     }
 
-    session.flash('success', 'Penjualan berhasil disimpan');
-    return response.redirect().toRoute('sales.index');
+    try {
+      const sale = await Sale.create({
+        invoice_number,
+        customerId: customer_id,
+        product_id:items,
+        payment_type,
+        discount,
+        grand_total,
+        total_price,
+        tax,
+        notes,
+      });
 
-  } catch (error) {
-    console.error(error);
-    session.flash('error', 'Terjadi kesalahan saat menyimpan penjualan.');
-    return response.redirect().back();
+      for (const item of items) {
+        // Simpan detail item penjualan
+        await sale.related('product').create({
+          productId: item.product_id,
+          quantity: item.quantity,
+          price: item.price,
+          subtotal: item.subtotal,
+        });
+
+        // Kurangi stok produk
+        const product = await Product.find(item.product_id);
+        if (product) {
+          product.stock = product.stock - item.quantity;
+          await product.save();
+        }
+      }
+
+      session.flash('success', 'Penjualan berhasil disimpan');
+      return response.redirect().toRoute('sales.index');
+
+    } catch (error) {
+      console.error(error);
+      session.flash('error', 'Terjadi kesalahan saat menyimpan penjualan.');
+      return response.redirect().back();
+    }
   }
-}
 
 
 
