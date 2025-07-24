@@ -106,7 +106,7 @@ const data = {
       items: [
         {
           title: "Sales",
-          url: "#",
+          url: "/report",
         },
         {
           title: "Stock In/Out",
