@@ -28,23 +28,12 @@ export default class SalesController {
     return inertia.render('sales/index', { sales, products, categories })
   }
 
-  /**
-   * Display form to create a new record
-   */
-  async create({ inertia }: HttpContext) {
-    return inertia.render('sales/create')
-  }
-
-  /**
-   * Handle form submission for the create action
-   */
   // Di controller backend
   async store({ request, response, session }: HttpContext) {
     const {
       invoice_number,
       customer_id,
       payment_type,
-      product_id,
       discount,
       grand_total,
       total_price,
@@ -61,8 +50,7 @@ export default class SalesController {
     try {
       const sale = await Sale.create({
         invoice_number,
-        customerId: customer_id,
-        product_id:items,
+        customer_id,
         payment_type,
         discount,
         grand_total,
@@ -71,29 +59,18 @@ export default class SalesController {
         notes,
       });
 
-      for (const item of items) {
-        // Simpan detail item penjualan
-        await sale.related('product').create({
-          productId: item.product_id,
-          quantity: item.quantity,
-          price: item.price,
-          subtotal: item.subtotal,
-        });
+      const saleItems = items.map((item: any) => ({
+        sale_id: sale.id,
+        product_id: item.product_id,
+        quantity: item.quantity,
+      }));
 
-        // Kurangi stok produk
-        const product = await Product.find(item.product_id);
-        if (product) {
-          product.stock = product.stock - item.quantity;
-          await product.save();
-        }
-      }
+      await sale.related('product').createMany(saleItems);
 
       session.flash('success', 'Penjualan berhasil disimpan');
-      return response.redirect().toRoute('sales.index');
-
+      return response.redirect('/sales');
     } catch (error) {
-      console.error(error);
-      session.flash('error', 'Terjadi kesalahan saat menyimpan penjualan.');
+      session.flash('error', 'Penjualan gagal disimpan');
       return response.redirect().back();
     }
   }

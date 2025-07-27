@@ -76,7 +76,6 @@ export default function CashierAppStatic() {
         invoice_number: 'INV-' + Date.now(),
         customer_id: '',
         quantity: 1,
-        amount_paid: amountPaid,
         payment_type: 'cash',
         discount: 0,
         tax: 0,
@@ -112,7 +111,6 @@ export default function CashierAppStatic() {
         })),
         total_price: grandTotal,
         grand_total: grandTotal,
-        amount_paid: amountPaid,
     }))
 
     post('/sales', {
