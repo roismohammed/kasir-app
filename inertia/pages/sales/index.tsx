@@ -70,7 +70,7 @@ export default function CashierAppStatic() {
     const [cartItems, setCartItems] = useState<ProductProps[]>([])
     const [amountPaid, setAmountPaid] = useState(0);
     const [openModal, setOpenModal] = useState(false)
-    const [openSheet,setOpenSheet] = useState(false)
+    const [openSheet, setOpenSheet] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(null)
     const { data, setData, post, processing, reset, errors } = useForm({
         invoice_number: 'INV-' + Date.now(),
@@ -85,49 +85,48 @@ export default function CashierAppStatic() {
         items: [],
     })
     console.log(data);
+
+
+    const handleSubmitOrder = (e?: React.FormEvent) => {
+        e?.preventDefault?.()
+
+        if (!cartItems.length) {
+            toast.error('Keranjang masih kosong!')
+            return
+        }
+
+        if (!amountPaid || amountPaid < grandTotal) {
+            toast.error('Uang yang dibayar tidak cukup!')
+            return
+        }
+
+        // Update data sebelum kirim
+        setData((prev) => ({
+            ...prev,
+            items: cartItems.map(item => ({
+                product_id: item.id,
+                quantity: item.quantity || 1,
+                price: item.price,
+                subtotal: item.price * (item.quantity || 1)
+            })),
+            total_price: grandTotal,
+            grand_total: grandTotal,
+        }))
+
+        post('/sales', {
+            preserveScroll: true,
+            onSuccess: () => {
+                setOpenModal(true)
+                setOpenSheet(false)
+            },
+            onError: (errors) => {
+                console.error(errors)
+                toast.error('Terjadi kesalahan saat menyimpan transaksi.')
+            },
+        })
+    }
+
     
-
- const handleSubmitOrder = (e?: React.FormEvent) => {
-    e?.preventDefault?.()
-
-    if (!cartItems.length) {
-        toast.error('Keranjang masih kosong!')
-        return
-    }
-
-    if (!amountPaid || amountPaid < grandTotal) {
-        toast.error('Uang yang dibayar tidak cukup!')
-        return
-    }
-
-    // Update data sebelum kirim
-    setData((prev) => ({
-        ...prev,
-        items: cartItems.map(item => ({
-            product_id: item.id,
-            quantity: item.quantity || 1,
-            price: item.price,
-            subtotal: item.price * (item.quantity || 1)
-        })),
-        total_price: grandTotal,
-        grand_total: grandTotal,
-    }))
-
-    post('/sales', {
-        preserveScroll: true,
-        onSuccess: () => {
-            setOpenModal(true)
-            setOpenSheet(false)
-        },
-        onError: (errors) => {
-            console.error(errors)
-            toast.error('Terjadi kesalahan saat menyimpan transaksi.')
-        },
-    })
-}
-
-
-
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -183,6 +182,9 @@ export default function CashierAppStatic() {
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
     }
+
+
+    
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>

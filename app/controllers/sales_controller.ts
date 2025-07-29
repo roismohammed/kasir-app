@@ -7,6 +7,8 @@ export default class SalesController {
   /**
    * Display a list of resource
    */
+
+  
   async index({ inertia, request }: HttpContext) {
     const selectedCategoryId = request.input('category_id')
     const sales = await Sale.query()
