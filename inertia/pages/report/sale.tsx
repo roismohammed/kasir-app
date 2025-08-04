@@ -39,6 +39,8 @@ import {
     Clock,
 } from "lucide-react"
 import AppLayout from "~/layouts/app-layout"
+import { Head, usePage } from "@inertiajs/react"
+import { OrderData } from "~/types"
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -54,9 +56,15 @@ const breadcrumbs = [
     },
 ];
 export default function SalesReportPage() {
+    const { sale, total_penjualan,tota_product } = usePage<{ sale: OrderData[], total_penjualan: OrderData[], tota_product: OrderData[] }>().props
+    // console.log(tota_product);
+    const formatPrice = (price: number) => {
+        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
+    }
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Penjualan" />
             <div className="min-h-screen bg-background">
                 {/* Modern Purple Header */}
                 <div className="bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-8 shadow-lg rounded-lg">
@@ -123,7 +131,7 @@ export default function SalesReportPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">Rp 2.847.500.000</div>
+                                        <div className="text-2xl font-bold text-purple-900">{formatPrice(total_penjualan)}</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +12.5% dari bulan lalu
@@ -140,7 +148,7 @@ export default function SalesReportPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">1.247</div>
+                                        <div className="text-2xl font-bold text-purple-900">{tota_product}</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +8.2% dari bulan lalu
@@ -542,7 +550,7 @@ export default function SalesReportPage() {
                                                     <span className="text-gray-500">Target Penjualan Bulanan</span>
                                                     <span className="font-medium text-purple-900">75%</span>
                                                 </div>
-                                                <Progress value={75} className="bg-purple-100"/>
+                                                <Progress value={75} className="bg-purple-100" />
                                             </div>
                                             <div className="space-y-2">
                                                 <div className="flex items-center justify-between text-sm">
