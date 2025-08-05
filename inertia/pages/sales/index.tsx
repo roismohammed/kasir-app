@@ -16,6 +16,7 @@ import {
     ArrowRight,
     Hash,
     Calendar,
+    UploadCloud,
 } from "lucide-react";
 import AppLayout from "~/layouts/app-layout";
 import sajiku from '../../assets/image/makanan.jpeg'
@@ -45,6 +46,9 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { toast } from "sonner";
+import { cn } from "~/lib/utils";
+import { Input } from "~/components/ui/input";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -72,6 +76,8 @@ export default function CashierAppStatic() {
     const [openModal, setOpenModal] = useState(false)
     const [openSheet, setOpenSheet] = useState(false)
     const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(null)
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("")
+    // const [grandTotal, setGrandTotal] = useState(0)
     const { data, setData, post, processing, reset, errors } = useForm({
         invoice_number: 'INV-' + Date.now(),
         customer_id: '',
@@ -126,7 +132,7 @@ export default function CashierAppStatic() {
         })
     }
 
-    
+
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -184,7 +190,7 @@ export default function CashierAppStatic() {
     }
 
 
-    
+
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -394,76 +400,230 @@ export default function CashierAppStatic() {
                                                 Pilih Metode Pembayaran
                                             </h3>
                                             <div className="grid grid-cols-3 gap-3">
-                                                <button className="p-3 flex flex-col items-center justify-center border rounded-xl hover:border-purple-300 hover:bg-purple-50 transition-all">
+                                                {/* Kartu Button */}
+                                                <button className={cn(
+                                                    'p-3 flex flex-col items-center justify-center border rounded-xl',
+                                                    selectedPaymentMethod === 'card' ? 'bg-purple-50 border-purple-300' : 'hover:border-purple-300 hover:bg-purple-50 transition-all'
+                                                )} onClick={() => setSelectedPaymentMethod('card')}>
                                                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
                                                         <CreditCard className="w-5 h-5 text-blue-600" />
                                                     </div>
                                                     <span className="text-sm font-medium">Kartu</span>
                                                 </button>
-                                                <button className="p-3 flex flex-col items-center justify-center border rounded-xl hover:border-green-300 hover:bg-green-50 transition-all">
+
+                                                {/* Transfer Button */}
+                                                <button className={cn(
+                                                    'p-3 flex flex-col items-center justify-center border rounded-xl',
+                                                    selectedPaymentMethod === 'transfer' ? 'bg-green-50 border-green-300' : 'hover:border-green-300 hover:bg-green-50 transition-all'
+                                                )} onClick={() => setSelectedPaymentMethod('transfer')}>
                                                     <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2">
                                                         <Wallet className="w-5 h-5 text-green-600" />
                                                     </div>
                                                     <span className="text-sm font-medium">Transfer</span>
                                                 </button>
-                                                <button className="p-3 flex flex-col items-center justify-center border rounded-xl bg-blue-50 border-blue-200 hover:bg-blue-100 transition-all">
+
+                                                {/* Tunai Button */}
+                                                <button className={cn(
+                                                    'p-3 flex flex-col items-center justify-center border rounded-xl',
+                                                    selectedPaymentMethod === 'cash' ? 'bg-blue-50 border-blue-200' : 'hover:border-blue-300 hover:bg-blue-50 transition-all'
+                                                )} onClick={() => setSelectedPaymentMethod('cash')}>
                                                     <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
                                                         <Banknote className="w-5 h-5 text-blue-600" />
                                                     </div>
                                                     <span className="text-sm font-medium">Tunai</span>
                                                 </button>
                                             </div>
-                                        </div>
 
+                                            {/* Kartu Payment Form */}
+                                            {selectedPaymentMethod === "card" && (
+                                                <div className="mt-6 space-y-4 w-full">
+                                                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                        <CreditCard className="w-5 h-5 text-purple-600" />
+                                                        Pembayaran Kartu
+                                                    </h3>
 
-                                        <div className="space-y-4">
-                                            <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                <Banknote className="w-5 h-5 text-purple-600" />
-                                                Pembayaran Tunai
-                                            </h3>
+                                                    <div className="space-y-4">
+                                                        <div className="grid grid-cols-2 gap-4">
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="card-number" className="text-gray-700 font-medium">
+                                                                    Nomor Kartu
+                                                                </Label>
+                                                                <Input
+                                                                    id="card-number"
+                                                                    type="text"
+                                                                    placeholder="1234 5678 9012 3456"
+                                                                    className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
+                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
+                                                                />
+                                                            </div>
 
-                                            <div className="space-y-2">
-                                                <Label htmlFor="amount-paid" className="text-gray-700 font-medium">
-                                                    Jumlah Uang Diterima
-                                                </Label>
-                                                <div className="relative">
-                                                    {/* Label "Rp" di dalam input */}
-                                                    <span className="absolute text-lg left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none select-none ">
-                                                        Rp
-                                                    </span>
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="card-name" className="text-gray-700 font-medium">
+                                                                    Nama di Kartu
+                                                                </Label>
+                                                                <Input
+                                                                    id="card-name"
+                                                                    type="text"
+                                                                    placeholder="John Doe"
+                                                                    className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
+                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
+                                                                />
+                                                            </div>
+                                                        </div>
 
-                                                    <CurrencyInput
-                                                        name="amount-paid"
-                                                        autoComplete="off"
-                                                        value={amountPaid}
-                                                        onValueChange={(value) => {
-                                                            const numericValue = Number(value || 0)
-                                                            setAmountPaid(numericValue)
-                                                        }}
-                                                        id="amount-paid"
-                                                        type="text"
-                                                        placeholder="0"
-                                                        className="w-full text-lg py-2 pl-10 pr-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-    focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
-                                                    />
-                                                </div>
+                                                        <div className="grid grid-cols-3 gap-4">
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="expiry-date" className="text-gray-700 font-medium">
+                                                                    Masa Berlaku
+                                                                </Label>
+                                                                <Input
+                                                                    id="expiry-date"
+                                                                    type="text"
+                                                                    placeholder="MM/YY"
+                                                                    className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
+                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
+                                                                />
+                                                            </div>
 
-                                            </div>
-
-                                            {/* Change Calculation */}
-                                            <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 shadow-sm">
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex items-center gap-2">
-                                                        <RefreshCw className="w-4 h-4 text-green-600" />
-                                                        <span className="font-medium text-gray-700">Kembalian</span>
+                                                            <div className="space-y-2">
+                                                                <Label htmlFor="cvv" className="text-gray-700 font-medium">
+                                                                    CVV
+                                                                </Label>
+                                                                <Input
+                                                                    id="cvv"
+                                                                    type="text"
+                                                                    placeholder="123"
+                                                                    className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
+                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
+                                                                />
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                    <span className="text-2xl font-bold text-green-600">
-                                                        {formatPrice(Math.max(0, amountPaid - grandTotal))}
-                                                    </span>
                                                 </div>
-                                            </div>
-                                        </div>
+                                            )}
 
+                                            {/* Transfer Payment Form */}
+                                            {selectedPaymentMethod === "transfer" && (
+                                                <div className="mt-6 space-y-4 w-full">
+                                                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                        <Wallet className="w-5 h-5 text-purple-600" />
+                                                        Pembayaran Transfer
+                                                    </h3>
+
+                                                    <div className="space-y-4">
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="bank" className="text-gray-700 font-medium">
+                                                                Pilih Bank
+                                                            </Label>
+                                                            <Select>
+                                                                <SelectTrigger className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
+              focus:border-green-300 focus:ring-2 focus:ring-green-100">
+                                                                    <SelectValue placeholder="Pilih bank tujuan" />
+                                                                </SelectTrigger>
+                                                                <SelectContent>
+                                                                    <SelectItem value="bca">BCA</SelectItem>
+                                                                    <SelectItem value="mandiri">Mandiri</SelectItem>
+                                                                    <SelectItem value="bri">BRI</SelectItem>
+                                                                    <SelectItem value="bni">BNI</SelectItem>
+                                                                </SelectContent>
+                                                            </Select>
+                                                        </div>
+
+                                                        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
+                                                            <div className="flex items-center gap-3">
+                                                                <div className="bg-white p-2 rounded-lg border border-green-100">
+                                                                    <image
+                                                                        // src="/bank-icons/bca.png"
+                                                                        // alt="BCA"
+                                                                        width={40}
+                                                                        height={40}
+                                                                        className="object-contain"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-medium text-gray-700">Bank Central Asia</p>
+                                                                    <p className="text-sm text-gray-500">123-456-7890 (a.n. Toko Kita)</p>
+                                                                </div>
+                                                            </div>
+
+                                                            <div className="mt-4 space-y-2">
+                                                                <Label className="text-gray-700 font-medium">
+                                                                    Total Transfer
+                                                                </Label>
+                                                                <div className="text-2xl font-bold text-green-600">
+                                                                    {formatPrice(grandTotal)}
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div className="space-y-2">
+                                                            <Label htmlFor="transfer-proof" className="text-gray-700 font-medium">
+                                                                Unggah Bukti Transfer
+                                                            </Label>
+                                                            <div className="flex items-center justify-center w-full">
+                                                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-green-50 hover:border-green-200 transition-all">
+                                                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                                                        <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
+                                                                        <p className="text-sm text-gray-500">
+                                                                            <span className="font-semibold text-green-600">Klik untuk upload</span> atau drag & drop
+                                                                        </p>
+                                                                    </div>
+                                                                    <input id="transfer-proof" type="file" className="hidden" />
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Cash Payment Form */}
+                                            {selectedPaymentMethod === "cash" && (
+                                                <div className="mt-6 space-y-4 w-full">
+                                                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+                                                        <Banknote className="w-5 h-5 text-purple-600" />
+                                                        Pembayaran Tunai
+                                                    </h3>
+
+                                                    <div className="space-y-2">
+                                                        <Label htmlFor="amount-paid" className="text-gray-700 font-medium">
+                                                            Jumlah Uang Diterima
+                                                        </Label>
+                                                        <div className="relative">
+                                                            <span className="absolute text-lg left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none select-none">
+                                                                Rp
+                                                            </span>
+                                                            <CurrencyInput
+                                                                name="amount-paid"
+                                                                autoComplete="off"
+                                                                value={amountPaid}
+                                                                onValueChange={(value) => {
+                                                                    const numericValue = Number(value || 0)
+                                                                    setAmountPaid(numericValue)
+                                                                }}
+                                                                id="amount-paid"
+                                                                type="text"
+                                                                placeholder="0"
+                                                                className="w-full text-lg py-2 pl-10 pr-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
+              focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    {/* Change Calculation */}
+                                                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 shadow-sm w-full">
+                                                        <div className="flex justify-between items-center">
+                                                            <div className="flex items-center gap-2">
+                                                                <RefreshCw className="w-4 h-4 text-green-600" />
+                                                                <span className="font-medium text-gray-700">Kembalian</span>
+                                                            </div>
+                                                            <span className="text-2xl font-bold text-green-600">
+                                                                {formatPrice(Math.max(0, amountPaid - grandTotal))}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
 
                                     {/* Sticky Footer */}

@@ -104,7 +104,7 @@ const ProductPage = () => {
                             onClick={() =>
                                 setConfirm({
                                     open: true,
-                                    portrait url: `/products/${productId}`,
+                                    url: `/products/${productId}`,
                                 })
                             }
                         >
