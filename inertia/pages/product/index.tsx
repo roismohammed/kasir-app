@@ -1,14 +1,12 @@
-import { AddIcon, Delete02Icon, EditIcon, MoreHorizontalCircle01FreeIcons } from "@hugeicons/core-free-icons";
+import { AddIcon, Delete02Icon, EditIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Head, Link, usePage } from "@inertiajs/react";
 import { ColumnDef } from "@tanstack/react-table";
-import { log } from "node:console";
 import { useState } from "react";
 import { DataTable } from "~/components/datatable/table";
 import DeleteConfirmation from "~/components/delete-confirmation";
 import { PageTitle } from "~/components/page-title";
 import { Button } from "~/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "~/components/ui/dropdown-menu";
 import AppLayout from "~/layouts/app-layout";
 import { ProductProps } from "~/types";
 import { PaginatedData } from "~/types/datatable";

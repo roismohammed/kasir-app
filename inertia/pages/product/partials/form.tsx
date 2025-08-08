@@ -80,10 +80,10 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
                     className="mt-1"
                     type="file"
                     onChange={(e) => setData("image", e.target.files?.[0] || data.image)}
-                    error={errors.image}
+                    error={errors.image}    
                 />
-                {method === 'PUT' && product?.image && (
-                    <img src={product?.image} className="mt-2" />
+                {product?.image && (
+                    <img src={`/storage/products/${product?.image}`} className="mt-2 rounded-lg w-60" />
                 )}
             </div>
             <div>

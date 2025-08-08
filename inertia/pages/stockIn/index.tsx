@@ -202,7 +202,7 @@ const IndexStockIn = () => {
 
                     <div>
                       <p className="text-xs font-medium text-gray-500">Tanggal</p>
-                      <p className="text-base">{selectedStockIn.date}</p>
+                      <p className="text-base">{new Intl.DateTimeFormat('id-ID', { year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(selectedStockIn.date))}</p>
                     </div>
                   </div>
                 </div>
