@@ -1,18 +1,14 @@
 import { DateTime } from 'luxon'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import Customer from './customer.js'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
-import Product from './product.js'
-
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
+import SaleProduct from './sale_product.js'
 export default class Sale extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
   @column()
   declare invoice_number: string
-
-  @column({ columnName: 'product_id' })
-  declare productId: number
 
   @column({ columnName: 'customer_id' })
   declare customerId: number
@@ -38,8 +34,8 @@ export default class Sale extends BaseModel {
   @belongsTo(() => Customer)
   declare customer: BelongsTo<typeof Customer>
 
-  @belongsTo(() => Product)
-  declare product: BelongsTo<typeof Product>
+  @hasMany(() => SaleProduct)
+  declare saleProducts: HasMany<typeof SaleProduct>
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

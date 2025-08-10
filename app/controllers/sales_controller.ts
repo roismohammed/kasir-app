@@ -1,6 +1,7 @@
 import Category from '#models/category'
 import Product from '#models/product'
 import Sale from '#models/sale'
+import SaleProduct from '#models/sale_product'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class SalesController {
@@ -8,72 +9,70 @@ export default class SalesController {
    * Display a list of resource
    */
 
-  
+
+  // SaleController.ts
   async index({ inertia, request }: HttpContext) {
     const selectedCategoryId = request.input('category_id')
     const sales = await Sale.query()
       .preload('customer')
-      .preload('product', (product) => {
-        product.preload('category')
+      .preload('saleProducts', (saleProduct) => {
+        saleProduct.preload('product', (product) => {
+          product.preload('category')
+        })
       })
+
     const productsQuery = Product.query()
       .preload('category')
       .where('stock', '>', 0)
-
     if (selectedCategoryId) {
       productsQuery.where('category_id', selectedCategoryId)
     }
+
     const products = await productsQuery.exec()
     const categories = await Category.query().preload('products', (product) => {
-      product.select('id', 'name', 'stock').where('stock', '>', 0)
+      product
+        .select('id', 'name', 'stock')
+        .where('stock', '>', 0)
     })
-    return inertia.render('sales/index', { sales, products, categories })
-  }
 
-  // Di controller backend
-  async store({ request, response, session }: HttpContext) {
-    const {
-      invoice_number,
-      customer_id,
-      payment_type,
-      discount,
-      grand_total,
-      total_price,
-      tax,
-      notes,
-      items,
-    } = request.all();
+    return inertia.render('sales/index', {
+      sales,
+      products,
+      categories
+    })
+  }
+  async store({ request, response }: HttpContext) {
+    const payload = request.only([
+      'invoice_number',
+      'customer_id',
+      'payment_type',
+      'discount',
+      'grand_total',
+      'total_price',
+      'tax',
+      'notes',
+      'items',
+    ])
+
+    const { items, ...saleData } = payload
 
     if (!items || items.length === 0) {
-      session.flash('error', 'Tidak ada produk yang dipilih');
-      return response.redirect().back();
+      return response.badRequest({ message: 'Item produk tidak boleh kosong' })
     }
-
     try {
-      const sale = await Sale.create({
-        invoice_number,
-        customer_id,
-        payment_type,
-        discount,
-        grand_total,
-        total_price,
-        tax,
-        notes,
-      });
+      const sale = await Sale.create(saleData)
 
       const saleItems = items.map((item: any) => ({
-        sale_id: sale.id,
-        product_id: item.product_id,
+        saleId: sale.id,
+        productId: item.product_id,
         quantity: item.quantity,
-      }));
+        price: item.price,
+      }))
 
-      await sale.related('product').createMany(saleItems);
-
-      session.flash('success', 'Penjualan berhasil disimpan');
-      return response.redirect('/sales');
+      await SaleProduct.createMany(saleItems)
+      return response.redirect().toRoute('sales.index')
     } catch (error) {
-      session.flash('error', 'Penjualan gagal disimpan');
-      return response.redirect().back();
+      console.log(error);
     }
   }
 

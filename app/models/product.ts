@@ -6,6 +6,7 @@ import Unit from './unit.js'
 import StockIn from './stock_in.js'
 import StockOut from './stock_out.js'
 import Sale from './sale.js'
+import SaleProduct from './sale_product.js'
 
 export default class Product extends BaseModel {
   @column({ isPrimary: true })
@@ -26,9 +27,6 @@ export default class Product extends BaseModel {
   @column({ columnName: 'unit_id' })
   declare unitId: number
 
-  @column({ columnName: 'sale_id' })
-  declare saleId: number
-
   @column()
   declare price: string
 
@@ -47,9 +45,9 @@ export default class Product extends BaseModel {
   @hasMany(() => StockOut)
   declare stockOuts: HasMany<typeof StockOut>
 
-  @hasMany(() => Sale)
-  declare sales: HasMany<typeof Sale> 
-  
+  @hasMany(() => SaleProduct) // Ganti dari Sale langsung ke SaleProduct
+  declare saleProducts: HasMany<typeof SaleProduct>
+
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime
 

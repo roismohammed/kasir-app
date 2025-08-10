@@ -159,7 +159,7 @@ export default function SalesReportPage() {
 
                                 <Card className="border-0 shadow-lg">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                        <CardTitle className="text-sm font-medium text-gray-500">Pelanggan Baru</CardTitle>
+                                        <CardTitle className="text-sm font-medium text-gray-500">Product Terjual</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
                                             <Users className="h-4 w-4 text-purple-600" />
                                         </div>

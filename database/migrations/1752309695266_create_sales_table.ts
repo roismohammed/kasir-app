@@ -7,7 +7,6 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
       table.string('invoice_number').nullable().unique()
-      table.integer('product_id').unsigned().references('products.id').onDelete('CASCADE')
       table.integer('customer_id').unsigned().references('customers.id').onDelete('CASCADE').nullable()
       table.enum('payment_type', ['cash', 'card', 'qris']).notNullable()
       table.decimal('discount', 12, 2).defaultTo(0)
