@@ -41,6 +41,7 @@ import {
 import AppLayout from "~/layouts/app-layout"
 import { Head, usePage } from "@inertiajs/react"
 import { OrderData } from "~/types"
+import { ChartBarDefault } from "~/components/ui/chart-bar-default"
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -55,9 +56,26 @@ const breadcrumbs = [
         url: "/sales/order",
     },
 ];
+
+type PageProps = {
+    sale: OrderData[];
+    totalSales: number;
+    totalProducts: number;
+    totalSold: number;
+    productTerlaris: {
+        quantity: number;
+        trend?: string;
+        product: {
+            image: string;
+            name: string;
+            price: number;
+        };
+    }[];
+};
 export default function SalesReportPage() {
-    const { sale, total_penjualan,tota_product } = usePage<{ sale: OrderData[], total_penjualan: OrderData[], tota_product: OrderData[] }>().props
-    // console.log(tota_product);
+    const { totalSales, totalProducts, totalSold, productTerlaris, newTransaksi } = usePage<PageProps>().props
+    console.log(newTransaksi);
+
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
     }
@@ -131,7 +149,7 @@ export default function SalesReportPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">{formatPrice(total_penjualan)}</div>
+                                        <div className="text-2xl font-bold text-purple-900">{formatPrice(totalSales)}</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +12.5% dari bulan lalu
@@ -148,7 +166,7 @@ export default function SalesReportPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">{tota_product}</div>
+                                        <div className="text-2xl font-bold text-purple-900">{totalProducts}</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +8.2% dari bulan lalu
@@ -165,7 +183,7 @@ export default function SalesReportPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">342</div>
+                                        <div className="text-2xl font-bold text-purple-900">{totalSold}</div>
                                         <div className="flex items-center text-xs text-red-600 mt-1">
                                             <ArrowDownRight className="w-3 h-3 mr-1" />
                                             -2.1% dari bulan lalu
@@ -200,7 +218,7 @@ export default function SalesReportPage() {
                                         <CardDescription className="text-gray-500">Grafik penjualan dalam 30 hari terakhir</CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="h-[350px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-dashed border-purple-200">
+                                        {/* <div className="h-[350px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-dashed border-purple-200">
                                             <div className="text-center">
                                                 <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
                                                     <BarChart3 className="w-8 h-8 text-white" />
@@ -208,7 +226,8 @@ export default function SalesReportPage() {
                                                 <p className="font-medium text-gray-700">Grafik Tren Penjualan</p>
                                                 <p className="text-sm text-gray-500 mt-1">Visualisasi data penjualan harian</p>
                                             </div>
-                                        </div>
+                                        </div> */}
+                                        <ChartBarDefault/>
                                     </CardContent>
                                 </Card>
 
@@ -221,43 +240,19 @@ export default function SalesReportPage() {
                                     <CardContent>
                                         <ScrollArea className="h-[350px]">
                                             <div className="space-y-4">
-                                                {[
-                                                    {
-                                                        name: "Laptop Gaming ROG",
-                                                        sales: 127,
-                                                        revenue: "25.5M",
-                                                        color: "bg-purple-500",
-                                                        trend: "+15%",
-                                                    },
-                                                    {
-                                                        name: "iPhone 15 Pro Max",
-                                                        sales: 89,
-                                                        revenue: "18.2M",
-                                                        color: "bg-blue-500",
-                                                        trend: "+12%",
-                                                    },
-                                                    { name: "MacBook Pro M3", sales: 76, revenue: "15.8M", color: "bg-emerald-500", trend: "+8%" },
-                                                    {
-                                                        name: "Samsung Galaxy S24",
-                                                        sales: 64,
-                                                        revenue: "12.1M",
-                                                        color: "bg-orange-500",
-                                                        trend: "+5%",
-                                                    },
-                                                    { name: 'iPad Pro 12.9"', sales: 52, revenue: "9.8M", color: "bg-red-500", trend: "+3%" },
-                                                ].map((product, index) => (
-                                                    <div key={index} className="flex items-center justify-between p-3 rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors">
+                                                {productTerlaris.map((product, index) => (
+                                                    <div key={index} className="flex items-center justify-between p-2 rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors">
                                                         <div className="flex items-center space-x-3">
-                                                            <div className={`w-10 h-10 ${product.color} rounded-lg flex items-center justify-center`}>
-                                                                <Package className="w-5 h-5 text-white" />
+                                                            <div className="w-12 h-12 flex items-center justify-center">
+                                                                <img src={'/storage/products/' + product.product.image} alt={product.product.name} className="w-full h-full object-cover rounded-md" />
                                                             </div>
                                                             <div>
-                                                                <p className="font-medium text-sm text-gray-900">{product.name}</p>
-                                                                <p className="text-xs text-gray-500">{product.sales} terjual</p>
+                                                                <p className="font-medium text-sm text-gray-900">{product.product.name}</p>
+                                                                <p className="text-xs text-gray-500">{product.quantity} terjual</p>
                                                             </div>
                                                         </div>
                                                         <div className="text-right">
-                                                            <p className="font-semibold text-sm text-purple-900">Rp {product.revenue}</p>
+                                                            <p className="font-semibold text-sm text-purple-900">Rp {product.product.price}</p>
                                                             <p className="text-xs text-emerald-600">{product.trend}</p>
                                                         </div>
                                                     </div>
@@ -299,82 +294,30 @@ export default function SalesReportPage() {
                                             <TableHeader className="bg-purple-50">
                                                 <TableRow className="hover:bg-transparent">
                                                     <TableHead className="font-medium text-gray-500">Pesanan</TableHead>
-                                                    <TableHead className="font-medium text-gray-500">Pelanggan</TableHead>
                                                     <TableHead className="font-medium text-gray-500">Produk</TableHead>
                                                     <TableHead className="font-medium text-gray-500">Tanggal</TableHead>
-                                                    <TableHead className="font-medium text-gray-500">Status</TableHead>
+                                                    
                                                     <TableHead className="font-medium text-gray-500 text-right">Total</TableHead>
                                                     <TableHead className="w-[50px]"></TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody className="bg-white">
-                                                {[
-                                                    {
-                                                        id: "#ORD-2024-001",
-                                                        customer: { name: "Ahmad Rizki", email: "ahmad.rizki@email.com", avatar: "AR" },
-                                                        product: "Laptop Gaming ROG Strix",
-                                                        date: "24 Jan 2024",
-                                                        status: "completed",
-                                                        total: "25,500,000",
-                                                        location: "Jakarta",
-                                                    },
-                                                    {
-                                                        id: "#ORD-2024-002",
-                                                        customer: { name: "Siti Nurhaliza", email: "siti.nur@email.com", avatar: "SN" },
-                                                        product: "iPhone 15 Pro Max 256GB",
-                                                        date: "24 Jan 2024",
-                                                        status: "processing",
-                                                        total: "22,999,000",
-                                                        location: "Bandung",
-                                                    },
-                                                    {
-                                                        id: "#ORD-2024-003",
-                                                        customer: { name: "Budi Santoso", email: "budi.santoso@email.com", avatar: "BS" },
-                                                        product: 'MacBook Pro M3 14"',
-                                                        date: "23 Jan 2024",
-                                                        status: "shipped",
-                                                        total: "28,999,000",
-                                                        location: "Surabaya",
-                                                    },
-                                                    {
-                                                        id: "#ORD-2024-004",
-                                                        customer: { name: "Maya Sari", email: "maya.sari@email.com", avatar: "MS" },
-                                                        product: "Samsung Galaxy S24 Ultra",
-                                                        date: "23 Jan 2024",
-                                                        status: "completed",
-                                                        total: "18,999,000",
-                                                        location: "Medan",
-                                                    },
-                                                    {
-                                                        id: "#ORD-2024-005",
-                                                        customer: { name: "Dedi Kurniawan", email: "dedi.k@email.com", avatar: "DK" },
-                                                        product: 'iPad Pro 12.9" M2',
-                                                        date: "22 Jan 2024",
-                                                        status: "cancelled",
-                                                        total: "16,999,000",
-                                                        location: "Yogyakarta",
-                                                    },
-                                                ].map((order) => (
+                                                {newTransaksi.map((order) => (
                                                     <TableRow
                                                         key={order.id}
                                                         className="border-t hover:bg-purple-50 transition-colors"
                                                     >
                                                         <TableCell className="font-medium text-purple-900">
-                                                            {order.id}
+                                                            {order.sale.invoiceNumber}
                                                         </TableCell>
                                                         <TableCell>
                                                             <div className="flex items-center space-x-3">
-                                                                <Avatar className="h-8 w-8 bg-purple-100">
-                                                                    <AvatarFallback className="text-xs text-purple-600">
-                                                                        {order.customer.avatar}
-                                                                    </AvatarFallback>
-                                                                </Avatar>
+                                                                <div className="w-12 h-12 flex items-center justify-center">
+                                                                    <img src={`/storage/products/${order.product.image}`} alt={order.product.name} className="w-full h-full object-cover rounded-md" />
+                                                                </div>
                                                                 <div>
                                                                     <p className="font-medium text-sm text-gray-900">
-                                                                        {order.customer.name}
-                                                                    </p>
-                                                                    <p className="text-xs text-gray-500">
-                                                                        {order.customer.email}
+                                                                        {order.product.name}
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -382,44 +325,20 @@ export default function SalesReportPage() {
                                                         <TableCell>
                                                             <div>
                                                                 <p className="font-medium text-sm text-gray-900">
-                                                                    {order.product}
+                                                                    {new Intl.DateTimeFormat('id-ID', { dateStyle: 'short' }).format(new Date(order.sale.createdAt))}
                                                                 </p>
-                                                                <div className="flex items-center text-xs text-gray-500 mt-1">
-                                                                    <MapPin className="w-3 h-3 mr-1" />
-                                                                    {order.location}
-                                                                </div>
                                                             </div>
                                                         </TableCell>
                                                         <TableCell>
                                                             <div className="flex items-center text-sm text-gray-500">
-                                                                <Clock className="w-3 h-3 mr-1" />
-                                                                {order.date}
+                                                                {order.createdAt}
                                                             </div>
                                                         </TableCell>
                                                         <TableCell>
-                                                            <Badge
-                                                                variant={
-                                                                    order.status === "completed"
-                                                                        ? "default"
-                                                                        : order.status === "processing"
-                                                                            ? "secondary"
-                                                                            : order.status === "shipped"
-                                                                                ? "outline"
-                                                                                : "destructive"
-                                                                }
-                                                                className="capitalize"
-                                                            >
-                                                                {order.status === "completed"
-                                                                    ? "Selesai"
-                                                                    : order.status === "processing"
-                                                                        ? "Diproses"
-                                                                        : order.status === "shipped"
-                                                                            ? "Dikirim"
-                                                                            : "Dibatalkan"}
-                                                            </Badge>
+
                                                         </TableCell>
                                                         <TableCell className="text-right font-semibold text-purple-900">
-                                                            Rp {order.total}
+                                                            Rp {order.price.toLocaleString('id-ID')}
                                                         </TableCell>
                                                         <TableCell>
                                                             <DropdownMenu>

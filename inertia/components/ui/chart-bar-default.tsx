@@ -39,9 +39,9 @@ const chartConfig = {
 
 export function ChartBarDefault() {
   return (
-    <Card>
+    <Card className="shadow-none">
       <CardHeader>
-        <CardTitle>Product Terlaris</CardTitle>
+        {/* <CardTitle>Product Terlaris</CardTitle> */}
         <CardDescription>January - June 2024</CardDescription>
       </CardHeader>
       <CardContent>

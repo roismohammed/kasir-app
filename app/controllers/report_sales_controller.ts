@@ -1,4 +1,5 @@
 import Sale from '#models/sale'
+import SaleProduct from '#models/sale_product'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class ReportSalesController {
@@ -6,18 +7,29 @@ export default class ReportSalesController {
    * Display a list of resource
    */
   async index({ inertia }: HttpContext) {
-    const sale = await Sale.query().paginate(1, 10)
+    const sales = await Sale.query().paginate(1, 10)
+    const totalSalesResult = await Sale.query().sum('total_price as total')
+    const totalSales = totalSalesResult[0].$extras.total
+    const totalSalesCountResult = await Sale.query().count('* as total')
+    const totalProducts = totalSalesCountResult[0].$extras.total
+    const totalProductsSoldResult = await SaleProduct.query().sum('quantity as total')
+    const totalSold = totalProductsSoldResult[0].$extras.total
 
-    // Hitung total uang penjualan dari semua data tanpa pagination
-    const totalPenjualanResult = await Sale.query().sum('total_price as total')
-    const total_penjualan = totalPenjualanResult[0].$extras.total
-    const tota_productResult = await Sale.query().count('* as total')
-    const tota_product = tota_productResult[0].$extras.total
+    const productTerlaris = await SaleProduct.query()
+      .preload('product')
+      .select('product_id', 'quantity')
+      .groupBy('product_id')
+      .orderByRaw('SUM(quantity) DESC')
+      .limit(5)
 
+    const newTransaksi = await SaleProduct.query().preload('product').preload('sale').limit(5).orderBy('created_at', 'desc')
     return inertia.render('report/sale', {
-      sale,
-      total_penjualan,
-      tota_product
+      sales,
+      totalSales,
+      totalProducts,
+      totalSold,
+      productTerlaris,
+      newTransaksi
     })
   }
 

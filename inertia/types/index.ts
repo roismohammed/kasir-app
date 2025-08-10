@@ -123,3 +123,10 @@ export interface OrderItem {
   price: number
   subtotal: number
 }
+type PageProps = {
+  sale: OrderData[];
+  totalSales: number;        // total uang hasil penjualan
+  totalProducts: number;     // jumlah produk di katalog
+  totalSold: number;         // jumlah unit terjual
+  productTerlaris: OrderData[];
+};
