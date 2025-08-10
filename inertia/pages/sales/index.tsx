@@ -75,7 +75,6 @@ export default function CashierAppStatic() {
     const [amountPaid, setAmountPaid] = useState(0);
     const [openModal, setOpenModal] = useState(false)
     const [openSheet, setOpenSheet] = useState(false)
-    const [selectedProduct, setSelectedProduct] = useState<ProductProps | null>(null)
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("")
     // const [grandTotal, setGrandTotal] = useState(0)
     const { data, setData, post, processing, reset, errors } = useForm({
