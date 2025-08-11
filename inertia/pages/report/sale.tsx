@@ -71,24 +71,24 @@ type PageProps = {
             price: number;
         };
     }[];
-     newTransaksi: {
+    newTransaksi: {
         id: number;
         sale: {
             invoiceNumber: string;
-            createdAt: string; // atau Date kalau mau langsung tipe Date
+            createdAt: string;
         };
         product: {
             image: string;
             name: string;
         };
-        createdAt: string; // atau Date
+        createdAt: string;
         price: number;
     }[];
 };
 
 export default function SalesReportPage() {
-    const { totalSales, totalProducts, totalSold, productTerlaris, newTransaksi } = usePage<PageProps>().props
-    console.log(newTransaksi);
+    const { totalSales, totalProducts, totalSold, productTerlaris, newTransaksi,perMonth } = usePage<PageProps>().props
+    console.log(perMonth);
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
@@ -232,16 +232,9 @@ export default function SalesReportPage() {
                                         <CardDescription className="text-gray-500">Grafik penjualan dalam 30 hari terakhir</CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                        {/* <div className="h-[350px] flex items-center justify-center bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg border-2 border-dashed border-purple-200">
-                                            <div className="text-center">
-                                                <div className="w-16 h-16 bg-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                                                    <BarChart3 className="w-8 h-8 text-white" />
-                                                </div>
-                                                <p className="font-medium text-gray-700">Grafik Tren Penjualan</p>
-                                                <p className="text-sm text-gray-500 mt-1">Visualisasi data penjualan harian</p>
-                                            </div>
-                                        </div> */}
-                                        <ChartBarDefault/>
+                                  <ChartBarDefault  />
+
+
                                     </CardContent>
                                 </Card>
 
@@ -310,85 +303,85 @@ export default function SalesReportPage() {
                                                     <TableHead className="font-medium text-gray-500">Pesanan</TableHead>
                                                     <TableHead className="font-medium text-gray-500">Produk</TableHead>
                                                     <TableHead className="font-medium text-gray-500">Tanggal</TableHead>
-                                                    
+
                                                     <TableHead className="font-medium text-gray-500 text-right">Total</TableHead>
                                                     <TableHead className="w-[50px]"></TableHead>
                                                 </TableRow>
                                             </TableHeader>
                                             <TableBody className="bg-white">
-                                                    {newTransaksi.map((order) => (
-                                                        <TableRow
-                                                            key={order.id}
-                                                            className="border-t hover:bg-purple-50 transition-colors"
-                                                        >
-                                                            <TableCell className="font-medium text-purple-900">
-                                                                {order.sale.invoiceNumber}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <div className="flex items-center space-x-3">
-                                                                    <div className="w-12 h-12 flex items-center justify-center">
-                                                                        <img src={`/storage/products/${order.product.image}`} alt={order.product.name} className="w-full h-full object-cover rounded-md" />
-                                                                    </div>
-                                                                    <div>
-                                                                        <p className="font-medium text-sm text-gray-900">
-                                                                            {order.product.name}
-                                                                        </p>
-                                                                    </div>
+                                                {newTransaksi.map((order) => (
+                                                    <TableRow
+                                                        key={order.id}
+                                                        className="border-t hover:bg-purple-50 transition-colors"
+                                                    >
+                                                        <TableCell className="font-medium text-purple-900">
+                                                            {order.sale.invoiceNumber}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center space-x-3">
+                                                                <div className="w-12 h-12 flex items-center justify-center">
+                                                                    <img src={`/storage/products/${order.product.image}`} alt={order.product.name} className="w-full h-full object-cover rounded-md" />
                                                                 </div>
-                                                            </TableCell>
-                                                            <TableCell>
                                                                 <div>
                                                                     <p className="font-medium text-sm text-gray-900">
-                                                                        {new Intl.DateTimeFormat('id-ID', { dateStyle: 'short' }).format(new Date(order.sale.createdAt))}
+                                                                        {order.product.name}
                                                                     </p>
                                                                 </div>
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <div className="flex items-center text-sm text-gray-500">
-                                                                    {order.createdAt}
-                                                                </div>
-                                                            </TableCell>
-                                                            <TableCell>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div>
+                                                                <p className="font-medium text-sm text-gray-900">
+                                                                    {new Intl.DateTimeFormat('id-ID', { dateStyle: 'short' }).format(new Date(order.sale.createdAt))}
+                                                                </p>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <div className="flex items-center text-sm text-gray-500">
+                                                                {order.createdAt}
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>
 
-                                                            </TableCell>
-                                                            <TableCell className="text-right font-semibold text-purple-900">
-                                                                Rp {order.price.toLocaleString('id-ID')}
-                                                            </TableCell>
-                                                            <TableCell>
-                                                                <DropdownMenu>
-                                                                    <DropdownMenuTrigger asChild>
-                                                                        <Button
-                                                                            variant="ghost"
-                                                                            className="h-8 w-8 p-0 hover:bg-purple-100"
-                                                                        >
-                                                                            <MoreHorizontal className="h-4 w-4" />
-                                                                            <span className="sr-only">Open menu</span>
-                                                                        </Button>
-                                                                    </DropdownMenuTrigger>
-                                                                    <DropdownMenuContent
-                                                                        align="end"
-                                                                        className="w-48 bg-white border-gray-200"
+                                                        </TableCell>
+                                                        <TableCell className="text-right font-semibold text-purple-900">
+                                                            Rp {order.price.toLocaleString('id-ID')}
+                                                        </TableCell>
+                                                        <TableCell>
+                                                            <DropdownMenu>
+                                                                <DropdownMenuTrigger asChild>
+                                                                    <Button
+                                                                        variant="ghost"
+                                                                        className="h-8 w-8 p-0 hover:bg-purple-100"
                                                                     >
-                                                                        <DropdownMenuLabel className="text-gray-900">
-                                                                            Aksi
-                                                                        </DropdownMenuLabel>
-                                                                        <DropdownMenuItem className="hover:bg-purple-50">
-                                                                            <Eye className="mr-2 h-4 w-4" />
-                                                                            <span>Lihat Detail</span>
-                                                                        </DropdownMenuItem>
-                                                                        <DropdownMenuItem className="hover:bg-purple-50">
-                                                                            <FileText className="mr-2 h-4 w-4" />
-                                                                            <span>Download Invoice</span>
-                                                                        </DropdownMenuItem>
-                                                                        <DropdownMenuSeparator className="bg-gray-200" />
-                                                                        <DropdownMenuItem className="text-red-600 hover:bg-red-50">
-                                                                            <span>Batalkan Pesanan</span>
-                                                                        </DropdownMenuItem>
-                                                                    </DropdownMenuContent>
-                                                                </DropdownMenu>
-                                                            </TableCell>
-                                                        </TableRow>
-                                                    ))}
+                                                                        <MoreHorizontal className="h-4 w-4" />
+                                                                        <span className="sr-only">Open menu</span>
+                                                                    </Button>
+                                                                </DropdownMenuTrigger>
+                                                                <DropdownMenuContent
+                                                                    align="end"
+                                                                    className="w-48 bg-white border-gray-200"
+                                                                >
+                                                                    <DropdownMenuLabel className="text-gray-900">
+                                                                        Aksi
+                                                                    </DropdownMenuLabel>
+                                                                    <DropdownMenuItem className="hover:bg-purple-50">
+                                                                        <Eye className="mr-2 h-4 w-4" />
+                                                                        <span>Lihat Detail</span>
+                                                                    </DropdownMenuItem>
+                                                                    <DropdownMenuItem className="hover:bg-purple-50">
+                                                                        <FileText className="mr-2 h-4 w-4" />
+                                                                        <span>Download Invoice</span>
+                                                                    </DropdownMenuItem>
+                                                                    <DropdownMenuSeparator className="bg-gray-200" />
+                                                                    <DropdownMenuItem className="text-red-600 hover:bg-red-50">
+                                                                        <span>Batalkan Pesanan</span>
+                                                                    </DropdownMenuItem>
+                                                                </DropdownMenuContent>
+                                                            </DropdownMenu>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                ))}
                                             </TableBody>
                                         </Table>
                                     </div>

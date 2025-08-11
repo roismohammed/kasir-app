@@ -1,7 +1,6 @@
 import Sale from '#models/sale'
 import SaleProduct from '#models/sale_product'
 import type { HttpContext } from '@adonisjs/core/http'
-
 export default class ReportSalesController {
   /**
    * Display a list of resource
@@ -22,6 +21,11 @@ export default class ReportSalesController {
       .orderByRaw('SUM(quantity) DESC')
       .limit(5)
 
+   const perMonth = await SaleProduct
+      .query()
+      .sum('quantity as total')
+      .groupByRaw('MONTH(created_at)')
+      .orderByRaw('MONTH(created_at)')
     const newTransaksi = await SaleProduct.query().preload('product').preload('sale').limit(5).orderBy('created_at', 'desc')
     return inertia.render('report/sale', {
       sales,
@@ -29,7 +33,8 @@ export default class ReportSalesController {
       totalProducts,
       totalSold,
       productTerlaris,
-      newTransaksi
+      newTransaksi,
+      perMonth
     })
   }
 
