@@ -123,6 +123,7 @@ export default function CashierAppStatic() {
             onSuccess: () => {
                 setOpenModal(true)
                 setOpenSheet(false)
+                setCartItems([])
             },
             onError: (errors) => {
                 console.error(errors)
