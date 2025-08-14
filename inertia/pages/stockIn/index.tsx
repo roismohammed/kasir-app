@@ -1,4 +1,4 @@
-import { AddIcon, Delete02Icon, EditIcon, MoreHorizontalCircle01FreeIcons, ViewFreeIcons } from "@hugeicons/core-free-icons"
+import { AddIcon, Delete02Icon, EditIcon, ViewFreeIcons } from "@hugeicons/core-free-icons"
 import { HugeiconsIcon } from "@hugeicons/react"
 import { Head, Link, usePage } from "@inertiajs/react"
 import { useState } from "react"
@@ -47,8 +47,8 @@ const IndexStockIn = () => {
       accessorKey: "products.image",
       header: "Gambar",
       cell: ({ row }) => {
-        const image = row.original.products.image
-        const name = row.original.products.name
+        const image:string = row.original.products[0]?.image
+        const name:string = row.original.products[0]?.name
 
         return (
           <div className="flex items-center gap-2">
@@ -83,7 +83,7 @@ const IndexStockIn = () => {
     },
     {
       id: "actions",
-      header: ({ table }) => {
+      header: () => {
         return (
           <p className="flex justify-end px-10">
             Aksi
@@ -163,16 +163,16 @@ const IndexStockIn = () => {
               <div className="w-full bg-gray-50 p-3 flex justify-center border-b rounded-md">
                 <img
                   className="rounded-lg object-cover h-48 w-auto"
-                  src={'/storage/products/' + selectedStockIn.products.image}
-                  alt={selectedStockIn.products.name}
+                  src={'/storage/products/' + selectedStockIn.products[0]?.image}
+                  alt={selectedStockIn.products[0]?.name}
                 />
               </div>
 
               {/* Informasi Produk */}
               <div className="p-4 space-y-4">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800">{selectedStockIn.products.name}</h2>
-                  <p className="text-sm text-gray-500 mt-1">Barcode: {selectedStockIn.products.barcode}</p>
+                  <h2 className="text-xl font-semibold text-gray-800">{selectedStockIn.products[0].name}</h2>
+                  <p className="text-sm text-gray-500 mt-1">Barcode: {selectedStockIn.products[0].barcode}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -181,13 +181,13 @@ const IndexStockIn = () => {
                     <div>
                       <p className="text-xs font-medium text-gray-500">Stok Saat Ini</p>
                       <p className="text-base">
-                        {selectedStockIn.products.stock} {selectedStockIn.unit?.name}
+                        {selectedStockIn.products[0]?.stock} {selectedStockIn.unit[0]?.name}
                       </p>
                     </div>
 
                     <div>
                       <p className="text-xs font-medium text-gray-500">Satuan</p>
-                      <p className="text-base">{selectedStockIn.unit?.name || '-'}</p>
+                      <p className="text-base">{selectedStockIn.unit[0]?.name || '-'}</p>
                     </div>
                   </div>
 
@@ -196,7 +196,7 @@ const IndexStockIn = () => {
                     <div>
                       <p className="text-xs font-medium text-gray-500">Stok Masuk</p>
                       <p className="text-base font-medium text-green-600">
-                        +{selectedStockIn.quantity} {selectedStockIn.unit?.name}
+                        +{selectedStockIn.quantity} {selectedStockIn.unit[0]?.name}
                       </p>
                     </div>
 
@@ -211,7 +211,7 @@ const IndexStockIn = () => {
                 <div className="pt-2 space-y-3">
                   <div>
                     <p className="text-xs font-medium text-gray-500">Supplier</p>
-                    <p className="text-base">{selectedStockIn.supplier?.name || '-'}</p>
+                    <p className="text-base">{selectedStockIn.supplier[0]?.name || '-'}</p>
                   </div>
 
                   <div>
