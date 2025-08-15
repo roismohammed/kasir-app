@@ -67,6 +67,14 @@ const IndexStockOut = () => {
     {
       accessorKey: "quantity",
       header: "Qty",
+      cell: ({ getValue }) => {
+        const qty = getValue() as number;
+        return (
+          <span className="inline-block text-sm px-2 py-1 rounded-md bg-red-100 text-red-700 font-semibold">
+            -{qty}
+          </span>
+        );
+      }
     },
     {
       accessorKey: "description",

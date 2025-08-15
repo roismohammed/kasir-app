@@ -113,6 +113,11 @@ export default class StockOutsController {
   async destroy({ params, session, response }: HttpContext) {
     try {
       const stockOut = await StockOut.findOrFail(params.id)
+
+      const product = await Product.findOrFail(stockOut.productId)
+      product.stock += stockOut.quantity
+      await product.save()
+
       await stockOut.delete()
 
       session.flash('Success', 'Data berhasil di hapus ')

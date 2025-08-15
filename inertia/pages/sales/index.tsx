@@ -76,7 +76,6 @@ export default function CashierAppStatic() {
     const [openModal, setOpenModal] = useState(false)
     const [openSheet, setOpenSheet] = useState(false)
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("")
-    // const [grandTotal, setGrandTotal] = useState(0)
     const { data, setData, post, processing, reset, errors } = useForm({
         invoice_number: 'INV-' + Date.now(),
         customer_id: '',
@@ -279,7 +278,7 @@ export default function CashierAppStatic() {
                                     </div>
                                 ))
                             ) : (
-                                <div className="p-4 w-full flex flex-col items-center justify-center border border-slate-200 ">
+                                <div className="p-4 w-full flex flex-col items-center justify-center border border-slate-200 rounded-lg">
                                     <h3 className="font-semibold text-gray-800 mb-1 text-center self-center">
                                         Belum ada produk
                                     </h3>
