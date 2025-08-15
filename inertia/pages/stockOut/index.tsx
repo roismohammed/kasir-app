@@ -16,7 +16,7 @@ import { Dialog, DialogContent, DialogTitle } from "~/components/ui/dialog"
 const IndexStockOut = () => {
   const { stock_out } = usePage<{ stock_out: PaginatedData<StockOutProps> }>().props
   const [modalOpen, setModalOpen] = useState(false);
-  const [selectedStockIn, setSelectedStockIn] = useState<StockInProps | null>(null);
+  const [selectedStockIn, setSelectedStockIn] = useState<StockOutProps | null>(null);
   const [confirm, setConfirm] = useState({
     open: false,
     url: '',
@@ -32,7 +32,7 @@ const IndexStockOut = () => {
     },
   ]
 
-  const handleOpenModal = (stock: StockInProps) => {
+  const handleOpenModal = (stock: StockOutProps) => {
     setSelectedStockIn(stock);
     setModalOpen(true);
   };
@@ -41,6 +41,24 @@ const IndexStockOut = () => {
     {
       accessorKey: "products.barcode",
       header: "Barcode",
+    },
+      {
+      accessorKey: "products.image",
+      header: "Gambar",
+      cell: ({ row }) => {
+        const image:string = row.original.products?.image
+        const name:string = row.original.products?.name
+
+        return (
+          <div className="flex items-center gap-2">
+            <img
+              src={image ? `/storage/products/${image}` : '/images/placeholder-product.svg'}
+              className="h-12 w-12 object-cover rounded-md"
+              alt={name}
+            />
+          </div>
+        )
+      }
     },
     {
       accessorKey: "products.name",
@@ -149,16 +167,16 @@ const IndexStockOut = () => {
               <div className="w-full bg-gray-50 p-3 flex justify-center border-b rounded-md">
                 <img
                   className="rounded-lg object-cover h-48 w-auto"
-                  src={'/storage/products/' + selectedStockIn.products[0]?.image}
-                  alt={selectedStockIn.products[0]?.name}
+                  src={'/storage/products/' + selectedStockIn.products?.image}
+                  alt={selectedStockIn.products?.name}
                 />
               </div>
 
               {/* Informasi Produk */}
               <div className="p-4 space-y-4">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-800">{selectedStockIn.products[0]?.name}</h2>
-                  <p className="text-sm text-gray-500 mt-1">Barcode: {selectedStockIn.products[0]?.barcode}</p>
+                  <h2 className="text-xl font-semibold text-gray-800">{selectedStockIn.products?.name}</h2>
+                  <p className="text-sm text-gray-500 mt-1">Barcode: {selectedStockIn.products?.barcode}</p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -167,13 +185,13 @@ const IndexStockOut = () => {
                     <div>
                       <p className="text-xs font-medium text-gray-500">Stok Saat Ini</p>
                       <p className="text-base">
-                        {selectedStockIn.products[0]?.stock} {selectedStockIn.unit[0]?.name}
+                        {selectedStockIn.products?.stock} {selectedStockIn.unit?.name}
                       </p>
                     </div>
 
                     <div>
                       <p className="text-xs font-medium text-gray-500">Satuan</p>
-                      <p className="text-base">{selectedStockIn.unit[0]?.name || '-'}</p>
+                      <p className="text-base">{selectedStockIn.unit?.name || '-'}</p>
                     </div>
                   </div>
 
@@ -182,7 +200,7 @@ const IndexStockOut = () => {
                     <div>
                       <p className="text-xs font-medium text-gray-500">Stok keluar</p>
                       <p className="text-base font-medium text-red-500">
-                        -{selectedStockIn.quantity} {selectedStockIn.unit[0]?.name}
+                        -{selectedStockIn.quantity} {selectedStockIn.unit?.name}
                       </p>
                     </div>
 
@@ -197,7 +215,7 @@ const IndexStockOut = () => {
                 <div className="pt-2 space-y-3">
                   <div>
                     <p className="text-xs font-medium text-gray-500">Supplier</p>
-                    <p className="text-base">{selectedStockIn.supplier[0]?.name || '-'}</p>
+                    <p className="text-base">{selectedStockIn.supplier?.name || '-'}</p>
                   </div>
 
                   <div>

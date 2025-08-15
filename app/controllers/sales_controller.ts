@@ -5,12 +5,6 @@ import SaleProduct from '#models/sale_product'
 import type { HttpContext } from '@adonisjs/core/http'
 
 export default class SalesController {
-  /**
-   * Display a list of resource
-   */
-
-
-  // SaleController.ts
   async index({ inertia, request }: HttpContext) {
     const selectedCategoryId = request.input('category_id')
     const sales = await Sale.query()
@@ -29,12 +23,7 @@ export default class SalesController {
     }
 
     const products = await productsQuery.exec()
-    const categories = await Category.query().preload('products', (product) => {
-      product
-        .select('id', 'name', 'stock')
-        .where('stock', '>', 0)
-    })
-
+    const categories = await Category.query().preload('products', (product) => {product.select('id', 'name', 'stock').where('stock', '>', 0)})
     return inertia.render('sales/index', {
       sales,
       products,
@@ -75,26 +64,4 @@ export default class SalesController {
       console.log(error);
     }
   }
-
-
-
-  /**
-   * Show individual record
-   */
-  // async show({ params }: HttpContext) { }
-
-  /**
-   * Edit individual record
-   */
-  // async edit({ params }: HttpContext) { }
-
-  /**
-   * Handle form submission for the edit action
-   */
-  // async update({ params, request }: HttpContext) { }
-
-  /**
-   * Delete record
-   */
-  // async destroy({ params }: HttpContext) { }
 }

@@ -1,5 +1,4 @@
 import { HugeiconsIconProps } from "@hugeicons/react";
-import { description } from '../components/ui/chart-bar-default';
 
 export interface NavItem {
     title: string;
@@ -62,38 +61,57 @@ export interface ProductProps {
     category_id: number;
 }
 export interface StockInProps {
+  id: number;
+  date: number;
+  product_id: number;
+  supplier_id: number;
+  description: string;
+  quantity: number;
+  products: {
     id: number;
-    date: number;
-    product_id: number;
-    supplier_id: number;
-    description: string;
-    quantity: number;
-    products: { // <- plural
-        id: number;
-        name: string;
-        barcode: string;
-        image: string;
-        stock: number;
-        price: number;
-        unit_id: number;
-        category_id: number;
-    }[];
-    unit: {
-        name: string
-    }[]
-    supplier: {
-        name: string
-    }[]
-}
+    name: string;
+    barcode: string;
+    image: string;
+    stock: number;
+    price: number;
+    unit_id: number;
+    category_id: number;
+  }
 
+  unit: {
+    name: string;
+  }
+
+  supplier: {
+    name: string;
+  }
+}
 
 export interface StockOutProps {
     id: number;
-    date: number
-    product_id: number;
-    supplier_id: number;
-    description: string
-    quantity: number;
+  date: number;
+  product_id: number;
+  supplier_id: number;
+  description: string;
+  quantity: number;
+  products: {
+    id: number;
+    name: string;
+    barcode: string;
+    image: string;
+    stock: number;
+    price: number;
+    unit_id: number;
+    category_id: number;
+  }
+
+  unit: {
+    name: string;
+  }
+
+  supplier: {
+    name: string;
+  }
 }
 
 export interface UserProps {
