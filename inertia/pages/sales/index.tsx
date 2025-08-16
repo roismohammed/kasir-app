@@ -31,9 +31,7 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet"
-import { Button } from "~/components/ui/button";
 import { Label } from "~/components/ui/label";
-import { Badge } from "~/components/ui/badge";
 import { CreditCardIcon, CreditCardValidationIcon } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import CurrencyInput from "react-currency-input-field";

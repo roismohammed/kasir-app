@@ -58,6 +58,12 @@ export default class SalesController {
         price: item.price,
       }))
 
+      for (const item of items) {
+        const product = await Product.findOrFail(item.product_id)
+        product.stock = product.stock - item.quantity
+        await product.save()
+      }
+
       await SaleProduct.createMany(saleItems)
       return response.redirect().toRoute('sales.index')
     } catch (error) {
