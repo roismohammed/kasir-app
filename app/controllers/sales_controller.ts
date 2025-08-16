@@ -15,22 +15,22 @@ export default class SalesController {
         })
       })
 
-    const productsQuery = Product.query()
-      .preload('category')
-      .where('stock', '>', 0)
+    const productsQuery = Product.query().preload('category').where('stock', '>', 0)
     if (selectedCategoryId) {
       productsQuery.where('category_id', selectedCategoryId)
     }
 
     const products = await productsQuery.exec()
-    const categories = await Category.query().preload('products', (product) => {product.select('id', 'name', 'stock').where('stock', '>', 0)})
+    const categories = await Category.query().preload('products', (product) => {
+      product.select('id', 'name', 'stock').where('stock', '>', 0)
+    })
     return inertia.render('sales/index', {
       sales,
       products,
       categories
     })
   }
-  async store({ request, response }: HttpContext) {
+  async store({ request, response, session }: HttpContext) {
     const payload = request.only([
       'invoice_number',
       'customer_id',
@@ -46,11 +46,11 @@ export default class SalesController {
     const { items, ...saleData } = payload
 
     if (!items || items.length === 0) {
-      return response.badRequest({ message: 'Item produk tidak boleh kosong' })
+      session.flash('error', 'Item tidak boleh kosong')
+      return response.redirect().back()
     }
     try {
       const sale = await Sale.create(saleData)
-
       const saleItems = items.map((item: any) => ({
         saleId: sale.id,
         productId: item.product_id,

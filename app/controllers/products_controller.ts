@@ -43,7 +43,7 @@ export default class ProductsController {
     if (image) {
       await image.move(app.makePath('storage/products'))
 
-      // Simpan nama file ke dalam data sebelum disimpan
+  
       data.image = image.fileName!
     }
     await Product.create(data)

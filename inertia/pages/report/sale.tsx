@@ -87,7 +87,7 @@ type PageProps = {
 };
 
 export default function SalesReportPage() {
-    const { totalSales, totalProducts, totalSold, productTerlaris, newTransaksi,perMonth } = usePage<PageProps>().props
+    const { totalSales, totalProducts, totalSold, productTerlaris, newTransaksi, perMonth } = usePage<PageProps>().props
     console.log(perMonth);
 
     const formatPrice = (price: number) => {
@@ -156,7 +156,7 @@ export default function SalesReportPage() {
                             {/* Key Metrics */}
                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                                 <Card className="border-0 shadow-lg">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2    ">
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-    ">
                                         <CardTitle className="text-sm font-medium text-gray-500">Total Penjualan</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
                                             <DollarSign className="h-4 w-4 text-purple-600" />
@@ -173,7 +173,7 @@ export default function SalesReportPage() {
                                 </Card>
 
                                 <Card className="border-0 shadow-lg">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-">
                                         <CardTitle className="text-sm font-medium text-gray-500">Total Pesanan</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
                                             <ShoppingCart className="h-4 w-4 text-purple-600" />
@@ -190,14 +190,18 @@ export default function SalesReportPage() {
                                 </Card>
 
                                 <Card className="border-0 shadow-lg">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-">
                                         <CardTitle className="text-sm font-medium text-gray-500">Product Terjual</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
                                             <Users className="h-4 w-4 text-purple-600" />
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">{totalSold}</div>
+                                        {totalSold > 0 ? (
+                                            <div className="text-2xl font-bold text-purple-900">{totalSold}</div>
+                                        ) : (
+                                            <div className="text-2xl font-bold text-purple-900">0</div>
+                                        )}
                                         <div className="flex items-center text-xs text-red-600 mt-1">
                                             <ArrowDownRight className="w-3 h-3 mr-1" />
                                             -2.1% dari bulan lalu
@@ -207,7 +211,7 @@ export default function SalesReportPage() {
                                 </Card>
 
                                 <Card className="border-0 shadow-lg">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb- ">
                                         <CardTitle className="text-sm font-medium text-gray-500">Rata-rata Pesanan</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
                                             <Activity className="h-4 w-4 text-purple-600" />
@@ -232,7 +236,7 @@ export default function SalesReportPage() {
                                         <CardDescription className="text-gray-500">Grafik penjualan dalam 30 hari terakhir</CardDescription>
                                     </CardHeader>
                                     <CardContent>
-                                  <ChartBarDefault  />
+                                        <ChartBarDefault />
 
 
                                     </CardContent>
@@ -247,23 +251,35 @@ export default function SalesReportPage() {
                                     <CardContent>
                                         <ScrollArea className="h-[350px]">
                                             <div className="space-y-4">
-                                                {productTerlaris.map((product, index) => (
-                                                    <div key={index} className="flex items-center justify-between p-2 rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors">
-                                                        <div className="flex items-center space-x-3">
-                                                            <div className="w-12 h-12 flex items-center justify-center">
-                                                                <img src={'/storage/products/' + product.product.image} alt={product.product.name} className="w-full h-full object-cover rounded-md" />
+                                                {productTerlaris.length > 0 ? (
+                                                    productTerlaris.map((product, index) => (
+                                                        <div
+                                                            key={index}
+                                                            className="flex items-center justify-between p-2 rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors"
+                                                        >
+                                                            <div className="flex items-center space-x-3">
+                                                                <div className="w-12 h-12 flex items-center justify-center">
+                                                                    <img
+                                                                        src={`/storage/products/${product.product.image}`}
+                                                                        alt={product.product.name}
+                                                                        className="w-full h-full object-cover rounded-md"
+                                                                    />
+                                                                </div>
+                                                                <div>
+                                                                    <p className="font-medium text-sm text-gray-900">{product.product.name}</p>
+                                                                    <p className="text-xs text-gray-500">{product.quantity } terjual</p>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <p className="font-medium text-sm text-gray-900">{product.product.name}</p>
-                                                                <p className="text-xs text-gray-500">{product.quantity} terjual</p>
+                                                            <div className="text-right">
+                                                                <p className="font-semibold text-sm text-purple-900">Rp {product.product.price}</p>
+                                                                <p className="text-xs text-emerald-600">{product.trend}</p>
                                                             </div>
                                                         </div>
-                                                        <div className="text-right">
-                                                            <p className="font-semibold text-sm text-purple-900">Rp {product.product.price}</p>
-                                                            <p className="text-xs text-emerald-600">{product.trend}</p>
-                                                        </div>
-                                                    </div>
-                                                ))}
+                                                    ))
+                                                ) : (
+                                                    <div className="text-center mt-40 text-gray-500">Tidak ada produk terlaris</div>
+                                                )}
+
                                             </div>
                                         </ScrollArea>
                                     </CardContent>

@@ -88,50 +88,49 @@ export default function CashierAppStatic() {
         notes: '',
         items: [],
     })
-    console.log(data);
+    console.log(products);
 
 
-    const handleSubmitOrder = (e?: React.FormEvent) => {
-        e?.preventDefault?.()
+    const handleSubmitOrder = (e?: React.FormEvent<HTMLFormElement>) => {
+        e?.preventDefault?.();
 
-        if (!cartItems.length) {
-            toast.error('Keranjang masih kosong!')
-            return
+        if (cartItems.length === 0) {
+            toast.error('Keranjang masih kosong!');
+            return;
         }
 
-        if (!amountPaid || amountPaid < grandTotal) {
-            toast.error('Uang yang dibayar tidak cukup!')
-            return
+        if (!amountPaid || (grandTotal && amountPaid < grandTotal)) {
+            toast.error('Uang yang dibayar tidak cukup!');
+            return;
         }
 
-        // Update data sebelum kirim
-        setData((prev) => ({
-            ...prev,
+        const newData = {
+            ...data,
             items: cartItems.map(item => ({
                 product_id: item.id,
-                quantity: item.quantity || 1,
+                quantity: item.quantity ?? 1,
                 price: item.price,
-                subtotal: item.price * (item.quantity || 1)
+                subtotal: item.price * (item.quantity ?? 1)
             })),
-            total_price: grandTotal,
-            grand_total: grandTotal,
-        }))
+            total_price: grandTotal ?? 0,
+            grand_total: grandTotal ?? 0,
+        };
+
+        setData(newData);
 
         post('/sales', {
+            data: newData,
             preserveScroll: true,
             onSuccess: () => {
                 setOpenModal(true)
-                setOpenSheet(false)
-                setCartItems([])
+                setOpenSheet(false);
             },
-            onError: (errors) => {
-                console.error(errors)
-                toast.error('Terjadi kesalahan saat menyimpan transaksi.')
+            onError: (errors: any) => {
+                console.error(errors);
+                toast.error('Terjadi kesalahan saat menyimpan transaksi.');
             },
-        })
-    }
-
-
+        });
+    };
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -181,8 +180,9 @@ export default function CashierAppStatic() {
     }, [cartItems]);
 
     const subTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    const pajak = subTotal - subTotal / 1.1;
+    // const pajak = subTotal * 0.1;
     const grandTotal = subTotal;
+    console.log("GrandTotal:", grandTotal)
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
@@ -259,9 +259,7 @@ export default function CashierAppStatic() {
                                                 <h3 className="font-semibold text-gray-800 mb-1">
                                                     {item.name}
                                                 </h3>
-                                                {/* <p className="text-xs text-gray-500 mb-2 line-clamp-2">
-                                                    {item.description}
-                                                </p> */}
+
                                             </div>
                                             <div className="flex items-center justify-between mt-auto">
                                                 <span className="font-bold text-gray-900">
@@ -375,18 +373,11 @@ export default function CashierAppStatic() {
                                         </SheetHeader>
 
                                         <div className="mt-2 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-5 border border-purple-100 ">
-                                            <div className="flex justify-between items-center mb-1">
+                                            <div className="flex justify-between items-center mb-">
                                                 <span className="text-gray-600">Total Tagihan</span>
-                                                <span className="font-medium text-gray-800 text-lg">
+                                                <span className=" text-gray-800 text-lg font-bold">
                                                     {Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal)}
                                                 </span>
-                                            </div>
-                                            <div className="flex justify-between items-center mt-3 pt-3 border-t shadow-none border-purple-100">
-                                                <span className="text-gray-600">Status Pembayaran</span>
-                                                <Badge variant="outline" className="border-purple-200 bg-purple-50 text-purple-600">
-                                                    <Circle className="w-2 h-2 mr-2 animate-pulse" />
-                                                    Belum Dibayar
-                                                </Badge>
                                             </div>
                                         </div>
                                     </div>
@@ -399,7 +390,6 @@ export default function CashierAppStatic() {
                                                 Pilih Metode Pembayaran
                                             </h3>
                                             <div className="grid grid-cols-3 gap-3">
-                                                {/* Kartu Button */}
                                                 <button className={cn(
                                                     'p-3 flex flex-col items-center justify-center border rounded-xl',
                                                     selectedPaymentMethod === 'card' ? 'bg-purple-50 border-purple-300' : 'hover:border-purple-300 hover:bg-purple-50 transition-all'
@@ -410,7 +400,6 @@ export default function CashierAppStatic() {
                                                     <span className="text-sm font-medium">Kartu</span>
                                                 </button>
 
-                                                {/* Transfer Button */}
                                                 <button className={cn(
                                                     'p-3 flex flex-col items-center justify-center border rounded-xl',
                                                     selectedPaymentMethod === 'transfer' ? 'bg-green-50 border-green-300' : 'hover:border-green-300 hover:bg-green-50 transition-all'
@@ -421,7 +410,6 @@ export default function CashierAppStatic() {
                                                     <span className="text-sm font-medium">Transfer</span>
                                                 </button>
 
-                                                {/* Tunai Button */}
                                                 <button className={cn(
                                                     'p-3 flex flex-col items-center justify-center border rounded-xl',
                                                     selectedPaymentMethod === 'cash' ? 'bg-blue-50 border-blue-200' : 'hover:border-blue-300 hover:bg-blue-50 transition-all'
@@ -433,7 +421,6 @@ export default function CashierAppStatic() {
                                                 </button>
                                             </div>
 
-                                            {/* Kartu Payment Form */}
                                             {selectedPaymentMethod === "card" && (
                                                 <div className="mt-6 space-y-4 w-full">
                                                     <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -501,7 +488,6 @@ export default function CashierAppStatic() {
                                                 </div>
                                             )}
 
-                                            {/* Transfer Payment Form */}
                                             {selectedPaymentMethod === "transfer" && (
                                                 <div className="mt-6 space-y-4 w-full">
                                                     <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
@@ -674,11 +660,15 @@ export default function CashierAppStatic() {
                 </div>
             </div>
 
-            <AlertDialog open={openModal} onOpenChange={setOpenModal}>
+            <AlertDialog open={openModal}
+                onOpenChange={(isOpen) => {
+                    setOpenModal(isOpen);
+                    if (!isOpen) {
+                        setCartItems([]);
+                    }
+                }}>
                 <AlertDialogContent className="max-w-md rounded-3xl border-0 p-0 overflow-hidden shadow-xl">
-                    {/* Gradient Header */}
                     <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-center text-white relative">
-                        {/* Animated Checkmark */}
                         <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/20 backdrop-blur-sm mb-4 animate-pulse">
                             <CheckCircle className="h-10 w-10 text-white" strokeWidth={2} />
                         </div>
@@ -691,13 +681,13 @@ export default function CashierAppStatic() {
                             </AlertDialogDescription>
                         </AlertDialogHeader>
 
-                        {/* Floating Amount Bubble */}
+
                         <div className="absolute -bottom-5 left-1/2 transform -translate-x-1/2 bg-white rounded-full px-6 py-2 shadow-lg">
                             <span className="font-bold text-purple-600 whitespace-nowrap">
-                                {Intl.NumberFormat('id-ID', {
-                                    style: 'currency',
-                                    currency: 'IDR'
-                                }).format(grandTotal)}
+                                {/* {Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal)} */}
+                                <span className="font-bold text-purple-600 whitespace-nowrap">
+                                    {grandTotal.toLocaleString('id-ID', { style: 'currency', currency: 'IDR' })}
+                                </span>
                             </span>
                         </div>
                     </div>
@@ -723,12 +713,15 @@ export default function CashierAppStatic() {
                                     <div>
                                         <p className="text-sm text-red-500 font-medium">Kembalian</p>
                                         <p className="text-2xl font-bold text-red-500">
-                                            {Intl.NumberFormat('id-ID', {
-                                                style: 'currency',
-                                                currency: 'IDR'
-                                            }).format(amountPaid - grandTotal)}
+                                            {Intl.NumberFormat("id-ID", {
+                                                style: "currency",
+                                                currency: "IDR",
+                                            }).format(
+                                                (amountPaid - grandTotal) > 0 ? (amountPaid - grandTotal) : 0
+                                            )}
                                         </p>
                                     </div>
+
                                 </div>
                             </div>
                         </div>

@@ -16,12 +16,13 @@ export default class ReportSalesController {
 
     const productTerlaris = await SaleProduct.query()
       .preload('product')
-      .select('product_id', 'quantity')
+      .select('product_id')
+      // .sum('quantity as total_quantity')
       .groupBy('product_id')
       .orderByRaw('SUM(quantity) DESC')
       .limit(5)
 
-   const perMonth = await SaleProduct
+    const perMonth = await SaleProduct
       .query()
       .sum('quantity as total')
       .groupByRaw('MONTH(created_at)')
@@ -38,35 +39,4 @@ export default class ReportSalesController {
     })
   }
 
-
-
-  /**
-   * Display form to create a new record
-   */
-  async create({ }: HttpContext) { }
-
-  /**
-   * Handle form submission for the create action
-   */
-  // async store({ request }: HttpContext) { }
-
-  /**
-   * Show individual record
-   */
-  // async show({ params }: HttpContext) { }
-
-  /**
-   * Edit individual record
-   */
-  // async edit({ params }: HttpContext) { }
-
-  /**
-   * Handle form submission for the edit action
-   */
-  // async update({ params, request }: HttpContext) { }
-
-  /**
-   * Delete record
-   */
-  async destroy({ params }: HttpContext) { }
 }
