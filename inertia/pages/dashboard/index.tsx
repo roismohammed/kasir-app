@@ -78,8 +78,15 @@ const breadcrumbs = [
   },
 ]
 const DashboardPage = () => {
-  const { totalProduct } = usePage().props
-  console.log(totalProduct);
+  // Cara 1: Destructuring langsung
+  const { totalSupplier, totalProduct, totalCustomer } = usePage().props
+  
+  // Debug
+  console.log('Total Supplier:', totalSupplier)
+  console.log('Total Product:', totalProduct)
+  console.log('Total Customer:', totalCustomer)
+  console.log('All props:', usePage().props)
+  
   const formatCurrency = (value: number) => {
     return new Intl.NumberFormat("id-ID", {
       style: "currency",
@@ -95,7 +102,7 @@ const DashboardPage = () => {
       <PageTitle title="Dashboard" subtitle="Anda bisa melihat statistik dashboard" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-        <Card className="shadow-md py-1 hover:shadow-lg transition duration-300 bg-purple-600">
+        {/* <Card className="shadow-md py-1 hover:shadow-lg transition duration-300 bg-purple-600">
           <CardContent className="p-4 flex items-center space-x-4">
             <div className="p-3 bg-muted rounded-full">
               <HugeiconsIcon icon={Dollar01FreeIcons} className="h-10 w-10 text-blue-500" />
@@ -105,7 +112,7 @@ const DashboardPage = () => {
               <p className="text-sm text-white  ">Pendapatan Hari Ini</p>
             </div>
           </CardContent>
-        </Card>
+        </Card> */}
 
         <Card className="shadow-md py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
@@ -149,7 +156,7 @@ const DashboardPage = () => {
               <HugeiconsIcon icon={Package02Icon} className="h-10 w-10 text-blue-500" />
             </div>
             <div>
-              <NumberTicker className="text-2xl font-bold " value={Number(198)} />
+              <NumberTicker className="text-2xl font-bold " value={totalProduct} />
               <p className="text-sm text-muted-foreground ">Products</p>
             </div>
           </CardContent>
@@ -190,7 +197,7 @@ const DashboardPage = () => {
                   </TableCell>
                   <TableCell className="font-medium flex items-center gap-3">
                     <Avatar className="h-8 w-8 rounded-md">
-                      <AvatarImage src={product.imageUrl} alt={product.name} />
+                      {/* <AvatarImage src={product.imageUrl} alt={product.name} /> */}
                       <AvatarFallback className="rounded-md bg-primary/10 text-primary">
                         {product.name.charAt(0)}
                       </AvatarFallback>
