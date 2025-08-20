@@ -114,13 +114,13 @@ export default function CashierAppStatic() {
             grand_total: grandTotal ?? 0,
         };
 
-        setData(newData);
-
+        // Langsung kirim newData, tidak perlu setData
         post('/sales', {
-            data: newData,
+            data: newData, // Kirim newData langsung
             preserveScroll: true,
             onSuccess: () => {
-                setOpenModal(true)
+                setData(newData); // Set data setelah berhasil
+                setOpenModal(true);
                 setOpenSheet(false);
             },
             onError: (errors: any) => {
@@ -129,6 +129,7 @@ export default function CashierAppStatic() {
             },
         });
     };
+
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -286,346 +287,175 @@ export default function CashierAppStatic() {
 
                 {/* Desktop Sidebar */}
                 <div className="w-full md:hidden lg:block lg:w-96 hidden ">
-                    <div className="flex flex-col h-[calc(92vh-32px)] border border-gray-200 rounded-lg shadow-lg bg-white sticky top-4">
-                        <div className="p-6 flex-1 flex flex-col overflow-hidden">
-                            <h2 className="text-xl font-semibold mb-6 text-gray-800">Order Items ({cartItems.length})</h2>
-                            <div className="flex-1 pr-2 max-h-[350px] overflow-y-scroll">
-                                {cartItems.length > 0 ? (
-                                    cartItems.map((product) => (
-                                        <div key={product.id} className="flex items-start space-x-3 mb-4 p-2 rounded-lg border  border-purple-600/50">
-                                            <img
-                                                src={`/storage/products/${product.image}`}
-                                                alt={product.name}
-                                                className="w-16 h-16 object-cover rounded-md flex-shrink-0"
-                                            />
-                                            <div className="flex-grow">
-                                                <h3 className="font-medium text-gray-800">{product.name}</h3>
-                                                <div className="flex items-center justify-between mt-3">
-                                                    <div className="flex items-center space-x-2">
-                                                        <button
-                                                            onClick={() => handleDecrement(product.id)}
-                                                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-                                                        >
-                                                            <Minus size={16} />
-                                                        </button>
-                                                        <span className="text-xs text-gray-500">{product.quantity}</span>
-                                                        <button
-                                                            onClick={() => handleAddToCart(product)}
-                                                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-                                                        >
-                                                            <PlusIcon size={16} />
-                                                        </button>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleRemove(product.id)}
-                                                        className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-                                                    >
-                                                        <Trash size={16} className="text-red-500" />
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <span className="font-semibold text-gray-900">
-                                                {formatPrice(product.price * (product.quantity || 1))}
-                                            </span>
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="h-full flex items-center justify-center min-h-[280px]">
-                                        <div className="text-gray-400 text-sm text-center">Belum ada item di keranjang</div>
-                                    </div>
-                                )}
-                            </div>
-                        </div>
+  <div className="flex flex-col h-[calc(92vh-32px)] border border-gray-200 rounded-lg shadow-lg bg-white sticky top-4">
+    <div className="p-6 flex-1 flex flex-col overflow-hidden">
+      <h2 className="text-xl font-semibold mb-6 text-gray-800">
+        Order Items ({cartItems.length})
+      </h2>
 
-                        {/* Payment Summary */}
-                        <div className="p-6 border-t">
-                            <div className="space-y-2 text-sm text-gray-700 bg-muted p-4 rounded-xl mb-4">
-                                <div className="flex justify-between">
-                                    <span>Sub Total</span>
-                                    <span>{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(subTotal)}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Tax</span>
-                                    <span>$5.2</span>
-                                </div>
-                                <div className="flex justify-between font-bold text-lg text-gray-900 mt-4 border-t border-gray-300 pt-4">
-                                    <span>Total Payment</span>
-                                    <span>{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal)}</span>
-                                </div>
-                            </div>
+      {/* Cart Items */}
+      <div className="flex-1 pr-2 max-h-[350px] overflow-y-scroll">
+        {cartItems.length > 0 ? (
+          cartItems.map((product) => (
+            <div
+              key={product.id}
+              className="flex items-start space-x-3 mb-4 p-2 rounded-lg border border-purple-600/50"
+            >
+              <img
+                src={`/storage/products/${product.image}`}
+                alt={product.name}
+                className="w-16 h-16 object-cover rounded-md flex-shrink-0"
+              />
+              <div className="flex-grow">
+                <h3 className="font-medium text-gray-800">{product.name}</h3>
+                <div className="flex items-center justify-between mt-3">
+                  <div className="flex items-center space-x-2">
+                    <button
+                      onClick={() => handleDecrement(product.id)}
+                      className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                    >
+                      <Minus size={16} />
+                    </button>
+                    <span className="text-xs text-gray-500">{product.quantity}</span>
+                    <button
+                      onClick={() => handleAddToCart(product)}
+                      className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                    >
+                      <PlusIcon size={16} />
+                    </button>
+                  </div>
+                  <button
+                    onClick={() => handleRemove(product.id)}
+                    className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
+                  >
+                    <Trash size={16} className="text-red-500" />
+                  </button>
+                </div>
+              </div>
+              <span className="font-semibold text-gray-900">
+                {formatPrice(product.price * (product.quantity || 1))}
+              </span>
+            </div>
+          ))
+        ) : (
+          <div className="h-full flex items-center justify-center min-h-[280px]">
+            <div className="text-gray-400 text-sm text-center">
+              Belum ada item di keranjang
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
 
-                            <Sheet open={openSheet} onOpenChange={setOpenSheet}>
-                                <SheetTrigger asChild>
-                                    <button className="w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all  hover:shadow-xl active:scale-[0.98]">
-                                        Bayar {formatPrice(grandTotal)}
-                                    </button>
-                                </SheetTrigger>
+    {/* Payment Summary */}
+    <div className="p-6 border-t space-y-6">
+      <div className="space-y-2 text-sm text-gray-700 bg-muted p-4 rounded-xl mb-4">
+        <div className="flex justify-between">
+          <span>Sub Total</span>
+          <span>
+            {Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            }).format(subTotal)}
+          </span>
+        </div>
+        <div className="flex justify-between font-bold text-lg text-gray-900 mt-4 border-t border-gray-300 pt-4">
+          <span>Total Payment</span>
+          <span>
+            {Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+            }).format(grandTotal)}
+          </span>
+        </div>
+      </div>
 
-                                <SheetContent className="bg-white max-w-xl w-full p-0 overflow-y-auto">
-                                    <div className="sticky top-0 bg-white z-10 border-b px-4 pb-4 shadow-sm">
-                                        <SheetHeader>
-                                            <SheetTitle className="text-2xl font-bold text-gray-900 flex items-center gap-2">
-                                                <HugeiconsIcon icon={CreditCardValidationIcon} className="w-6 -mt-1 h-6 text-purple-600" />
-                                                Pembayaran
-                                            </SheetTitle>
-                                        </SheetHeader>
+      {/* Payment Method Selection langsung di sini */}
+      <div>
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">
+          Pilih Metode Pembayaran
+        </h3>
+        <div className="grid grid-cols-3 gap-3">
+          <button
+            className={cn(
+              "p-3 flex flex-col items-center justify-center border rounded-xl",
+              selectedPaymentMethod === "card"
+                ? "bg-purple-50 border-purple-300"
+                : "hover:border-purple-300 hover:bg-purple-50 transition-all"
+            )}
+            onClick={() => setSelectedPaymentMethod("card")}
+          >
+            <CreditCard className="w-5 h-5 text-blue-600 mb-2" />
+            <span className="text-sm font-medium">Kartu</span>
+          </button>
+          <button
+            className={cn(
+              "p-3 flex flex-col items-center justify-center border rounded-xl",
+              selectedPaymentMethod === "transfer"
+                ? "bg-green-50 border-green-300"
+                : "hover:border-green-300 hover:bg-green-50 transition-all"
+            )}
+            onClick={() => setSelectedPaymentMethod("transfer")}
+          >
+            <Wallet className="w-5 h-5 text-green-600 mb-2" />
+            <span className="text-sm font-medium">Transfer</span>
+          </button>
+          <button
+            className={cn(
+              "p-3 flex flex-col items-center justify-center border rounded-xl",
+              selectedPaymentMethod === "cash"
+                ? "bg-blue-50 border-blue-200"
+                : "hover:border-blue-300 hover:bg-blue-50 transition-all"
+            )}
+            onClick={() => setSelectedPaymentMethod("cash")}
+          >
+            <Banknote className="w-5 h-5 text-blue-600 mb-2" />
+            <span className="text-sm font-medium">Tunai</span>
+          </button>
+        </div>
+      </div>
 
-                                        <div className="mt-2 bg-gradient-to-br from-purple-50 to-indigo-50 rounded-2xl p-5 border border-purple-100 ">
-                                            <div className="flex justify-between items-center mb-">
-                                                <span className="text-gray-600">Total Tagihan</span>
-                                                <span className=" text-gray-800 text-lg font-bold">
-                                                    {Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal)}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
+      {/* Cash Payment Extra Input */}
+      {selectedPaymentMethod === "cash" && (
+        <div className="space-y-4 mt-4">
+          <div>
+            <Label htmlFor="amount-paid">Jumlah Uang Diterima</Label>
+            <CurrencyInput
+              name="amount-paid"
+              autoComplete="off"
+              value={amountPaid}
+              onValueChange={(value) => setAmountPaid(Number(value || 0))}
+              id="amount-paid"
+              placeholder="0"
+              className="w-full text-lg py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200"
+            />
+          </div>
 
-                                    {/* Main Content */}
-                                    <div className="p-6 space-y-8">
-                                        <div>
-                                            <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                                                <HugeiconsIcon icon={CreditCardIcon} className="w-5 h-5 text-purple-600" />
-                                                Pilih Metode Pembayaran
-                                            </h3>
-                                            <div className="grid grid-cols-3 gap-3">
-                                                <button className={cn(
-                                                    'p-3 flex flex-col items-center justify-center border rounded-xl',
-                                                    selectedPaymentMethod === 'card' ? 'bg-purple-50 border-purple-300' : 'hover:border-purple-300 hover:bg-purple-50 transition-all'
-                                                )} onClick={() => setSelectedPaymentMethod('card')}>
-                                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                                                        <CreditCard className="w-5 h-5 text-blue-600" />
-                                                    </div>
-                                                    <span className="text-sm font-medium">Kartu</span>
-                                                </button>
+          <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 shadow-sm w-full">
+            <div className="flex justify-between items-center">
+              <span className="font-medium text-gray-700">Kembalian</span>
+              <span className="text-2xl font-bold text-green-600">
+                {formatPrice(Math.max(0, amountPaid - grandTotal))}
+              </span>
+            </div>
+          </div>
+        </div>
+      )}
 
-                                                <button className={cn(
-                                                    'p-3 flex flex-col items-center justify-center border rounded-xl',
-                                                    selectedPaymentMethod === 'transfer' ? 'bg-green-50 border-green-300' : 'hover:border-green-300 hover:bg-green-50 transition-all'
-                                                )} onClick={() => setSelectedPaymentMethod('transfer')}>
-                                                    <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2">
-                                                        <Wallet className="w-5 h-5 text-green-600" />
-                                                    </div>
-                                                    <span className="text-sm font-medium">Transfer</span>
-                                                </button>
-
-                                                <button className={cn(
-                                                    'p-3 flex flex-col items-center justify-center border rounded-xl',
-                                                    selectedPaymentMethod === 'cash' ? 'bg-blue-50 border-blue-200' : 'hover:border-blue-300 hover:bg-blue-50 transition-all'
-                                                )} onClick={() => setSelectedPaymentMethod('cash')}>
-                                                    <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                                                        <Banknote className="w-5 h-5 text-blue-600" />
-                                                    </div>
-                                                    <span className="text-sm font-medium">Tunai</span>
-                                                </button>
-                                            </div>
-
-                                            {selectedPaymentMethod === "card" && (
-                                                <div className="mt-6 space-y-4 w-full">
-                                                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                        <CreditCard className="w-5 h-5 text-purple-600" />
-                                                        Pembayaran Kartu
-                                                    </h3>
-
-                                                    <div className="space-y-4">
-                                                        <div className="grid grid-cols-2 gap-4">
-                                                            <div className="space-y-2">
-                                                                <Label htmlFor="card-number" className="text-gray-700 font-medium">
-                                                                    Nomor Kartu
-                                                                </Label>
-                                                                <Input
-                                                                    id="card-number"
-                                                                    type="text"
-                                                                    placeholder="1234 5678 9012 3456"
-                                                                    className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
-                                                                />
-                                                            </div>
-
-                                                            <div className="space-y-2">
-                                                                <Label htmlFor="card-name" className="text-gray-700 font-medium">
-                                                                    Nama di Kartu
-                                                                </Label>
-                                                                <Input
-                                                                    id="card-name"
-                                                                    type="text"
-                                                                    placeholder="John Doe"
-                                                                    className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
-                                                                />
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="grid grid-cols-3 gap-4">
-                                                            <div className="space-y-2">
-                                                                <Label htmlFor="expiry-date" className="text-gray-700 font-medium">
-                                                                    Masa Berlaku
-                                                                </Label>
-                                                                <Input
-                                                                    id="expiry-date"
-                                                                    type="text"
-                                                                    placeholder="MM/YY"
-                                                                    className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
-                                                                />
-                                                            </div>
-
-                                                            <div className="space-y-2">
-                                                                <Label htmlFor="cvv" className="text-gray-700 font-medium">
-                                                                    CVV
-                                                                </Label>
-                                                                <Input
-                                                                    id="cvv"
-                                                                    type="text"
-                                                                    placeholder="123"
-                                                                    className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
-                                                                />
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {selectedPaymentMethod === "transfer" && (
-                                                <div className="mt-6 space-y-4 w-full">
-                                                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                        <Wallet className="w-5 h-5 text-purple-600" />
-                                                        Pembayaran Transfer
-                                                    </h3>
-
-                                                    <div className="space-y-4">
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="bank" className="text-gray-700 font-medium">
-                                                                Pilih Bank
-                                                            </Label>
-                                                            <Select>
-                                                                <SelectTrigger className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-              focus:border-green-300 focus:ring-2 focus:ring-green-100">
-                                                                    <SelectValue placeholder="Pilih bank tujuan" />
-                                                                </SelectTrigger>
-                                                                <SelectContent>
-                                                                    <SelectItem value="bca">BCA</SelectItem>
-                                                                    <SelectItem value="mandiri">Mandiri</SelectItem>
-                                                                    <SelectItem value="bri">BRI</SelectItem>
-                                                                    <SelectItem value="bni">BNI</SelectItem>
-                                                                </SelectContent>
-                                                            </Select>
-                                                        </div>
-
-                                                        <div className="bg-green-50 border border-green-200 rounded-xl p-4">
-                                                            <div className="flex items-center gap-3">
-                                                                <div className="bg-white p-2 rounded-lg border border-green-100">
-                                                                    <image
-                                                                        // src="/bank-icons/bca.png"
-                                                                        // alt="BCA"
-                                                                        width={40}
-                                                                        height={40}
-                                                                        className="object-contain"
-                                                                    />
-                                                                </div>
-                                                                <div>
-                                                                    <p className="font-medium text-gray-700">Bank Central Asia</p>
-                                                                    <p className="text-sm text-gray-500">123-456-7890 (a.n. Toko Kita)</p>
-                                                                </div>
-                                                            </div>
-
-                                                            <div className="mt-4 space-y-2">
-                                                                <Label className="text-gray-700 font-medium">
-                                                                    Total Transfer
-                                                                </Label>
-                                                                <div className="text-2xl font-bold text-green-600">
-                                                                    {formatPrice(grandTotal)}
-                                                                </div>
-                                                            </div>
-                                                        </div>
-
-                                                        <div className="space-y-2">
-                                                            <Label htmlFor="transfer-proof" className="text-gray-700 font-medium">
-                                                                Unggah Bukti Transfer
-                                                            </Label>
-                                                            <div className="flex items-center justify-center w-full">
-                                                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-xl cursor-pointer bg-gray-50 hover:bg-green-50 hover:border-green-200 transition-all">
-                                                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                                                        <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
-                                                                        <p className="text-sm text-gray-500">
-                                                                            <span className="font-semibold text-green-600">Klik untuk upload</span> atau drag & drop
-                                                                        </p>
-                                                                    </div>
-                                                                    <input id="transfer-proof" type="file" className="hidden" />
-                                                                </label>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-
-                                            {/* Cash Payment Form */}
-                                            {selectedPaymentMethod === "cash" && (
-                                                <div className="mt-6 space-y-4 w-full">
-                                                    <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                                                        <Banknote className="w-5 h-5 text-purple-600" />
-                                                        Pembayaran Tunai
-                                                    </h3>
-
-                                                    <div className="space-y-2">
-                                                        <Label htmlFor="amount-paid" className="text-gray-700 font-medium">
-                                                            Jumlah Uang Diterima
-                                                        </Label>
-                                                        <div className="relative">
-                                                            <span className="absolute text-lg left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none select-none">
-                                                                Rp
-                                                            </span>
-                                                            <CurrencyInput
-                                                                name="amount-paid"
-                                                                autoComplete="off"
-                                                                value={amountPaid}
-                                                                onValueChange={(value) => {
-                                                                    const numericValue = Number(value || 0)
-                                                                    setAmountPaid(numericValue)
-                                                                }}
-                                                                id="amount-paid"
-                                                                type="text"
-                                                                placeholder="0"
-                                                                className="w-full text-lg py-2 pl-10 pr-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-              focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    {/* Change Calculation */}
-                                                    <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 shadow-sm w-full">
-                                                        <div className="flex justify-between items-center">
-                                                            <div className="flex items-center gap-2">
-                                                                <RefreshCw className="w-4 h-4 text-green-600" />
-                                                                <span className="font-medium text-gray-700">Kembalian</span>
-                                                            </div>
-                                                            <span className="text-2xl font-bold text-green-600">
-                                                                {formatPrice(Math.max(0, amountPaid - grandTotal))}
-                                                            </span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-
-                                    {/* Sticky Footer */}
-                                    <SheetFooter>
-                                        <button
-                                            onClick={handleSubmitOrder}
-                                            className="w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
+      {/* Submit langsung */}
+      <button
+        onClick={handleSubmitOrder}
+        className="w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
         hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
         flex items-center justify-center active:scale-[0.98]"
-                                        >
-                                            <CheckCircle className="w-5 h-5 mr-2" />
-                                            <span>Bayar Sekarang</span>
-                                        </button>
-                                    </SheetFooter>
-                                </SheetContent>
-                            </Sheet>
-                        </div>
-                    </div>
-                </div>
+      >
+        <CheckCircle className="w-5 h-5 mr-2" />
+        <span>Bayar Sekarang</span>
+      </button>
+    </div>
+  </div>
+</div>
+
 
                 {/* Mobile Bottom Panel */}
                 <div className="fixed bottom-0 left-0 right-0 md:block lg:hidden bg-white border-t shadow-lg p-4">

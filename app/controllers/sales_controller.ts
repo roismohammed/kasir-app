@@ -44,7 +44,6 @@ export default class SalesController {
     ])
 
     const { items, ...saleData } = payload
-
     if (!items || items.length === 0) {
       session.flash('error', 'Item tidak boleh kosong')
       return response.redirect().back()
@@ -67,7 +66,7 @@ export default class SalesController {
       await SaleProduct.createMany(saleItems)
       return response.redirect().toRoute('sales.index')
     } catch (error) {
-      console.log(error);
+      return response.redirect().toRoute('sales.index')
     }
   }
 }
