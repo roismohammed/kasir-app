@@ -30,7 +30,7 @@ export default class SalesController {
       categories
     })
   }
-    async store({ request, response, session }: HttpContext) {
+  async store({ request, response, session }: HttpContext) {
     const payload = request.only([
       'invoice_number',
       'customer_id',

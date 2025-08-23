@@ -179,15 +179,12 @@ export default function CashierAppStatic() {
     }, [cartItems]);
 
     const subTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
-    // const pajak = subTotal * 0.1;
     const grandTotal = subTotal;
     console.log("GrandTotal:", grandTotal)
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
     }
-
-
 
 
     return (
@@ -338,7 +335,6 @@ export default function CashierAppStatic() {
                             </div>
                         </div>
 
-                        {/* Payment Summary */}
                         <div className="p-6 border-t">
                             <div className="space-y-2 text-sm text-gray-700 bg-muted p-4 rounded-xl mb-4">
                                 <div className="flex justify-between">
@@ -614,7 +610,7 @@ export default function CashierAppStatic() {
                                     <SheetFooter>
                                         <button
                                             onClick={handleSubmitOrder}
-                                            disabled={isSubmitting || (selectedPaymentMethod === 'cash' && amountPaid < grandTotal)}
+                                            disabled={isSubmitting}
                                             className={`w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
         hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
         flex items-center justify-center active:scale-[0.98]
