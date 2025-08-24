@@ -121,7 +121,7 @@ export default function CashierAppStatic() {
                 setData(newData);
                 setOpenModal(true);
                 setOpenSheet(false);
-                setIsSubmitting(true);
+                // setIsSubmitting(true);
             },
             onError: (errors: any) => {
                 console.error(errors);
@@ -607,9 +607,8 @@ export default function CashierAppStatic() {
                                     </div>
 
                                     {/* Sticky Footer */}
-                                    <SheetFooter>
+                                    <SheetFooter onClick={handleSubmitOrder}>
                                         <button
-                                            onClick={handleSubmitOrder}
                                             disabled={isSubmitting}
                                             className={`w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
         hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
