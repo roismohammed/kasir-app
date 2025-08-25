@@ -17,7 +17,6 @@ export default class ReportSalesController {
     const productTerlaris = await SaleProduct.query()
       .preload('product')
       .select('product_id')
-      // .sum('quantity as total_quantity')
       .groupBy('product_id')
       .orderByRaw('SUM(quantity) DESC')
       .limit(5)
@@ -28,6 +27,7 @@ export default class ReportSalesController {
       .groupByRaw('MONTH(created_at)')
       .orderByRaw('MONTH(created_at)')
     const newTransaksi = await SaleProduct.query().preload('product').preload('sale').limit(5).orderBy('created_at', 'desc')
+    const reportDay = await SaleProduct.query().whereRaw('created_at BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 DAY)');
     return inertia.render('report/sale', {
       sales,
       totalSales,
@@ -35,7 +35,8 @@ export default class ReportSalesController {
       totalSold,
       productTerlaris,
       newTransaksi,
-      perMonth
+      perMonth,
+      reportDay
     })
   }
 

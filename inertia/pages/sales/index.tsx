@@ -11,7 +11,6 @@ import {
     Banknote,
     CheckCircle,
     RefreshCw,
-    Circle,
     Printer,
     ArrowRight,
     Hash,
@@ -21,7 +20,7 @@ import {
 import AppLayout from "~/layouts/app-layout";
 import sajiku from '../../assets/image/makanan.jpeg'
 import { Head, router, useForm, usePage } from '@inertiajs/react';
-import { CategoriesProps, OrderData, ProductProps, SalesProps } from "~/types";
+import { CategoriesProps, ProductProps, SalesProps } from "~/types";
 import { useEffect, useState } from "react";
 import {
     Sheet,
@@ -193,9 +192,6 @@ export default function CashierAppStatic() {
             <div className="flex flex-col md:flex-row gap-4 ">
                 {/* Main Content */}
                 <div className="flex-1 overflow-y-auto">
-                    {/* <div className="mb-4">
-                        <Input placeholder="Cari product di sini.."  className="shadow-none"/>
-                    </div> */}
                     <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-4 gap-2 sm:gap-3 md:gap-4 mb-4 sm:mb-6">
                         {categories.map((categories: CategoriesProps) => (
                             <button
@@ -606,7 +602,6 @@ export default function CashierAppStatic() {
                                         </div>
                                     </div>
 
-                                    {/* Sticky Footer */}
                                     <SheetFooter onClick={handleSubmitOrder}>
                                         <button
                                             disabled={isSubmitting}
@@ -637,7 +632,6 @@ export default function CashierAppStatic() {
                     </div>
                 </div>
 
-                {/* Mobile Bottom Panel */}
                 <div className="fixed bottom-0 left-0 right-0 md:block lg:hidden bg-white border-t shadow-lg p-4">
                     <div className="overflow-x-auto whitespace-nowrap pb-2">
                         <div className="inline-flex space-x-3">
