@@ -42,6 +42,7 @@ import AppLayout from "~/layouts/app-layout"
 import { Head, usePage } from "@inertiajs/react"
 import { OrderData } from "~/types"
 import { ChartBarDefault } from "~/components/ui/chart-bar-default"
+import { useState } from "react"
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -94,7 +95,9 @@ export default function SalesReportPage() {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
     }
 
-    const filterReportDay = () => {
+    const [filteredTransaksi, setFilteredTransaksi] = useState(newTransaksi);
+
+    const handleFilterChange = () => {
         const today = new Date();
         return newTransaksi.filter((order) => {
             const orderDate = new Date(order.sale.createdAt);
@@ -119,7 +122,7 @@ export default function SalesReportPage() {
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Select defaultValue="30days" onValueChange={filterReportDay}>
+                                <Select defaultValue="30days" onValueChange={handleFilterChange}>
                                     <SelectTrigger className="w-[140px] bg-white/10 text-white border-white/20 hover:bg-white/20">
                                         <Calendar className="w-4 h-4 mr-2 text-purple-100" />
                                         <SelectValue className="text-white" />
@@ -334,7 +337,7 @@ export default function SalesReportPage() {
                                                     <TableHead className="w-[50px]"></TableHead>
                                                 </TableRow>
                                             </TableHeader>
-                                            {newTransaksi.length > 0 ? (
+                                            {filteredTransaksi.length > 0 ? (
                                                 <TableBody className="bg-white">
                                                     {newTransaksi.map((order) => (
                                                         <TableRow
