@@ -35,8 +35,6 @@ import {
     Activity,
     ArrowUpRight,
     ArrowDownRight,
-    MapPin,
-    Clock,
 } from "lucide-react"
 import AppLayout from "~/layouts/app-layout"
 import { Head, usePage } from "@inertiajs/react"
@@ -105,6 +103,7 @@ export default function SalesReportPage() {
         });
         console.log(today);
     }
+
 
 
     return (
