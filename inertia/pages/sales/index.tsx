@@ -602,8 +602,9 @@ export default function CashierAppStatic() {
                                         </div>
                                     </div>
 
-                                    <SheetFooter onClick={handleSubmitOrder}>
+                                    <SheetFooter>
                                         <button
+                                            onClick={handleSubmitOrder}
                                             disabled={isSubmitting}
                                             className={`w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
         hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
