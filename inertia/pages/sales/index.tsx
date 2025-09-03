@@ -46,6 +46,7 @@ import { toast } from "sonner";
 import { cn } from "~/lib/utils";
 import { Input } from "~/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+import ProductCard from "~/components/card-product";
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -102,25 +103,12 @@ export default function CashierAppStatic() {
             return;
         }
 
-        const newData = {
-            ...data,
-            items: cartItems.map(item => ({
-                product_id: item.id,
-                quantity: item.quantity ?? 1,
-                price: item.price,
-                subtotal: item.price * (item.quantity ?? 1)
-            })),
-            total_price: grandTotal ?? 0,
-            grand_total: grandTotal ?? 0,
-        };
         post('/sales', {
-            data: newData,
             preserveScroll: true,
             onSuccess: () => {
-                setData(newData);
+                setData(data);
                 setOpenModal(true);
                 setOpenSheet(false);
-                // setIsSubmitting(true);
             },
             onError: (errors: any) => {
                 console.error(errors);
@@ -237,35 +225,7 @@ export default function CashierAppStatic() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             {products.length > 0 ? (
                                 products.map((item) => (
-                                    <div
-                                        key={item.id}
-                                        className="flex flex-row md:flex-col rounded-lg overflow-hidden shadow-md bg-white py-0 px-2 lg:px-0 border border-slate-200 lg:p-0 "
-                                    >
-                                        <img
-                                            src={`/storage/products/${item.image}`}
-                                            alt={item.name}
-                                            className=" h-[100px] w-[130px] md:w-full md:h-45 object-cover flex-shrink-0 rounded-lg lg:rounded-tr-lg  mt-3 md:mt-0 lg:mt-0"
-                                        />
-                                        <div className="p-3 md:p-4 flex flex-col justify-between flex-grow">
-                                            <div>
-                                                <h3 className="font-semibold text-gray-800 mb-1">
-                                                    {item.name}
-                                                </h3>
-
-                                            </div>
-                                            <div className="flex items-center justify-between mt-auto">
-                                                <span className="font-bold text-gray-900">
-                                                    {formatPrice(item.price)}
-                                                </span>
-                                                <button
-                                                    className="w-8 h-8 rounded-full shadow-md cursor-pointer bg-purple-600 text-white hover:bg-purple-700 flex items-center justify-center transition-colors"
-                                                    onClick={() => handleAddToCart(item)}
-                                                >
-                                                    <Plus size={16} />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <ProductCard key={item.id} product={item} onAddToCart={handleAddToCart} />
                                 ))
                             ) : (
                                 <div className="p-4 w-full flex flex-col items-center justify-center border border-slate-200 rounded-lg">
