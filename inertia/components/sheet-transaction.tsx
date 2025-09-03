@@ -24,7 +24,7 @@ import {
     ArrowRight,
     Printer,
 } from "lucide-react";
-import { Head, router, useForm, usePage } from '@inertiajs/react';
+import { router, useForm } from '@inertiajs/react';
 import { toast } from "sonner";
 import {
     AlertDialog,
@@ -42,6 +42,7 @@ interface SheetTransactionProps {
     onSuccess: () => void;
     setOpenSheet: (open: boolean) => void;
 }
+
 export default function SheetTransaction({
     cartItems = [],
     grandTotal = 0,
@@ -52,7 +53,7 @@ export default function SheetTransaction({
     const [amountPaid, setAmountPaid] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [openModal, setOpenModal] = useState(false)
-    const { data, setData, post, processing, reset, errors } = useForm({
+    const { data, setData, post, processing } = useForm({
         invoice_number: 'INV-' + Date.now(),
         customer_id: '',
         payment_type: 'cash',
@@ -68,7 +69,7 @@ export default function SheetTransaction({
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
     }
 
-    const handleSubmitOrder = (e?: React.FormEvent<HTMLFormElement>) => {
+    const handleCheckout = (e?: React.FormEvent<HTMLFormElement>) => {
         e?.preventDefault?.();
 
         if (cartItems.length === 0) {
@@ -76,20 +77,10 @@ export default function SheetTransaction({
             return;
         }
 
-        // Validasi untuk cash payment
         if (selectedPaymentMethod === 'cash' && (!amountPaid || amountPaid < grandTotal)) {
             toast.error('Uang yang dibayar tidak cukup!');
             return;
         }
-
-        // Validasi customer (opsional, bisa dihapus jika tidak required)
-        // if (!data.customer_id) {
-        //     toast.error('Pilih customer terlebih dahulu!');
-        //     return;
-        // }
-
-        setIsSubmitting(true);
-
         // Siapkan data untuk dikirim
         const orderData = {
             ...data,
@@ -97,48 +88,33 @@ export default function SheetTransaction({
             total_price: grandTotal,
             grand_total: grandTotal,
             items: cartItems.map(item => ({
-                product_id: item.product_id || item.id,
+                productId: item.id,
                 quantity: item.quantity,
                 price: item.price
             })),
             amount_paid: selectedPaymentMethod === 'cash' ? amountPaid : grandTotal,
             change_amount: selectedPaymentMethod === 'cash' ? Math.max(0, amountPaid - grandTotal) : 0
         };
-
-        post('/sales', {
-            data: orderData,
+        router.post('/sales', orderData, {
             preserveScroll: true,
+            forceFormData:false,
+            onStart: () => setIsSubmitting(true),
+            onFinish: () => setIsSubmitting(false),
             onSuccess: () => {
-                setData(data);
                 setOpenModal(true);
                 setOpenSheet(false);
+                toast.success('Transaksi berhasil disimpan!');
             },
             onError: (errors) => {
-                setIsSubmitting(false);
-                console.error('Order submission errors:', errors);
-
-                // Handle specific errors
-                if (errors.items) {
-                    toast.error('Ada masalah dengan item: ' + errors.items);
-                } else if (errors.stock) {
-                    toast.error('Stock tidak mencukupi untuk beberapa item');
-                } else if (errors.customer_id) {
-                    toast.error('Customer harus dipilih');
-                } else if (errors.payment_type) {
-                    toast.error('Metode pembayaran harus dipilih');
-                } else {
-                    toast.error('Terjadi kesalahan saat menyimpan transaksi');
-                }
+                toast.error('Gagal menyimpan transaksi!',errors);
             },
         });
     };
 
-    // Update payment method saat berubah
     const handlePaymentMethodChange = (method: 'card' | 'transfer' | 'cash') => {
         setSelectedPaymentMethod(method);
         setData('payment_type', method);
 
-        // Reset amount paid jika bukan cash
         if (method !== 'cash') {
             setAmountPaid(grandTotal);
         } else {
@@ -411,27 +387,11 @@ export default function SheetTransaction({
                                 </div>
                             )}
                         </div>
-
-                        {/* Notes Section */}
-                        <div className="space-y-2">
-                            <Label htmlFor="notes" className="text-gray-700 font-medium">
-                                Catatan (Opsional)
-                            </Label>
-                            <textarea
-                                id="notes"
-                                value={data.notes}
-                                onChange={(e) => setData('notes', e.target.value)}
-                                placeholder="Tambahkan catatan untuk transaksi ini..."
-                                className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-                    focus:border-purple-300 focus:ring-2 focus:ring-purple-100 resize-none"
-                                rows={3}
-                            />
-                        </div>
                     </div>
 
                     <SheetFooter className="p-6 pt-0">
                         <button
-                            onClick={handleSubmitOrder}
+                            onClick={handleCheckout}
                             disabled={isSubmitting || processing}
                             className={`w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
         hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
@@ -460,9 +420,9 @@ export default function SheetTransaction({
             <AlertDialog open={openModal}
                 onOpenChange={(isOpen) => {
                     setOpenModal(isOpen);
-                    if (!isOpen) {
-                        setCartItems([]);
-                    }
+                    // if (!isOpen) {
+                    //     setCartItems([]);
+                    // }
                 }}>
                 <AlertDialogContent className="max-w-md rounded-3xl border-0 p-0 overflow-hidden shadow-xl">
                     <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-center text-white relative">

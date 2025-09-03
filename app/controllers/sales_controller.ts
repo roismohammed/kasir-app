@@ -52,14 +52,14 @@ export default class SalesController {
       const sale = await Sale.create(saleData)
       const saleItems = items.map((item: any) => ({
         saleId: sale.id,
-        productId: item.product_id,
+        productId: item.productId,
         quantity: item.quantity,
         price: item.price,
       }))
 
       for (const item of items) {
-        const product = await Product.findOrFail(item.product_id)
-        product.stock = product.stock - item.quantity
+        const product = await Product.findOrFail(item.productId)
+         product.stock -= item.quantity
         await product.save()
       }
 
