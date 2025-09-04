@@ -25,8 +25,8 @@ export default function Invoice({
             </p>
           </div>
           <div className="text-right">
-            <h2 className="text-xl font-semibold">Toko ABC</h2>
-            <p className="text-gray-600">Jl. Contoh No. 123, Jakarta</p>
+            <h2 className="text-xl font-semibold">Mr Shoop</h2>
+            <p className="text-gray-600">Jl. Rongdurin No. 123, Bangkalan</p>
             <p className="text-gray-600">Telp: (021) 123-4567</p>
           </div>
         </div>
@@ -39,7 +39,7 @@ export default function Invoice({
           </div>
           <div className="text-right">
             <p className="text-gray-700">
-              {/* <span className="font-medium">Tanggal:</span> {invoiceDate} */}
+              <span className="font-medium">Tanggal:</span> {invoiceDate}
             </p>
             <p className="text-gray-700">
               <span className="font-medium">Jatuh Tempo:</span> {dueDate}
@@ -84,11 +84,7 @@ export default function Invoice({
         </div>
 
         {/* Totals */}
-        <div className="grid grid-cols-2 gap-8">
-          <div>
-            <h3 className="text-lg font-semibold mb-2">Catatan:</h3>
-            <p className="text-gray-700">{notes}</p>
-          </div>
+        <div className=" gap-8">
           <div>
             <div className="flex justify-between py-2">
               <span className="text-gray-700">Subtotal:</span>
@@ -118,7 +114,10 @@ export default function Invoice({
             </div>
           </div>
         </div>
-
+        <div className="mt-8">
+          <h3 className="text-lg font-semibold mb-2 text-center">Catatan</h3>
+          <p className="text-gray-700 text-center">{notes}</p>
+        </div>
         {/* Footer */}
         <div className="mt-12 pt-6 border-t border-gray-200 text-center text-gray-500 text-sm">
           <p>Invoice ini sah dan diproses oleh komputer</p>
