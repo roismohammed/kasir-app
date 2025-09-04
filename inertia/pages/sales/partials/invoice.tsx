@@ -12,6 +12,8 @@ export default function Invoice({
   tax,
   grandTotal,
   paymentType,
+  paid,
+  change
 }: InvoiceProps) {
   return (
     <div className="container mx-auto p-6 max-w-4xl">
@@ -111,6 +113,14 @@ export default function Invoice({
             <div className="flex justify-between py-2">
               <span className="text-gray-700">Metode Pembayaran:</span>
               <span className="text-gray-700 font-medium">{paymentType}</span>
+            </div>
+             <div className="flex justify-between py-2">
+              <span className="text-gray-700">Uang Di Terima:</span>
+              <span className="text-gray-700 font-medium">{paid.toLocaleString()}</span>
+            </div>
+              <div className="flex justify-between py-2">
+              <span className="text-gray-700">Di Kembalikan:</span>
+              <span className="text-gray-700 font-medium">{change.toLocaleString()}</span>
             </div>
           </div>
         </div>

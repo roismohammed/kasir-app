@@ -68,7 +68,6 @@ export default function SheetTransaction({
     });
     const contentRef = useRef<HTMLDivElement>(null);
     const reactToPrintFn = useReactToPrint({ contentRef });
-    const invoiceDate = new Date().toLocaleDateString("id-ID")
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
     }
@@ -107,7 +106,6 @@ export default function SheetTransaction({
             onSuccess: () => {
                 setOpenModal(true);
                 setOpenSheet(false);
-                toast.success('Transaksi berhasil disimpan!');
             },
             onError: (errors) => {
                 toast.error('Gagal menyimpan transaksi!', errors);
@@ -535,6 +533,8 @@ export default function SheetTransaction({
                     tax={0}
                     grandTotal={grandTotal}
                     paymentType="Cash"
+                    paid={amountPaid}
+                    change={amountPaid - grandTotal}
                 />
             </div>
         </div>

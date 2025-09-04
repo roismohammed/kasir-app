@@ -158,13 +158,6 @@ export interface OrderItem {
     price: number
     subtotal: number
 }
-type PageProps = {
-    sale: OrderData[];
-    totalSales: number;        
-    totalProducts: number;     
-    totalSold: number;         
-    productTerlaris: OrderData[];
-};
 
 export interface InvoiceProps {
   invoiceNumber: string
@@ -178,4 +171,6 @@ export interface InvoiceProps {
   tax: number
   grandTotal: number
   paymentType: string
+  paid:string
+  change:string
 }
