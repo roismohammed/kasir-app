@@ -11,7 +11,7 @@ import CurrencyInput from "react-currency-input-field";
 import { cn } from "~/lib/utils";
 import { Input } from "~/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import {
     CreditCard,
     Wallet,
@@ -35,7 +35,9 @@ import {
     AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { ProductProps } from "~/types";
-
+import { Button } from "~/components/ui/button";
+import { useReactToPrint } from "react-to-print";
+import Invoice from "./invoice";
 interface SheetTransactionProps {
     cartItems: ProductProps[];
     grandTotal: number;
@@ -53,7 +55,7 @@ export default function SheetTransaction({
     const [amountPaid, setAmountPaid] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [openModal, setOpenModal] = useState(false)
-    const { data, setData, post, processing } = useForm({
+    const { data, setData, processing } = useForm({
         invoice_number: 'INV-' + Date.now(),
         customer_id: '',
         payment_type: 'cash',
@@ -64,7 +66,9 @@ export default function SheetTransaction({
         notes: '',
         items: cartItems,
     });
-
+    const contentRef = useRef<HTMLDivElement>(null);
+    const reactToPrintFn = useReactToPrint({ contentRef });
+    const invoiceDate = new Date().toLocaleDateString("id-ID")
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
     }
@@ -81,7 +85,6 @@ export default function SheetTransaction({
             toast.error('Uang yang dibayar tidak cukup!');
             return;
         }
-        // Siapkan data untuk dikirim
         const orderData = {
             ...data,
             payment_type: selectedPaymentMethod,
@@ -95,9 +98,10 @@ export default function SheetTransaction({
             amount_paid: selectedPaymentMethod === 'cash' ? amountPaid : grandTotal,
             change_amount: selectedPaymentMethod === 'cash' ? Math.max(0, amountPaid - grandTotal) : 0
         };
+
         router.post('/sales', orderData, {
             preserveScroll: true,
-            forceFormData:false,
+            forceFormData: false,
             onStart: () => setIsSubmitting(true),
             onFinish: () => setIsSubmitting(false),
             onSuccess: () => {
@@ -106,7 +110,7 @@ export default function SheetTransaction({
                 toast.success('Transaksi berhasil disimpan!');
             },
             onError: (errors) => {
-                toast.error('Gagal menyimpan transaksi!',errors);
+                toast.error('Gagal menyimpan transaksi!', errors);
             },
         });
     };
@@ -144,28 +148,8 @@ export default function SheetTransaction({
                         </div>
                     </div>
 
-                    {/* Main Content */}
-                    <div className="p-6 space-y-8">
-                        {/* Customer Selection (Optional) */}
-                        <div className="space-y-2">
-                            <Label htmlFor="customer" className="text-gray-700 font-medium">
-                                Customer (Opsional)
-                            </Label>
-                            {/* <Select value={data.customer_id} onValueChange={(value) => setData('customer_id', value)}>
-                                <SelectTrigger className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 focus:border-purple-300 focus:ring-2 focus:ring-purple-100">
-                                    <SelectValue placeholder="Pilih customer atau kosongkan" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="">Tanpa Customer</SelectItem>
-                                    {customers.map((customer) => (
-                                        <SelectItem key={customer.id} value={customer.id.toString()}>
-                                            {customer.name}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select> */}
-                        </div>
 
+                    <div className="p-6 space-y-8">
                         <div>
                             <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
                                 <HugeiconsIcon icon={CreditCardIcon} className="w-5 h-5 text-purple-600" />
@@ -390,13 +374,13 @@ export default function SheetTransaction({
                     </div>
 
                     <SheetFooter className="p-6 pt-0">
-                        <button
+                        <Button
                             onClick={handleCheckout}
                             disabled={isSubmitting || processing}
                             className={`w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold 
-        hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
-        flex items-center justify-center active:scale-[0.98]
-        ${(isSubmitting || processing) ? 'opacity-70 cursor-not-allowed' : ''}`}
+                            hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all shadow-lg hover:shadow-xl
+                            flex items-center justify-center active:scale-[0.98]
+                            ${(isSubmitting || processing) ? 'opacity-70 cursor-not-allowed' : ''}`}
                         >
                             {(isSubmitting || processing) ? (
                                 <>
@@ -412,7 +396,7 @@ export default function SheetTransaction({
                                     <span>Bayar Sekarang</span>
                                 </>
                             )}
-                        </button>
+                        </Button>
                     </SheetFooter>
                 </SheetContent>
             </div>
@@ -420,9 +404,8 @@ export default function SheetTransaction({
             <AlertDialog open={openModal}
                 onOpenChange={(isOpen) => {
                     setOpenModal(isOpen);
-                    // if (!isOpen) {
-                    //     setCartItems([]);
-                    // }
+                    setAmountPaid(0);
+                    if (onSuccess) onSuccess();
                 }}>
                 <AlertDialogContent className="max-w-md rounded-3xl border-0 p-0 overflow-hidden shadow-xl">
                     <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-6 text-center text-white relative">
@@ -524,7 +507,7 @@ export default function SheetTransaction({
                                 Tutup
                             </AlertDialogCancel>
                             <button
-                                //   onClick={handlePrintReceipt}
+                                onClick={reactToPrintFn}
                                 className="w-full h-12 cursor-pointer flex items-center justify-center rounded-xl bg-gradient-to-r text-white from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 shadow-sm gap-2 transition-all hover:shadow-md"
                             >
                                 <Printer className="h-5 w-5" />
@@ -534,6 +517,26 @@ export default function SheetTransaction({
                     </div>
                 </AlertDialogContent>
             </AlertDialog>
+
+            <div ref={contentRef} className="hidden print:block" >
+                <Invoice
+                    invoiceNumber={"INV-" + Date.now()}
+                    customerInfo="Umum (Cash)"
+                    invoiceDate={new Date().toLocaleDateString("id-ID")}
+                    dueDate={new Date().toLocaleDateString("id-ID")}
+                    items={cartItems.map(item => ({
+                        name: item.name ,
+                        price: item.price,
+                        qty: item.quantity,
+                    }))}
+                    notes="Terima kasih telah berbelanja di toko kami."
+                    subtotal={cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
+                    discount={0}
+                    tax={0}
+                    grandTotal={grandTotal}
+                    paymentType="Cash"
+                />
+            </div>
         </div>
     )
 }

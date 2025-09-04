@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/sheet"
 
 import ProductCard from "~/components/card-product";
-import SheetTransaction from "~/components/sheet-transaction";
+import SheetTransaction from "./partials/sheet-transaction";
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -43,11 +43,9 @@ export default function CashierAppStatic() {
     const [cartItems, setCartItems] = useState<ProductProps[]>([])
     const [openSheet, setOpenSheet] = useState(false)
     const handleTransactionSuccess = () => {
-        // Reset cart atau lakukan action lain
         setCartItems([]);
-        // Refresh data jika perlu
-        // window.location.reload();
     };
+
 
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
@@ -150,8 +148,6 @@ export default function CashierAppStatic() {
                     </div>
                     <h2 className="text-lg font-semibold mb-3 text-gray-800">Lunch Menu</h2>
 
-
-                    {/* Menu Items Grid - Changes on mobile */}
                     <div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             {products.length > 0 ? (
@@ -240,7 +236,13 @@ export default function CashierAppStatic() {
 
                             <Sheet open={openSheet} onOpenChange={setOpenSheet}>
                                 <SheetTrigger asChild>
-                                    <button className="w-full cursor-pointer h-14 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-lg font-semibold hover:from-purple-700 hover:to-indigo-700 rounded-xl transition-all  hover:shadow-xl active:scale-[0.98]">
+                                    <button
+                                        disabled={cartItems.length === 0}
+                                        className={`w-full cursor-pointer h-14 text-white text-lg font-semibold rounded-xl transition-all active:scale-[0.98] shadow-sm 
+                                             ${cartItems.length === 0
+                                                ? "bg-gray-400 cursor-not-allowed"
+                                                : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 hover:shadow-xl"}`}
+                                    >
                                         Bayar {formatPrice(grandTotal)}
                                     </button>
                                 </SheetTrigger>
@@ -286,7 +288,7 @@ export default function CashierAppStatic() {
                 </div>
             </div>
 
-          
+
         </AppLayout>
     );
 }

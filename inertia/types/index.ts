@@ -160,8 +160,22 @@ export interface OrderItem {
 }
 type PageProps = {
     sale: OrderData[];
-    totalSales: number;        // total uang hasil penjualan
-    totalProducts: number;     // jumlah produk di katalog
-    totalSold: number;         // jumlah unit terjual
+    totalSales: number;        
+    totalProducts: number;     
+    totalSold: number;         
     productTerlaris: OrderData[];
 };
+
+export interface InvoiceProps {
+  invoiceNumber: string
+  customerInfo: string
+  invoiceDate: string
+  dueDate: string
+  items: { name: string; price: number; qty: number }[]
+  notes: string
+  subtotal: number
+  discount: number
+  tax: number
+  grandTotal: number
+  paymentType: string
+}
