@@ -9,7 +9,7 @@ export default function ProductCard({ product, onAddToCart }: { product: Product
     return (
         <div
             key={product.id}
-            className="flex flex-row md:flex-col rounded-lg overflow-hidden shadow-md bg-white py-0 px-2 lg:px-0 border border-slate-200 lg:p-0"
+            className="flex flex-row md:flex-col rounded-lg overflow-hidden shadow-none border border-gray-200 bg-white py-0 px-2 lg:px-0  lg:p-0"
         >
             <img
                 src={`/storage/products/${product.image}`}

@@ -28,16 +28,16 @@ export default class ReportSalesController {
       .orderByRaw('MONTH(created_at)')
     const newTransaksi = await SaleProduct.query().preload('product').preload('sale').limit(5).orderBy('created_at', 'desc')
     const reportDay = await SaleProduct.query().whereRaw('created_at BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 DAY)');
-    return inertia.render('report/sale', {
-      sales,
-      totalSales,
-      totalProducts,
-      totalSold,
-      productTerlaris,
-      newTransaksi,
-      perMonth,
-      reportDay
-    })
+    // return inertia.render('report/sale', {
+    //   sales,
+    //   totalSales,
+    //   totalProducts,
+    //   totalSold,
+    //   productTerlaris,
+    //   newTransaksi,
+    //   perMonth,
+    //   reportDay
+    // })
   }
 
 }

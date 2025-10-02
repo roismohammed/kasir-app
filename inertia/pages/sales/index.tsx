@@ -116,7 +116,7 @@ export default function CashierAppStatic() {
                                 onClick={() => {
                                     router.visit(`/sales?category_id=${categories.id}`)
                                 }}
-                                className={`flex flex-col sm:flex-row cursor-pointer items-center justify-center sm:justify-start w-full px-1 sm:px-2 py-2 sm:py-2 rounded-lg shadow-sm transition-colors ${isActive(categories.id) ? "bg-white text-purple-600 border border-purple-600" : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+                                className={`flex flex-col sm:flex-row cursor-pointer items-center justify-center sm:justify-start w-full px-1 sm:px-2 py-2 sm:py-2 rounded-lg shadow-none transition-colors ${isActive(categories.id) ? "bg-white text-purple-600 border border-purple-600" : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
                                     }`}
                             >
                                 {/* Text - Centered on mobile */}
@@ -167,7 +167,7 @@ export default function CashierAppStatic() {
 
                 {/* Desktop Sidebar */}
                 <div className="w-full md:hidden lg:block lg:w-96 hidden ">
-                    <div className="flex flex-col h-[calc(92vh-32px)] border border-gray-200 rounded-lg shadow-lg bg-white sticky top-4">
+                    <div className="flex flex-col h-[calc(92vh-32px)] border border-gray-200 rounded-xl shadow-none bg-white sticky top-4">
                         <div className="p-6 flex-1 flex flex-col overflow-hidden">
                             <h2 className="text-xl font-semibold mb-6 text-gray-800">Order Items ({cartItems.length})</h2>
                             <div className="flex-1 pr-2 max-h-[350px] overflow-y-scroll">
