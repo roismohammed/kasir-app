@@ -111,18 +111,18 @@ export default function SalesReportPage() {
             <Head title="Penjualan" />
             <div className="min-h-screen bg-background">
                 {/* Modern Purple Header */}
-                <div className="bg-gradient-to-r from-purple-600 to-purple-500 px-6 py-8 shadow-lg rounded-lg">
+                <div className="bg-gray-100 px-6 py-8 shadow-none rounded-lg">
                     <div className="max-w-7xl mx-auto">
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div className="space-y-2">
-                                <h1 className="text-2xl font-bold text-white tracking-tight">Laporan Penjualan</h1>
-                                <p className="text-purple-100">
+                                <h1 className="text-2xl font-bold  tracking-tight">Laporan Penjualan</h1>
+                                <p className="text-gray-500">
                                     Dashboard komprehensif untuk analisis penjualan dan performa bisnis
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
                                 <Select defaultValue="30days" onValueChange={handleFilterChange}>
-                                    <SelectTrigger className="w-[140px] bg-white/10 text-white border-white/20 hover:bg-white/20">
+                                    <SelectTrigger className="w-[140px] border bg-white">
                                         <Calendar className="w-4 h-4 mr-2 text-purple-100" />
                                         <SelectValue className="text-white" />
                                     </SelectTrigger>
@@ -134,7 +134,7 @@ export default function SalesReportPage() {
                                         <SelectItem value="1year">1 Tahun</SelectItem>
                                     </SelectContent>
                                 </Select>
-                                <Button variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 hover:text-white">
+                                <Button variant="outline" className="bg-white  hover:bg-white/90">
                                     <Download className="w-4 h-4 mr-2" />
                                     Export
                                 </Button>
@@ -167,7 +167,7 @@ export default function SalesReportPage() {
                         <TabsContent value="overview" className="space-y-6">
                             {/* Key Metrics */}
                             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-                                <Card className="border-0 shadow-lg">
+                                <Card className="border shadow-none border-gray-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-    ">
                                         <CardTitle className="text-sm font-medium text-gray-500">Total Penjualan</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
@@ -184,7 +184,7 @@ export default function SalesReportPage() {
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-0 shadow-lg">
+                               <Card className="border shadow-none border-gray-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-">
                                         <CardTitle className="text-sm font-medium text-gray-500">Total Pesanan</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
@@ -201,7 +201,7 @@ export default function SalesReportPage() {
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-0 shadow-lg">
+                                 <Card className="border shadow-none border-gray-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-">
                                         <CardTitle className="text-sm font-medium text-gray-500">Product Terjual</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
@@ -222,7 +222,7 @@ export default function SalesReportPage() {
                                     </CardContent>
                                 </Card>
 
-                                <Card className="border-0 shadow-lg">
+                            <Card className="border shadow-none border-gray-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb- ">
                                         <CardTitle className="text-sm font-medium text-gray-500">Rata-rata Pesanan</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
@@ -242,7 +242,7 @@ export default function SalesReportPage() {
 
                             <div className="grid gap-6 lg:grid-cols-7">
                                 {/* Sales Chart */}
-                                <Card className="lg:col-span-4 border-0 shadow-lg">
+                                <Card className="lg:col-span-4 border border-gray-200 shadow-none">
                                     <CardHeader>
                                         <CardTitle className="text-purple-900">Tren Penjualan</CardTitle>
                                         <CardDescription className="text-gray-500">Grafik penjualan dalam 30 hari terakhir</CardDescription>
@@ -255,7 +255,7 @@ export default function SalesReportPage() {
                                 </Card>
 
                                 {/* Top Products */}
-                                <Card className="lg:col-span-3 border-0 shadow-lg">
+                                <Card className="lg:col-span-3 border border-gray-200 shadow-none">
                                     <CardHeader>
                                         <CardTitle className="text-purple-900">Produk Terlaris</CardTitle>
                                         <CardDescription className="text-gray-500">5 produk dengan penjualan tertinggi</CardDescription>
@@ -271,19 +271,19 @@ export default function SalesReportPage() {
                                                         >
                                                             <div className="flex items-center space-x-3">
                                                                 <div className="w-12 h-12 flex items-center justify-center">
-                                                                    <img
+                                                                    {/* <img
                                                                         src={`/storage/products/${product.product.image}`}
                                                                         alt={product.product.name}
                                                                         className="w-full h-full object-cover rounded-md"
-                                                                    />
+                                                                    /> */}
                                                                 </div>
                                                                 <div>
-                                                                    <p className="font-medium text-sm text-gray-900">{product.product.name}</p>
+                                                                    {/* <p className="font-medium text-sm text-gray-900">{product.product.name}</p> */}
                                                                     <p className="text-xs text-gray-500">{product.quantity} terjual</p>
                                                                 </div>
                                                             </div>
                                                             <div className="text-right">
-                                                                <p className="font-semibold text-sm text-purple-900">Rp {product.product.price}</p>
+                                                                {/* <p className="font-semibold text-sm text-purple-900">Rp {product.product.price}</p> */}
                                                                 <p className="text-xs text-emerald-600">{product.trend}</p>
                                                             </div>
                                                         </div>
@@ -299,7 +299,7 @@ export default function SalesReportPage() {
                             </div>
 
                             {/* Recent Sales */}
-                            <Card className="border-0 shadow-lg">
+                            <Card className="border border-gray-200 shadow-none">
                                 <CardHeader>
                                     <div className="flex items-center justify-between">
                                         <div>
@@ -336,7 +336,7 @@ export default function SalesReportPage() {
                                                     <TableHead className="w-[50px]"></TableHead>
                                                 </TableRow>
                                             </TableHeader>
-                                            {filteredTransaksi.length > 0 ? (
+                                            {/* {filteredTransaksi.length > 0 ? (
                                                 <TableBody className="bg-white">
                                                     {newTransaksi.map((order) => (
                                                         <TableRow
@@ -414,7 +414,7 @@ export default function SalesReportPage() {
                                                 </TableBody>
                                             ) : (
                                                 <div className="text-center my-20 text-gray-500">Tidak ada transaksi terbaru</div>
-                                            )}
+                                            )} */}
                                         </Table>
                                     </div>
 
