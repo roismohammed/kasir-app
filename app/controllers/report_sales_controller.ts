@@ -8,7 +8,7 @@ export default class ReportSalesController {
 
     const totalSales = totalSalesResult[0].$extras.total
     const totalSalesCountResult = await Sale.query().count('* as total')
-    
+
     const totalProducts = totalSalesCountResult[0].$extras.total
     const totalProductsSoldResult = await SaleProduct.query().sum('quantity as total')
     const totalSold = totalProductsSoldResult[0].$extras.total
@@ -20,12 +20,19 @@ export default class ReportSalesController {
       .orderByRaw('SUM(quantity) DESC')
       .limit(5)
 
+    const newTransaksi = await SaleProduct.query()
+      .preload('sale', (query) => query.select(['id', 'invoice_number', 'created_at']))
+      .preload('product', (query) => query.select(['id', 'name', 'image']))
+      .orderBy('created_at', 'desc')
+      .limit(5)
+
     return inertia.render('report/sale', {
       sales,
       totalSales,
       totalProducts,
       totalSold,
       productTerlaris,
+      newTransaksi
     })
   }
 }
