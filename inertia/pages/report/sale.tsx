@@ -1,5 +1,3 @@
-"use client"
-
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -37,7 +35,7 @@ import {
     ArrowDownRight,
 } from "lucide-react"
 import AppLayout from "~/layouts/app-layout"
-import { Head, usePage } from "@inertiajs/react"
+import { Head, useForm, usePage } from "@inertiajs/react"
 import { OrderData } from "~/types"
 import { ChartBarDefault } from "~/components/ui/chart-bar-default"
 import { useState } from "react"
@@ -86,25 +84,16 @@ type PageProps = {
 };
 
 export default function SalesReportPage() {
-    const { totalSales, totalProducts, totalSold, productTerlaris, newTransaksi, perMonth } = usePage<PageProps>().props
-    console.log(perMonth);
+    const { totalSales, totalProducts, totalSold,year, productTerlaris, newTransaksi, perMonth } = usePage<PageProps>().props
+    const { get } = useForm();
+
+    const handleChange = (e:string) => {
+        // get('/transactions', { year: e.target.value }); 
+    };
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
     }
-
-    const [filteredTransaksi, setFilteredTransaksi] = useState(newTransaksi);
-
-    const handleFilterChange = () => {
-        const today = new Date();
-        return newTransaksi.filter((order) => {
-            const orderDate = new Date(order.sale.createdAt);
-            return orderDate.toDateString() === today.toDateString();
-        });
-        console.log(today);
-    }
-
-
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -121,7 +110,7 @@ export default function SalesReportPage() {
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Select defaultValue="30days" onValueChange={handleFilterChange}>
+                                <Select defaultValue="30days" onValueChange={handleChange}>
                                     <SelectTrigger className="w-[140px] border bg-white">
                                         <Calendar className="w-4 h-4 mr-2 text-purple-100" />
                                         <SelectValue className="text-white" />
@@ -184,7 +173,7 @@ export default function SalesReportPage() {
                                     </CardContent>
                                 </Card>
 
-                               <Card className="border shadow-none border-gray-200">
+                                <Card className="border shadow-none border-gray-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-">
                                         <CardTitle className="text-sm font-medium text-gray-500">Total Pesanan</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
@@ -201,7 +190,7 @@ export default function SalesReportPage() {
                                     </CardContent>
                                 </Card>
 
-                                 <Card className="border shadow-none border-gray-200">
+                                <Card className="border shadow-none border-gray-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-">
                                         <CardTitle className="text-sm font-medium text-gray-500">Product Terjual</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
@@ -222,7 +211,7 @@ export default function SalesReportPage() {
                                     </CardContent>
                                 </Card>
 
-                            <Card className="border shadow-none border-gray-200">
+                                <Card className="border shadow-none border-gray-200">
                                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb- ">
                                         <CardTitle className="text-sm font-medium text-gray-500">Rata-rata Pesanan</CardTitle>
                                         <div className="p-2 rounded-full bg-purple-100">
