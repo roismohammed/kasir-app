@@ -26,10 +26,11 @@ export default class SalesController {
     })
     return inertia.render('sales/index', {
       sales,
+      categories,
       products,
-      categories
     })
   }
+
   async store({ request, response, session }: HttpContext) {
     const payload = request.only([
       'invoice_number',
@@ -44,29 +45,38 @@ export default class SalesController {
     ])
 
     const { items, ...saleData } = payload
+
     if (!items || items.length === 0) {
       session.flash('error', 'Item tidak boleh kosong')
       return response.redirect().back()
     }
+
     try {
       const sale = await Sale.create(saleData)
       const saleItems = items.map((item: any) => ({
         saleId: sale.id,
-        productId: item.id,
+        productId: item.productId,
         quantity: item.quantity,
         price: item.price,
       }))
 
+
       for (const item of items) {
         const product = await Product.findOrFail(item.productId)
-         product.stock -= item.quantity
+        product.stock = Number(product.stock) - Number(item.quantity)
         await product.save()
       }
 
       await SaleProduct.createMany(saleItems)
+
+      session.flash('success', 'Transaksi berhasil disimpan!')
       return response.redirect().toRoute('sales.index')
     } catch (error) {
+      console.error(error)
+      session.flash('error', 'Terjadi kesalahan saat menyimpan transaksi')
       return response.redirect().toRoute('sales.index')
     }
   }
+
 }
+

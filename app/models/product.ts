@@ -5,7 +5,6 @@ import Category from './category.js'
 import Unit from './unit.js'
 import StockIn from './stock_in.js'
 import StockOut from './stock_out.js'
-import Sale from './sale.js'
 import SaleProduct from './sale_product.js'
 
 export default class Product extends BaseModel {
@@ -45,7 +44,7 @@ export default class Product extends BaseModel {
   @hasMany(() => StockOut)
   declare stockOuts: HasMany<typeof StockOut>
 
-  @hasMany(() => SaleProduct) // Ganti dari Sale langsung ke SaleProduct
+  @hasMany(() => SaleProduct)
   declare saleProducts: HasMany<typeof SaleProduct>
 
   @column.dateTime({ autoCreate: true })

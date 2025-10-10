@@ -72,7 +72,7 @@ type PageProps = {
 
 export default function SalesReportPage() {
     const { totalSales, totalProducts, totalSold, year, productTerlaris, newTransaksi, perMonth } = usePage<PageProps>().props
-    console.log(newTransaksi);
+    console.log(productTerlaris);
     const { get } = useForm();
 
     const handleChange = (e: string) => {

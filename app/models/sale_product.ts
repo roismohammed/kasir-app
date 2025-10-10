@@ -1,6 +1,5 @@
-// app/models/sale_product.ts
-import { BaseModel, column, belongsTo } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import Sale from './sale.js'
 import Product from './product.js'
 
@@ -8,10 +7,10 @@ export default class SaleProduct extends BaseModel {
   @column({ isPrimary: true })
   declare id: number
 
-  @column()
+  @column({ columnName: 'sale_id' })
   declare saleId: number
 
-  @column()
+  @column({ columnName: 'product_id' })
   declare productId: number
 
   @column()
