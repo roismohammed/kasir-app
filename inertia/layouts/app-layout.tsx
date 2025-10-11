@@ -1,3 +1,5 @@
+import { HugeiconsIcon } from '@hugeicons/react';
+import { HugeiconsFreeIcons, Notification01FreeIcons } from '@hugeicons/core-free-icons'
 import React, { Fragment } from 'react'
 import { Toaster } from 'sonner'
 import { AppSidebar } from '~/components/app-sidebar'
@@ -65,7 +67,13 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
             </div>
           )}
 
-          <div className='px-4'>
+          <div className='px-4 flex items-center gap-3'>
+            <div className='relative bg-gray-100 border px-1.5 py-1.5 rounded-md'>
+              <HugeiconsIcon
+                icon={Notification01FreeIcons}
+                className=" h-5 text-gray-600 dark:text-gray-300 hover:text-blue-500 cursor-pointer transition-colors"
+              />
+            </div>
             <ModeToggle />
           </div>
         </header>

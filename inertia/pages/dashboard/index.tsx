@@ -22,6 +22,7 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowDownIcon, ArrowUpIcon, MinusIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
 import SaleProduct from "#models/sale_product";
+import Product from '../../../app/models/product';
 
 
 const breadcrumbs = [
@@ -100,7 +101,7 @@ const DashboardPage = () => {
         </Card>
       </div>
       <div className="mt-4">
-        <Card className="border-none shadow-sm">
+        <Card className=" shadow-none border border-gray-200">
           <CardHeader>
             <div className="flex justify-between items-center">
               <div>
@@ -115,11 +116,11 @@ const DashboardPage = () => {
             </div>
           </CardHeader>
           <CardContent>
-            {/* <Table>
+            <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead className="w-[80px]">ID</TableHead> 
-                  <TableHead>Produk</TableHead> 
+                  <TableHead className="w-[80px]">ID</TableHead>
+                  <TableHead>Produk</TableHead>
                   <TableHead>Kategori</TableHead>
                   <TableHead className="text-right">Penjualan</TableHead>
                   <TableHead className="text-right">Pendapatan</TableHead>
@@ -127,57 +128,57 @@ const DashboardPage = () => {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {productTerlaris.map((product:SaleProduct) => (
-                  <TableRow key={product.id}>
+                {productTerlaris.map((data) => (
+                  <TableRow key={data.id}>
                     <TableCell className="font-mono text-xs text-muted-foreground">
-                      {product.product.id}
+                      {data.id}
                     </TableCell>
                     <TableCell className="font-medium flex items-center gap-3">
-                      <Avatar className="h-8 w-8 rounded-md">
-                        <AvatarImage src={ '/storage/products/' +  product.product.image} alt={product.product.name} />
+                      <Avatar className="h-10 w-10 rounded-md object-cover">
+                        <AvatarImage className="object-cover" src={'/storage/products/' + data.product.image} alt={data.product.name} />
                         <AvatarFallback className="rounded-md bg-primary/10 text-primary">
-                          {product.product.image}
+                          {data.product.image}
                         </AvatarFallback>
                       </Avatar>
-                      <span className="font-semibold">{product.product.name}</span>
+                      <span className="font-semibold">{data.product.name}</span>
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary" className="px-2 py-1">
-                        {product.product.category.name}
+                        {data.product.name}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right font-semibold">
-
+                      {data.product.quantity}
                     </TableCell>
                     <TableCell className="text-right font-semibold text-primary">
-                      {formatCurrency(product.product.price)}
+                      {formatCurrency(data.product.price)}
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end">
-                        {product.quantity >= 5 ? (
+                        {data.product.quantity >= 5 ? (
                           <ArrowUpIcon className="h-4 w-4 text-green-600 mr-1" />
-                        ) : product.quantity < 5 ? (
+                        ) : data.product.quantity < 5 ? (
                           <ArrowDownIcon className="h-4 w-4 text-red-600 mr-1" />
                         ) : (
                           <MinusIcon className="h-4 w-4 text-gray-500 mr-1" />
                         )}
                         <span
-                          className={`font-medium ${product.quantity >= 5
-                              ? "text-green-600"
-                              : product.quantity < 5
+                          className={`font-medium ${data.product.quantity >= 5
+                            ? "text-green-600"
+                            : data.product.quantity < 5
 
-                                ? "text-red-600"
-                                : "text-gray-500"
+                              ? "text-red-600"
+                              : "text-gray-500"
                             }`}
                         >
-                          {product.quantity >= 5 ? `+${product.quantity - 5}%` : product.quantity < 5 ? `-${5 - product.quantity}%` : ''}
+                          {data.product.quantity >= 5 ? `+${data.product.quantity - 5}%` : data.product.quantity < 5 ? `-${5 - data.product.quantity}%` : ''}
                         </span>
                       </div>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
-            </Table> */}
+            </Table>
           </CardContent>
         </Card>
       </div>

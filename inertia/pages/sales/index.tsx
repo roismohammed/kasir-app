@@ -53,6 +53,7 @@ export default function CashierAppStatic() {
         if (categoryId) {
             setActiveCategory(parseInt(categoryId));
         }
+        { preserveState: true }
     }, []);
 
 

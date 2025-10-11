@@ -22,9 +22,10 @@ import {
     ArrowDownRight,
 } from "lucide-react"
 import AppLayout from "~/layouts/app-layout"
-import { Head, useForm, usePage } from "@inertiajs/react"
+import { Head, router, useForm, usePage } from "@inertiajs/react"
 import { OrderData } from "~/types"
 import { ChartBarDefault } from "~/components/ui/chart-bar-default"
+import { useState } from "react"
 const breadcrumbs = [
     {
         title: "Beranda",
@@ -71,13 +72,27 @@ type PageProps = {
 
 
 export default function SalesReportPage() {
-    const { totalSales, totalProducts, totalSold, year, productTerlaris, newTransaksi, perMonth } = usePage<PageProps>().props
-    console.log(productTerlaris);
-    const { get } = useForm();
+    const [selectedMonth, setSelectedMonth] = useState<string>('');
+    const { totalSales, totalProducts, totalSold, year, productTerlaris, newTransaksi, selectDataPer } = usePage<PageProps>().props
 
-    const handleChange = (e: string) => {
-        // get('/transactions', { year: e.target.value }); 
-    };
+    const handleChange = (month: string) => {
+        setSelectedMonth(month)
+
+        // Langsung trigger router.get dengan parameter month
+        router.get('/report',
+            { selectDataPerMonth: month },
+            {
+                preserveState: true,
+                onSuccess: (page) => {
+                    console.log('Data per bulan:', page.props.selectDataPer)
+                    console.log('Semua data:', page.props)
+                },
+                onError: (error) => {
+                    console.error('Ada error:', error)
+                }
+            }
+        )
+    }
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
@@ -98,7 +113,7 @@ export default function SalesReportPage() {
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Select defaultValue="30days" onValueChange={handleChange}>
+                                <Select defaultValue="30days" onValueChange={(value) => handleChange(value)}>
                                     <SelectTrigger className="w-[140px] border bg-white">
                                         <Calendar className="w-4 h-4 mr-2 text-purple-100" />
                                         <SelectValue className="text-white" />
@@ -123,6 +138,9 @@ export default function SalesReportPage() {
                         </div>
                     </div>
                 </div>
+
+
+
 
                 <div className=" mx-auto py-6 ">
                     <Tabs defaultValue="overview" className="space-y-6">
@@ -241,34 +259,32 @@ export default function SalesReportPage() {
                                         <ScrollArea className="h-[350px]">
                                             <div className="space-y-4">
                                                 {productTerlaris.length > 0 ? (
-                                                    productTerlaris.map((product, index) => (
+                                                    productTerlaris.map((data, index) => (
                                                         <div
                                                             key={index}
                                                             className="flex items-center justify-between p-2 rounded-lg border border-gray-200 hover:bg-purple-50 transition-colors"
                                                         >
                                                             <div className="flex items-center space-x-3">
                                                                 <div className="w-12 h-12 flex items-center justify-center">
-                                                                    {/* <img
-                                                                        src={`/storage/products/${product.product.image}`}
-                                                                        alt={product.product.name}
+                                                                    <img
+                                                                        src={`/storage/products/${data.product.image}`}
+                                                                        alt={data.product.name}
                                                                         className="w-full h-full object-cover rounded-md"
-                                                                    /> */}
+                                                                    />
                                                                 </div>
                                                                 <div>
-                                                                    {/* <p className="font-medium text-sm text-gray-900">{product.product.name}</p> */}
-                                                                    <p className="text-xs text-gray-500">{product.quantity} terjual</p>
+                                                                    <p className="font-medium text-sm text-gray-900">{data.product.name}</p>
+                                                                    <p className="text-xs text-gray-500">{data.quantity} terjual</p>
                                                                 </div>
                                                             </div>
                                                             <div className="text-right">
-                                                                {/* <p className="font-semibold text-sm text-purple-900">Rp {product.product.price}</p> */}
-                                                                <p className="text-xs text-emerald-600">{product.trend}</p>
+                                                                <p className="text-xs text-emerald-600">{data.trend ?? ''}</p>
                                                             </div>
                                                         </div>
                                                     ))
                                                 ) : (
                                                     <div className="text-center mt-40 text-gray-500">Tidak ada produk terlaris</div>
                                                 )}
-
                                             </div>
                                         </ScrollArea>
                                     </CardContent>
@@ -303,7 +319,7 @@ export default function SalesReportPage() {
                                 <CardContent>
                                     <div className="rounded-lg border border-gray-200 overflow-hidden">
                                         <Table>
-                                            <TableHeader className="bg-purple-50">
+                                            <TableHeader className="bg-gray-100">
                                                 <TableRow className="hover:bg-transparent">
                                                     <TableHead className="font-medium text-gray-500">Pesanan</TableHead>
                                                     <TableHead className="font-medium text-gray-500">Produk</TableHead>
@@ -318,7 +334,7 @@ export default function SalesReportPage() {
                                                     {newTransaksi.map((order) => (
                                                         <TableRow
                                                             key={order.id}
-                                                            className="border-t hover:bg-purple-50 transition-colors"
+                                                            className="border-t w-full transition-colors"
                                                         >
                                                             {/* Nomor Invoice */}
                                                             <TableCell className="font-medium text-purple-900">
@@ -330,14 +346,14 @@ export default function SalesReportPage() {
                                                                 <div className="flex items-center space-x-3">
                                                                     <div className="w-12 h-12 flex items-center justify-center">
                                                                         <img
-                                                                            // src={`/storage/products/${order.product.image}`}
-                                                                            // alt={order.product.name}
+                                                                            src={`/storage/products/${order.product.image}`}
+                                                                            alt={order.product.name}
                                                                             className="w-full h-full object-cover rounded-md"
                                                                         />
                                                                     </div>
                                                                     <div>
                                                                         <p className="font-medium text-sm text-gray-900">
-                                                                            {/* {order.product.name} */}
+                                                                            {order.product.name}
                                                                         </p>
                                                                     </div>
                                                                 </div>
@@ -353,7 +369,7 @@ export default function SalesReportPage() {
                                                             </TableCell>
 
                                                             {/* Harga */}
-                                                            <TableCell className="text-right font-semibold text-purple-900">
+                                                            <TableCell className=" text-end font-semibold text-purple-900">
                                                                 Rp {order.price.toLocaleString('id-ID')}
                                                             </TableCell>
                                                         </TableRow>

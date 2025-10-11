@@ -12,7 +12,7 @@ import UsersController from '#controllers/users_controller'
 import router from '@adonisjs/core/services/router'
 import ReportSalesController from '#controllers/report_sales_controller'
 import ReportStockInsController from '#controllers/report_stock_ins_controller'
-import { middleware } from './kernel.js'
+// import { middleware } from './kernel.js'
 router.on('/').renderInertia('home')
 
 router.group(() => {

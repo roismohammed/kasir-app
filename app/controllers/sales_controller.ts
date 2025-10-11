@@ -60,7 +60,6 @@ export default class SalesController {
         price: item.price,
       }))
 
-
       for (const item of items) {
         const product = await Product.findOrFail(item.productId)
         product.stock = Number(product.stock) - Number(item.quantity)
@@ -77,6 +76,5 @@ export default class SalesController {
       return response.redirect().toRoute('sales.index')
     }
   }
-
 }
 
