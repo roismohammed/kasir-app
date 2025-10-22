@@ -32,9 +32,8 @@ const breadcrumbs = [
   },
 ]
 const DashboardPage = () => {
-  const { totalSupplier, totalProduct, totalCustomer, productTerlaris } = usePage().props
-
-  console.log(productTerlaris);
+  const { totalSupplier,result, totalProduct, totalCustomer, productTerlaris } = usePage().props
+  console.log(result);
 
 
   const formatCurrency = (value: number) => {
