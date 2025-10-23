@@ -21,8 +21,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ArrowDownIcon, ArrowUpIcon, MinusIcon } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "~/components/ui/avatar";
-import SaleProduct from "#models/sale_product";
-import Product from '../../../app/models/product';
 
 
 const breadcrumbs = [
