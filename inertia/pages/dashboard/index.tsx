@@ -30,7 +30,7 @@ const breadcrumbs = [
   },
 ]
 const DashboardPage = () => {
-  const { totalSupplier,result, totalProduct, totalCustomer, productTerlaris } = usePage().props
+  const { result, productTerlaris } = usePage().props
   console.log(result);
 
 
