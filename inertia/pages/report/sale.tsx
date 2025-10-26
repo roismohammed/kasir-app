@@ -69,30 +69,37 @@ type PageProps = {
         price: number;
     }[];
 };
-
+// interface PageProps {
+//     data: any[]
+//     selectedPeriod: string
+//     totalSales: number
+//     totalProducts: number
+//     totalSold: number
+//     productTerlaris: any
+//     newTransaksi: any[]
+//     selectDataPerDay: any[]
+// }
 
 export default function SalesReportPage() {
-    const [selectedMonth, setSelectedMonth] = useState<string>('');
-    const { totalSales, totalProducts, totalSold, year, productTerlaris, newTransaksi, selectDataPer } = usePage<PageProps>().props
+    const {
+        data,
+        selectedPeriod,
+        totalSales,
+        totalProducts,
+        totalSold,
+        productTerlaris,
+        newTransaksi,
+        selectDataPerDay
+    } = usePage<PageProps>().props
 
-    const handleChange = (month: string) => {
-        setSelectedMonth(month)
-
-        // Langsung trigger router.get dengan parameter month
+    const handleChange = (value: string) => {
         router.get('/report',
-            { selectDataPerMonth: month },
-            {
-                preserveState: true,
-                onSuccess: (page) => {
-                    console.log('Data per bulan:', page.props.selectDataPer)
-                    console.log('Semua data:', page.props)
-                },
-                onError: (error) => {
-                    console.error('Ada error:', error)
-                }
-            }
+            { period: value },
+            { preserveState: true, preserveScroll: true }
         )
+        console.log(selectDataPerDay);
     }
+
 
     const formatPrice = (price: number) => {
         return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
@@ -113,7 +120,10 @@ export default function SalesReportPage() {
                                 </p>
                             </div>
                             <div className="flex items-center gap-2">
-                                <Select defaultValue="30days" onValueChange={(value) => handleChange(value)}>
+                                <Select
+                                    // defaultValue={selectedPeriod}
+                                    onValueChange={handleChange}
+                                >
                                     <SelectTrigger className="w-[140px] border bg-white">
                                         <Calendar className="w-4 h-4 mr-2 text-purple-100" />
                                         <SelectValue className="text-white" />
@@ -139,7 +149,7 @@ export default function SalesReportPage() {
                     </div>
                 </div>
 
-
+                <p>Total Sales: {totalSales}</p>
 
 
                 <div className=" mx-auto py-6 ">
