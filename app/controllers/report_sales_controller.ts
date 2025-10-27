@@ -85,7 +85,7 @@ export default class ReportSalesController {
       selectDataPerDay,
       selectedPeriod: period, // Kirim kembali period yang dipilih
       startDate: startDate.toFormat('dd/MM/yyyy'),
-      endDate: now.toFormat('dd/MM/yyyy')
+      endDate: now.toFormat('dd/MM/yyyy'),
     })
   }
 }

@@ -121,10 +121,11 @@ export default function SalesReportPage() {
                             </div>
                             <div className="flex items-center gap-2">
                                 <Select
+                                
                                     // defaultValue={selectedPeriod}
                                     onValueChange={handleChange}
                                 >
-                                    <SelectTrigger className="w-[140px] border bg-white">
+                                    <SelectTrigger className="w-[140px] border bg-white cursor-pointer hover:bg-gray-50">
                                         <Calendar className="w-4 h-4 mr-2 text-purple-100" />
                                         <SelectValue className="text-white" />
                                     </SelectTrigger>
@@ -149,12 +150,12 @@ export default function SalesReportPage() {
                     </div>
                 </div>
 
-                <p>Total Sales: {totalSales}</p>
+                {/* <p>Total Sales: {totalSales}</p>  */}
 
 
                 <div className=" mx-auto py-6 ">
                     <Tabs defaultValue="overview" className="space-y-6">
-                        <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-gray-800">
+                        {/* <TabsList className="grid w-full grid-cols-4 bg-gray-100 dark:bg-gray-800">
                             <TabsTrigger value="overview" className="data-[state=active]:bg-white data-[state=active]:text-purple-900 dark:data-[state=active]:bg-gray-900">
                                 Overview
                             </TabsTrigger>
@@ -167,7 +168,7 @@ export default function SalesReportPage() {
                             <TabsTrigger value="analytics" className="data-[state=active]:bg-white data-[state=active]:text-purple-900 dark:data-[state=active]:bg-gray-900">
                                 Analitik
                             </TabsTrigger>
-                        </TabsList>
+                        </TabsList> */}
 
                         <TabsContent value="overview" className="space-y-6">
                             {/* Key Metrics */}
@@ -412,7 +413,7 @@ export default function SalesReportPage() {
                             </Card>
                         </TabsContent>
 
-                        <TabsContent value="products" className="space-y-6">
+                        {/* <TabsContent value="products" className="space-y-6">
                             <Card className="border-0 shadow-lg">
                                 <CardHeader>
                                     <CardTitle className="text-purple-900">Analisis Produk</CardTitle>
@@ -511,7 +512,7 @@ export default function SalesReportPage() {
                                     </CardContent>
                                 </Card>
                             </div>
-                        </TabsContent>
+                        </TabsContent> */}
                     </Tabs>
                 </div>
             </div>

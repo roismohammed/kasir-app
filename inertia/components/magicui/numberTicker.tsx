@@ -6,7 +6,7 @@ import { ComponentPropsWithoutRef, useEffect, useRef } from "react";
 import { cn } from "@/lib/utils";
 
 interface NumberTickerProps extends ComponentPropsWithoutRef<"span"> {
-  value: number;
+  value: number | String;
   startValue?: number;
   direction?: "up" | "down";
   delay?: number;

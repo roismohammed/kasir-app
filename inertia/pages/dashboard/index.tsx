@@ -30,8 +30,8 @@ const breadcrumbs = [
   },
 ]
 const DashboardPage = () => {
-  const { result, productTerlaris } = usePage().props
-  console.log(result);
+  const { result, productTerlaris,totalCustomer,totalSupliers ,totalProduct} = usePage().props
+  console.log(productTerlaris);
 
 
   const formatCurrency = (value: number) => {
@@ -51,11 +51,11 @@ const DashboardPage = () => {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
         <Card className="shadow-none border border-gray-200 py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
-            <div className="p-3 bg-muted rounded-full">
+            <div className="p-3 bg-muted rounded-lg">
               <HugeiconsIcon icon={TruckDeliveryIcon} className="h-10 w-10 text-green-500" />
             </div>
             <div>
-              <NumberTicker className="text-2xl font-bold " value={Number(30)} />
+              <NumberTicker className="text-2xl font-bold " value={totalSupliers} />
               <p className="text-sm text-muted-foreground ">Suppliers</p>
             </div>
           </CardContent>
@@ -63,11 +63,11 @@ const DashboardPage = () => {
 
         <Card className="shadow-none border border-gray-200 py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
-            <div className="p-3 bg-muted rounded-full">
+            <div className="p-3 bg-muted rounded-lg">
               <HugeiconsIcon icon={UserSearch02Icon} className="h-10 w-10 text-yellow-500" />
             </div>
             <div>
-              <NumberTicker className="text-2xl font-bold " value={Number(12)} />
+              <NumberTicker className="text-2xl font-bold " value={totalCustomer} />
               <p className="text-sm text-muted-foreground ">Customers</p>
             </div>
           </CardContent>
@@ -75,7 +75,7 @@ const DashboardPage = () => {
 
         <Card className="shadow-none border border-gray-200 py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
-            <div className="p-3 bg-muted rounded-full">
+            <div className="p-3 bg-muted rounded-lg">
               <HugeiconsIcon icon={ShoppingCart01FreeIcons} className="h-10 w-10 text-red-500" />
             </div>
             <div>
@@ -87,11 +87,11 @@ const DashboardPage = () => {
 
         <Card className="shadow-none border border-gray-200 py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
-            <div className="p-3 bg-muted rounded-full">
+            <div className="p-3 bg-muted rounded-lg">
               <HugeiconsIcon icon={Package02Icon} className="h-10 w-10 text-blue-500" />
             </div>
             <div>
-              <NumberTicker className="text-2xl font-bold " value={10} />
+              <NumberTicker className="text-2xl font-bold " value={totalProduct} />
               <p className="text-sm text-muted-foreground ">Products</p>
             </div>
           </CardContent>
@@ -141,7 +141,7 @@ const DashboardPage = () => {
                     </TableCell>
                     <TableCell>
                       <Badge variant="secondary" className="px-2 py-1">
-                        {data.product.name}
+                        {data.product.category?.name}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-right font-semibold">
