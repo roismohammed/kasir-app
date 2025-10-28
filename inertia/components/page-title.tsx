@@ -7,7 +7,7 @@ export function PageTitle({
 }) {
   return (
     <div>
-      <p className="text-[20px] font-bold">{title}</p>
+      <p className="text-[20px] geist font-bold">{title}</p>
       {subtitle && <p className="text-gray-500 text-sm ">{subtitle}</p>}
     </div>
   )

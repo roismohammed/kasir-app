@@ -49,60 +49,60 @@ const DashboardPage = () => {
       <PageTitle title="Dashboard" subtitle="Anda bisa melihat statistik dashboard" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-        <Card className="shadow-none border border-gray-200 py-1 hover:shadow-lg transition duration-300 ">
+        <Card className="shadow-none border border-none bg-gray-100 py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
-            <div className="p-3 bg-muted rounded-lg">
+            <div className="p-3 bg-white rounded-lg">
               <HugeiconsIcon icon={TruckDeliveryIcon} className="h-10 w-10 text-green-500" />
             </div>
             <div>
-              <NumberTicker className="text-2xl font-bold " value={totalSupliers} />
+              <NumberTicker className="text-2xl geist " value={totalSupliers} />
               <p className="text-sm text-muted-foreground ">Suppliers</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-none border border-gray-200 py-1 hover:shadow-lg transition duration-300 ">
+         <Card className="shadow-none border border-none bg-gray-100 py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
-            <div className="p-3 bg-muted rounded-lg">
+            <div className="p-3 bg-white rounded-lg">
               <HugeiconsIcon icon={UserSearch02Icon} className="h-10 w-10 text-yellow-500" />
             </div>
             <div>
-              <NumberTicker className="text-2xl font-bold " value={totalCustomer} />
+              <NumberTicker className="text-2xl geist " value={totalCustomer} />
               <p className="text-sm text-muted-foreground ">Customers</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-none border border-gray-200 py-1 hover:shadow-lg transition duration-300 ">
+         <Card className="shadow-none border border-none bg-gray-100 py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
-            <div className="p-3 bg-muted rounded-lg">
+            <div className="p-3 bg-white rounded-lg">
               <HugeiconsIcon icon={ShoppingCart01FreeIcons} className="h-10 w-10 text-red-500" />
             </div>
             <div>
-              <NumberTicker className="text-2xl font-bold " value={Number(12)} />
+              <NumberTicker className="text-2xl geist " value={Number(12)} />
               <p className="text-sm text-muted-foreground ">Users</p>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="shadow-none border border-gray-200 py-1 hover:shadow-lg transition duration-300 ">
+          <Card className="shadow-none border border-none bg-gray-100 py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
-            <div className="p-3 bg-muted rounded-lg">
+            <div className="p-3 bg-white rounded-lg">
               <HugeiconsIcon icon={Package02Icon} className="h-10 w-10 text-blue-500" />
             </div>
             <div>
-              <NumberTicker className="text-2xl font-bold " value={totalProduct} />
+              <NumberTicker className="text-2xl geist" value={totalProduct} />
               <p className="text-sm text-muted-foreground ">Products</p>
             </div>
           </CardContent>
         </Card>
       </div>
       <div className="mt-4">
-        <Card className=" shadow-none border border-gray-200">
+        <Card className=" shadow-none border border-none bg-gray-50">
           <CardHeader>
             <div className="flex justify-between items-center">
               <div>
-                <CardTitle className="text-xl font-bold">Produk Terlaris</CardTitle>
+                <CardTitle className="text-xl geist">Produk Terlaris</CardTitle>
                 <CardDescription className="text-sm text-muted-foreground">
                   Daftar 5 produk dengan penjualan tertinggi
                 </CardDescription>

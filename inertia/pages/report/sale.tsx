@@ -114,7 +114,7 @@ export default function SalesReportPage() {
                     <div className="max-w-7xl mx-auto">
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div className="space-y-2">
-                                <h1 className="text-2xl font-bold  tracking-tight">Laporan Penjualan</h1>
+                                <h1 className="text-2xl geist">Laporan Penjualan</h1>
                                 <p className="text-gray-500">
                                     Dashboard komprehensif untuk analisis penjualan dan performa bisnis
                                 </p>
@@ -181,7 +181,7 @@ export default function SalesReportPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">{formatPrice(totalSales)}</div>
+                                        <div className="text-2xl geist text-purple-900">{formatPrice(totalSales)}</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +12.5% dari bulan lalu
@@ -198,7 +198,7 @@ export default function SalesReportPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">{totalProducts}</div>
+                                        <div className="text-2xl geist text-purple-900">{totalProducts}</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +8.2% dari bulan lalu
@@ -216,9 +216,9 @@ export default function SalesReportPage() {
                                     </CardHeader>
                                     <CardContent>
                                         {totalSold > 0 ? (
-                                            <div className="text-2xl font-bold text-purple-900">{totalSold}</div>
+                                            <div className="text-2xl geist text-purple-900">{totalSold}</div>
                                         ) : (
-                                            <div className="text-2xl font-bold text-purple-900">0</div>
+                                            <div className="text-2xl geist text-purple-900">0</div>
                                         )}
                                         <div className="flex items-center text-xs text-red-600 mt-1">
                                             <ArrowDownRight className="w-3 h-3 mr-1" />
@@ -236,7 +236,7 @@ export default function SalesReportPage() {
                                         </div>
                                     </CardHeader>
                                     <CardContent>
-                                        <div className="text-2xl font-bold text-purple-900">Rp 2.284.500</div>
+                                        <div className="text-2xl geist text-purple-900">Rp 2.284.500</div>
                                         <div className="flex items-center text-xs text-emerald-600 mt-1">
                                             <ArrowUpRight className="w-3 h-3 mr-1" />
                                             +4.7% dari bulan lalu
