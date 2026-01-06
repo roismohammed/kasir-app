@@ -32,8 +32,8 @@ const EditProduct = ({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Edit Product" />
-            <PageTitle title="Edit Product" subtitle="Edit data product" />
-            <div className="max-w-lg mt-6">
+            <div className="max-w-xl mt-6 mx-auto">
+                <PageTitle title="Edit Product" subtitle="Edit data product" />
                 <FormProduct method={"PUT"} url={`/products/${product.id}`} categories={categories} unit={unit} product={product} />
             </div>
         </AppLayout>

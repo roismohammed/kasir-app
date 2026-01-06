@@ -8,17 +8,6 @@ import TextareaInput from "~/components/form/textarea-input";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ProductProps, StockInProps, SupplierProps } from "~/types";
 import { DialogTitle } from "@radix-ui/react-dialog";
-import {
-  Command,
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
-} from "@/components/ui/command"
 interface FormStockInProps {
   url: string;
   method: "POST" | "PUT";
@@ -81,102 +70,148 @@ export default function FormStockIn({
   };
 
   return (
-    <form onSubmit={submit} className="space-y-2">
-      <TextInput
-        type="date"
-        label="Tanggal"
-        value={data.date}
-        onChange={(e) => setData("date", e.target.value)}
-        error={errors.date}
-      />
+   <form onSubmit={submit} className="space-y-6">
 
-      <div className="relative">
+  {/* DATE */}
+  <TextInput
+    type="date"
+    label="Tanggal"
+    value={data.date}
+    onChange={(e) => setData("date", e.target.value)}
+    error={errors.date}
+  />
+
+  {/* PRODUCT PICKER */}
+  <div>
+    <TextInput
+      label="Pilih Produk (Barcode)"
+      readOnly
+      value={
+        selectedProduct
+          ? `${selectedProduct.barcode} - ${selectedProduct.name}`
+          : ""
+      }
+      onClick={() => setModalOpen(true)}
+      placeholder="Klik untuk memilih produk"
+      error={errors.product_id}
+      className="cursor-pointer"
+    />
+  </div>
+
+  {/* PRODUCT INFO CARD */}
+  {selectedProduct && (
+    <div className="rounded-xl border bg-gray-50 p-4 space-y-3">
+      <div className="flex items-center gap-3">
+        <img
+          src={`/storage/products/${selectedProduct.image}`}
+          className="h-14 w-14 object-cover rounded-lg border"
+        />
+        <div>
+          <p className="font-medium">{selectedProduct.name}</p>
+          <p className="text-sm text-gray-500">
+            {selectedProduct.barcode}
+          </p>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-3">
         <TextInput
-          label="Pilih Produk (Barcode)"
+          label="Satuan"
+          value={selectedProduct.unit?.name ?? "-"}
           readOnly
-          value={selectedProduct ? `${selectedProduct.barcode} - ${selectedProduct.name}` : ""}
-          onClick={() => setModalOpen(true)}
-          placeholder="Klik untuk memilih produk"
-          error={errors.product_id}
         />
-      </div>
-
-      <div>
-        <TextInput label="Nama Produk" value={selectedProduct?.name ?? ""} readOnly />
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <TextInput label="Satuan" value={selectedProduct?.unit?.name ?? "-"} readOnly />
-        <TextInput label="Stok Saat Ini" value={String(selectedProduct?.stock ?? 0)} readOnly />
-      </div>
-
-      <TextareaInput
-        label="Deskripsi"
-        value={data.description}
-        onChange={(e) => setData("description", e.currentTarget.value)}
-        placeholder="Masukan deskripsi"
-        error={errors.description}
-      />
-
-      <div className="grid grid-cols-2 gap-2">
-        <SelectInput
-          label="Pilih Supplier"
-          options={supplier.map((s) => ({
-            value: String(s.id),
-            label: s.name,
-          }))}
-          value={data.supplier_id}
-          onSelect={(value) => setData("supplier_id", value)}
-          placeholder="Pilih supplier"
-          errors={errors.supplier_id}
-        />
-
         <TextInput
-          type="number"
-          label="Quantity"
-          value={data.quantity}
-          onChange={(e) => setData("quantity", e.currentTarget.value)}
-          placeholder="Masukan Quantity"
-          error={errors.quantity}
+          label="Stok Saat Ini"
+          value={String(selectedProduct.stock ?? 0)}
+          readOnly
         />
       </div>
+    </div>
+  )}
 
-      <div className="flex justify-end gap-2">
-        <Button variant="outline" disabled={processing}>
-          Batal
-        </Button>
-        <Button type="submit" disabled={processing}>
-          Simpan
-        </Button>
-      </div>
+  {/* DESCRIPTION */}
+  <TextareaInput
+    label="Deskripsi"
+    value={data.description}
+    onChange={(e) => setData("description", e.currentTarget.value)}
+    placeholder="Masukkan deskripsi"
+    error={errors.description}
+  />
 
-      {/* MODAL */}
-      <Dialog open={modalOpen} onOpenChange={setModalOpen}>
-        <DialogContent>
-          <DialogTitle>Pilih Produk</DialogTitle>
-          <ul className="space-y-2 max-h-72 overflow-y-auto">
-            {products.map((product: ProductProps) => (  
-              <li
-                key={product.id}
-                onClick={() => handleProductSelect(product)}
-                className="cursor-pointer px-3 py-2 rounded-lg hover:bg-gray-100 border flex items-center"
-              >
-                <img src={'/storage/products/' + product.image} className="h-10 w-10 mr-2 object-cover rounded-md" />
-                <div className="flex flex-col">
-                  <p className="font-medium">
-                    {product.barcode} - {product.name}
-                  </p>
-                  <p className="text-sm text-gray-500">
-                    Stok: {product.stock} • Satuan: {product.unit?.name}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ul>
+  {/* SUPPLIER & QUANTITY */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <SelectInput
+      label="Supplier"
+      options={supplier.map((s) => ({
+        value: String(s.id),
+        label: s.name,
+      }))}
+      value={data.supplier_id}
+      onSelect={(value) => setData("supplier_id", value)}
+      placeholder="Pilih supplier"
+      errors={errors.supplier_id}
+    />
 
-        </DialogContent>
-      </Dialog>
-    </form>
+    <TextInput
+      type="number"
+      label="Quantity"
+      value={data.quantity}
+      onChange={(e) => setData("quantity", e.currentTarget.value)}
+      placeholder="Masukkan quantity"
+      error={errors.quantity}
+    />
+  </div>
+
+  {/* ACTION */}
+  <div className="flex justify-end gap-3 pt-4 border-t">
+    <Button
+      variant="outline"
+      type="button"
+      onClick={() => router.back()}
+      disabled={processing}
+    >
+      Batal
+    </Button>
+    <Button type="submit" disabled={processing}>
+      {processing ? "Menyimpan..." : "Simpan"}
+    </Button>
+  </div>
+
+  {/* MODAL */}
+  <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+    <DialogContent className="max-w-lg">
+      <DialogTitle className="mb-3">
+        Pilih Produk
+      </DialogTitle>
+
+      <ul className="space-y-2 max-h-80 overflow-y-auto">
+        {products.map((product) => (
+          <li
+            key={product.id}
+            onClick={() => handleProductSelect(product)}
+            className="flex items-center gap-3 p-3 border rounded-xl cursor-pointer hover:bg-indigo-50 transition"
+          >
+            <img
+              src={`/storage/products/${product.image}`}
+              className="h-12 w-12 object-cover rounded-lg border"
+            />
+
+            <div className="flex-1">
+              <p className="font-medium">
+                {product.barcode} - {product.name}
+              </p>
+              <p className="text-sm text-gray-500">
+                Stok: {product.stock} • {product.unit?.name}
+              </p>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </DialogContent>
+  </Dialog>
+
+</form>
+
   );
 }
 
