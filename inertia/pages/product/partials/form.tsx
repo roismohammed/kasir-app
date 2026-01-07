@@ -77,7 +77,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
             <div>
                 <Label className="mb-2 block">Product Image</Label>
 
-                <div className="relative w-full h-44 border-2 border-dashed rounded-2xl bg-gray-50 flex items-center justify-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 transition">
+                <div className="relative w-full h-[410px] border-2 border-dashed rounded-2xl bg-gray-50 flex items-center justify-center cursor-pointer hover:border-indigo-500 hover:bg-indigo-50 transition">
                     <input
                         type="file"
                         accept="image/*"
@@ -94,7 +94,7 @@ export default function FormProduct({ url, method, product, onSuccess, categorie
                                     ? `/storage/products/${data.image}`
                                     : URL.createObjectURL(data.image)
                             }
-                            className="w-full h-full object-cover rounded-2xl"
+                            className="w-full h-[400px] object-cover rounded-2xl"
                             alt="Preview"
                         />
                     ) : (

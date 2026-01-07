@@ -30,7 +30,7 @@ const breadcrumbs = [
   },
 ]
 const DashboardPage = () => {
-  const { result, productTerlaris,totalCustomer,totalSupliers ,totalProduct} = usePage().props
+  const { result, productTerlaris, totalCustomer, totalSupliers, totalProduct } = usePage().props
   console.log(productTerlaris);
 
 
@@ -49,7 +49,7 @@ const DashboardPage = () => {
       <PageTitle title="Dashboard" subtitle="Anda bisa melihat statistik dashboard" />
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
-        <Card className="shadow-none border border-none bg-gray-100 py-1 hover:shadow-lg transition duration-300 ">
+        <Card className="shadow-none border border-gray-200 bg-white  py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
             <div className="p-3 bg-white rounded-lg">
               <HugeiconsIcon icon={TruckDeliveryIcon} className="h-10 w-10 text-green-500" />
@@ -61,7 +61,7 @@ const DashboardPage = () => {
           </CardContent>
         </Card>
 
-         <Card className="shadow-none border border-none bg-gray-100 py-1 hover:shadow-lg transition duration-300 ">
+        <Card className="shadow-none border border-gray-200 bg-white  py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
             <div className="p-3 bg-white rounded-lg">
               <HugeiconsIcon icon={UserSearch02Icon} className="h-10 w-10 text-yellow-500" />
@@ -73,7 +73,7 @@ const DashboardPage = () => {
           </CardContent>
         </Card>
 
-         <Card className="shadow-none border border-none bg-gray-100 py-1 hover:shadow-lg transition duration-300 ">
+        <Card className="shadow-none border border-gray-200 bg-white  py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
             <div className="p-3 bg-white rounded-lg">
               <HugeiconsIcon icon={ShoppingCart01FreeIcons} className="h-10 w-10 text-red-500" />
@@ -85,7 +85,7 @@ const DashboardPage = () => {
           </CardContent>
         </Card>
 
-          <Card className="shadow-none border border-none bg-gray-100 py-1 hover:shadow-lg transition duration-300 ">
+        <Card className="shadow-none border border-gray-200 bg-white  py-1 hover:shadow-lg transition duration-300 ">
           <CardContent className="p-4 flex items-center space-x-4">
             <div className="p-3 bg-white rounded-lg">
               <HugeiconsIcon icon={Package02Icon} className="h-10 w-10 text-blue-500" />
@@ -98,7 +98,7 @@ const DashboardPage = () => {
         </Card>
       </div>
       <div className="mt-4">
-        <Card className=" shadow-none border border-none bg-gray-50">
+          <Card className="shadow-none border py-6 border-gray-200 bg-white hover:shadow-md transition duration-300 ">
           <CardHeader>
             <div className="flex justify-between items-center">
               <div>

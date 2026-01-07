@@ -69,12 +69,13 @@ export default class SalesController {
       await SaleProduct.createMany(saleItems)
 
       session.flash('success', 'Transaksi berhasil disimpan!')
-      return response.redirect().toRoute('sales.index')
+      return response.redirect().toRoute('struck.show', { id: sale.id })
     } catch (error) {
       console.error(error)
       session.flash('error', 'Terjadi kesalahan saat menyimpan transaksi')
       return response.redirect().toRoute('sales.index')
     }
   }
+
 }
 

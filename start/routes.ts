@@ -12,6 +12,9 @@ import UsersController from '#controllers/users_controller'
 import router from '@adonisjs/core/services/router'
 import ReportSalesController from '#controllers/report_sales_controller'
 import ReportStockInsController from '#controllers/report_stock_ins_controller'
+import PaymentsController from '#controllers/payments_controller'
+import MidtransCallbackController from '#controllers/midtrans_callbacks_controller'
+import StrucksController from '#controllers/strucks_controller'
 // import { middleware } from './kernel.js'
 router.on('/').renderInertia('home')
 
@@ -29,6 +32,11 @@ router.group(() => {
     router.resource('/users', UsersController).as('users')
     router.get('/report', [ReportSalesController, 'index']).as('report')
     router.get('/report_stockin', [ReportStockInsController, 'index']).as('report_stock_in')
+    router.post('/payments/midtrans', [PaymentsController, 'create'])
+    router.post('/midtrans/callback', [MidtransCallbackController, 'handle'])
+    router.get('/struck/:id', [StrucksController, 'index']).as('struck.show')
+
+
 })
 // .use(middleware.auth())
 router.get('/login', [AuthController, 'index']).as('login')

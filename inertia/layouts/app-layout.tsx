@@ -16,6 +16,7 @@ import {
 import { Separator } from '~/components/ui/separator'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '~/components/ui/sidebar'
 import { BreadcrumbProps } from '~/types'
+import { Head } from '@inertiajs/react';
 
 interface AppLayoutProps {
   children: React.ReactNode
@@ -27,6 +28,12 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
 
   return (
     <SidebarProvider>
+      <Head>
+        <script
+          src="https://app.sandbox.midtrans.com/snap/snap.js"
+          data-client-key={import.meta.env.VITE_MIDTRANS_CLIENT_KEY}
+        />
+      </Head>
       <AppSidebar />
       <SidebarInset className="flex flex-col h-screen overflow-hidden">
         <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm z-10">
@@ -80,10 +87,12 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
 
         <main className="flex-1 overflow-hidden">
           <div className="h-full overflow-y-auto overflow-x-hidden">
-            <div className="min-h-full p-4 ">
-              <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
-                {children}
-              </ThemeProvider>
+            <div className="min-h-full p-4 bg-slate-100  ">
+         <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <div className="min-h-screen">
+        {children}
+      </div>
+    </ThemeProvider>
             </div>
           </div>
         </main>

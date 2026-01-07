@@ -157,15 +157,15 @@ export function DataTable<TData, TValue>({
 
     return (
         <div>
-            <div className="flex items-center py-4">
+            <div className="flex items-center py-4  ">
                 <Input
                     placeholder="Search Data..."
                     value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
                     onChange={(event) => table.getColumn("name")?.setFilterValue(event.target.value)}
-                    className="max-w-sm"
+                    className="max-w-sm bg-white shadow-none"
                 />
-                <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
+                <DropdownMenu >
+                    <DropdownMenuTrigger asChild className="bg-white shadow-none">
                         <Button variant="outline" className="ml-auto">
                             <HugeiconsIcon icon={EditTableIcon} />
                             Columns
@@ -189,7 +189,7 @@ export function DataTable<TData, TValue>({
                 </DropdownMenu>
             </div>
 
-            <div className="rounded-md border">
+            <div className="rounded-md border bg-white">
                 <DndContext
                     collisionDetection={closestCenter}
                     modifiers={[restrictToVerticalAxis]}
@@ -241,8 +241,8 @@ export function DataTable<TData, TValue>({
                 </DndContext>
             </div>
 
-            <div className="flex items-center gap-8 mt-4 lg:justify-between lg:w-full">
-                <div className="flex items-center gap-2">
+            <div className="flex items-center gap-8 mt-4 lg:justify-between lg:w-full ">
+                <div className="flex items-center gap-2 bg-white">
                     <span className=" items-center gap-1 hidden lg:flex ">
                         Go to page:
                         <Input
