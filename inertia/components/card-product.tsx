@@ -11,17 +11,14 @@ export default function ProductCard({ product, onAddToCart }: { product: Product
             key={product.id}
             className="group relative flex flex-row md:flex-col rounded-xl overflow-hidden bg-white border border-gray-200 hover:border-purple-300 hover:shadow-md transition-all duration-100"
         >
-            {/* Product Image Container */}
             <div className="relative h-[100px] w-[130px] md:w-full md:h-80  flex-shrink-0 overflow-hidden bg-gradient-to-br from-gray-50 to-gray-100">
                 <img
                     src={`/storage/products/${product.image}`}
                     alt={product.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                 />
-                {/* <div className="absolute inset-0 bg-gradient-to-t from-black/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" /> */}
             </div>
 
-            {/* Product Info */}
             <div className="p-3 md:p-4 flex flex-col justify-between flex-grow">
                 <h3 className="font-semibold text-gray-800 mb-1 md:mb-2 line-clamp-2 text-sm md:text-base leading-tight">
                     {product.name}
@@ -37,13 +34,10 @@ export default function ProductCard({ product, onAddToCart }: { product: Product
                         onClick={() => onAddToCart(product)}
                     >
                         <Plus size={16} className="md:size-5" />
-                        {/* Ripple effect */}
                         <span className="absolute inset-0 rounded-full bg-white/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                     </button>
                 </div>
             </div>
-            
-            {/* Hover indicator */}
             <div className="absolute top-2 right-2 md:top-3 md:right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="w-2 h-2 rounded-full bg-purple-500 animate-pulse" />
             </div>
