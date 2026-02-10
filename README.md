@@ -24,13 +24,17 @@ Ikuti langkah-langkah di bawah ini untuk menjalankan proyek di mesin lokal Anda:
 
 ### 1. Clone Repositori
 ```bash
-git clone [https://github.com/username-anda/nama-repo.git](https://github.com/username-anda/nama-repo.git)
+
+gh repo clone roismohammed/kasir-app
+
 cd nama-repo
+
 2. Instal Dependensi
 Gunakan flag --legacy-peer-deps untuk memastikan kompatibilitas antar library:
 
 Bash
 npm install --legacy-peer-deps
+
 3. Konfigurasi Environment
 Salin file .env.example menjadi .env dan sesuaikan konfigurasi database Anda:
 
@@ -46,5 +50,4 @@ npm run dev
 Aplikasi dapat diakses melalui http://localhost:3333 (atau port sesuai konfigurasi AdonisJS Anda).
 
 Saya sangat terbuka untuk diskusi, kolaborasi, atau sekadar bertukar pikiran mengenai pengembangan web. Mari terhubung di:
-
 Dibuat dengan ❤️ untuk open source.
