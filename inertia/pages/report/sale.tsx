@@ -108,10 +108,10 @@ export default function SalesReportPage() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Penjualan" />
-            <div className="min-h-screen bg-background">
+            <div className="min-h-screen ">
                 {/* Modern Purple Header */}
-                <div className="bg-gray-100 px-6 py-8 shadow-none rounded-lg">
-                    <div className="max-w-7xl mx-auto">
+                <div className="  shadow-none rounded-lg">
+                    <div className=" mx-auto">
                         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                             <div className="space-y-2">
                                 <h1 className="text-2xl geist">Laporan Penjualan</h1>
