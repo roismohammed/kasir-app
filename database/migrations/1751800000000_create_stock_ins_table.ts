@@ -11,8 +11,8 @@ export default class extends BaseSchema {
       table.date('date')
       table.text('description')
       table.integer('quantity')
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at').nullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 

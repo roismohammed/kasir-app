@@ -36,7 +36,7 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
       </Head>
       <AppSidebar />
       <SidebarInset className="flex flex-col h-screen overflow-hidden">
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b border-gray-200 dark:border-gray-800 bg-white/95 dark:bg-gray-950/95 backdrop-blur-sm z-10">
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b border-gray-200 bg-white/95 backdrop-blur-sm z-10">
           <div className="flex items-center gap-2 px-4 justify-between">
             <SidebarTrigger className="-ml-1" />
             <Separator orientation="vertical" className="-mr-3 data-[orientation=vertical]:h-4" />
@@ -87,7 +87,7 @@ export default function AppLayout({ children, breadcrumbs }: AppLayoutProps) {
 
         <main className="flex-1 overflow-hidden">
           <div className="h-full overflow-y-auto overflow-x-hidden">
-            <div className="min-h-full p-4 bg-slate-100  ">
+            <div className="min-h-full p-4 bg-white dark:bg-gray-900">
               <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
                 <div className="min-h-screen">
                   {children}

@@ -13,8 +13,8 @@ export default class extends BaseSchema {
       table.integer('unit_id').unsigned().references('units.id').onDelete('CASCADE')
       table.integer('stock').defaultTo(0)
       table.string('price')
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at').nullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 

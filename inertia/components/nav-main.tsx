@@ -78,10 +78,10 @@ export function NavMain({
             </Collapsible>
           ) : (
             <SidebarMenuItem key={item.title}>
-              <Link href={item.url} className="hover:bg-gray-200 cursor-pointer">
-                <SidebarMenuButton className="hover:bg-gray-100  transition-all cursor-pointer" tooltip={item.title}>
+              <Link href={item.url} className="hover:bg-sidebar-accent cursor-pointer">
+                <SidebarMenuButton className="hover:bg-sidebar-accent transition-all cursor-pointer" tooltip={item.title}>
                   {item.icon && (
-                    <item.icon className="transition-transform text-[#2E9D8F] group-hover/item:animate-wiggle w-10 h-10" />
+                    <item.icon className="transition-transform text-blue-600 group-hover/item:animate-wiggle w-10 h-10" />
                   )}
                   <span className="text-[15px] font-medium">{item.title}</span>
                 </SidebarMenuButton>

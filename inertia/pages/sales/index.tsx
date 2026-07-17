@@ -1,31 +1,69 @@
-import {
-    Utensils,
-    GlassWater,
-    Minus,
-    Trash,
-    PlusIcon,
-    BoxIcon,
-    Wallet,
-    CreditCard,
-    Banknote,
-    RefreshCw,
-    Search,
-    UploadCloud,
-} from "lucide-react";
+import { Minus, Trash, PlusIcon, Wallet, CreditCard, Banknote, Search, Receipt, Printer } from "lucide-react";
 import { Head, router, useForm, usePage } from '@inertiajs/react';
 import { CategoriesProps, ProductProps, SalesProps } from "~/types";
 import { useEffect, useState } from "react";
 import { Label } from "~/components/ui/label";
-import { CreditCardIcon } from "@hugeicons/core-free-icons";
 import CurrencyInput from "react-currency-input-field";
 import { cn } from "~/lib/utils";
 import { Input } from "~/components/ui/input";
-
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle,
+} from '~/components/ui/dialog'
 import ProductCard from "~/components/card-product";
 import CashierHeader from "./components/header";
-import { HugeiconsIcon } from "@hugeicons/react";
 import { toast } from "sonner";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "~/components/ui/select";
+
+function PrintContent({ lastSale }: { lastSale: { id: number; items: ProductProps[]; grandTotal: number; paid: number; change: number; paymentType: string } }) {
+    return (
+        <div className="text-sm space-y-3 print:space-y-2">
+            <div className="text-center border-b border-gray-300 pb-3">
+                <h2 className="font-bold text-lg">PayLoop</h2>
+                <p className="text-gray-500 text-xs">Jl. Rongdurin No. 123, Bangkalan</p>
+                <p className="text-gray-500 text-xs">Telp: (021) 123-4567</p>
+            </div>
+            <div className="flex justify-between text-xs text-gray-600">
+                <span>INV-{lastSale.id}</span>
+                <span>{new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</span>
+            </div>
+            <div className="border-y border-gray-200 py-2 space-y-1.5">
+                {lastSale.items.map((item, i) => (
+                    <div key={i} className="flex justify-between text-xs">
+                        <div className="flex-1">
+                            <span className="text-gray-800">{item.name}</span>
+                            <span className="text-gray-400 ml-1">x{item.quantity}</span>
+                        </div>
+                        <span className="font-medium">Rp {(item.price * item.quantity).toLocaleString('id-ID')}</span>
+                    </div>
+                ))}
+            </div>
+            <div className="space-y-1 text-xs">
+                <div className="flex justify-between text-gray-600">
+                    <span>Subtotal</span>
+                    <span>Rp {lastSale.grandTotal.toLocaleString('id-ID')}</span>
+                </div>
+                <div className="flex justify-between font-bold text-sm text-gray-900 border-t border-gray-200 pt-1">
+                    <span>Total</span>
+                    <span>Rp {lastSale.grandTotal.toLocaleString('id-ID')}</span>
+                </div>
+                <div className="flex justify-between text-gray-600">
+                    <span>Bayar ({lastSale.paymentType})</span>
+                    <span>Rp {lastSale.paid.toLocaleString('id-ID')}</span>
+                </div>
+                {lastSale.change > 0 && (
+                    <div className="flex justify-between text-green-600 font-medium">
+                        <span>Kembali</span>
+                        <span>Rp {lastSale.change.toLocaleString('id-ID')}</span>
+                    </div>
+                )}
+            </div>
+            <div className="text-center text-xs text-gray-400 border-t border-gray-200 pt-2">
+                <p>Terima kasih atas pembelian Anda</p>
+                <p className="mt-0.5">Barang yang sudah dibeli tidak dapat ditukar kembali</p>
+            </div>
+        </div>
+    )
+}
+
 export default function CashierAppStatic() {
     const { products, categories } = usePage<{
         sales: SalesProps,
@@ -34,78 +72,58 @@ export default function CashierAppStatic() {
     }>().props
     const [activeCategory, setActiveCategory] = useState<number | null>(null);
     const [cartItems, setCartItems] = useState<ProductProps[]>([])
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'card' | 'transfer' | 'cash'>('cash')
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<'cash' | 'transfer' | 'qris'>('cash')
     const [amountPaid, setAmountPaid] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const { data, setData, processing } = useForm({
+    const [showPayment, setShowPayment] = useState(false);
+    const [showInvoice, setShowInvoice] = useState(false);
+    const [lastSale, setLastSale] = useState<{ id: number; items: ProductProps[]; grandTotal: number; paid: number; change: number; paymentType: string } | null>(null);
+    const { data, setData } = useForm({
         invoice_number: 'INV-' + Date.now(),
         customer_id: '',
         payment_type: 'cash',
         discount: 0,
         tax: 0,
-        // total_price: grandTotal,
-        // grand_total: grandTotal,
         notes: '',
         items: cartItems,
     });
 
-    // const pay = () => {
-    //     router.post('/payments/midtrans', {
-    //         order_id: 'ORDER-' + Date.now(),
-    //         amount: 150000,
-    //         customer: {
-    //             name: 'Roisdev',
-    //             email: 'roisdev@mail.com',
-    //         }
-    //     }, {
-    //         onSuccess: (page) => {
-    //             window.snap.pay(page.props.token)
-    //         }
-    //     })
-    // }
-
-
     useEffect(() => {
         const urlParams = new URLSearchParams(window.location.search);
         const categoryId = urlParams.get('category_id');
-        if (categoryId) {
-            setActiveCategory(parseInt(categoryId));
-        }
-        { preserveState: true }
+        if (categoryId) setActiveCategory(parseInt(categoryId));
     }, []);
 
-
-    const isActive = (id: number) => {
-        return activeCategory === id;
-    }
-
-
     const handleAddToCart = (product: ProductProps) => {
-        const existing = cartItems.find(item => item.id === product.id);
-        if (existing) {
-            const quantity = existing ? existing.quantity + 1 : 1;
-            setCartItems(cartItems.map(item =>
-                item.id === product.id
-                    ? { ...item, quantity }
-                    : item
-            ));
-        } else {
-            setCartItems([...cartItems, { ...product, quantity: 1 }]);
-        }
+        setCartItems(prev => {
+            const existing = prev.find(item => item.id === product.id);
+            if (existing) {
+                return prev.map(item =>
+                    item.id === product.id
+                        ? { ...item, quantity: (item.quantity || 1) + 1 }
+                        : item
+                );
+            }
+            return [...prev, { ...product, quantity: 1 }];
+        });
     };
 
-    const handleRemove = (id: number) => {
-        setCartItems(cartItems.filter((item) => item.id !== id));
-    }
-
-    const handleDecrement = (id: number) => {
-        setCartItems(cartItems.map(item => item.id === id ? { ...item, quantity: (item.quantity || 1) - 1 } : item))
-    }
+    const handleRemove = (id: number) => setCartItems(prev => prev.filter((item) => item.id !== id));
+    const handleDecrement = (id: number) =>
+        setCartItems(prev => prev.map(item =>
+            item.id === id ? { ...item, quantity: Math.max(1, (item.quantity || 1) - 1) } : item
+        ));
 
     useEffect(() => {
-        const storedCart = localStorage.getItem('cartItems');
-        if (storedCart) {
-            setCartItems(JSON.parse(storedCart));
+        const stored = localStorage.getItem('cartItems');
+        if (stored) setCartItems(JSON.parse(stored));
+
+        // Cek invoice dari sessionStorage (setelah redirect)
+        const savedInvoice = sessionStorage.getItem('lastInvoice');
+        if (savedInvoice) {
+            setLastSale(JSON.parse(savedInvoice));
+            setShowInvoice(true);
+            sessionStorage.removeItem('lastInvoice');
         }
     }, []);
 
@@ -115,58 +133,30 @@ export default function CashierAppStatic() {
 
     const subTotal = cartItems.reduce((total, item) => total + (item.price * item.quantity), 0);
     const grandTotal = subTotal;
-    console.log("GrandTotal:", grandTotal)
 
-    const formatPrice = (price: number) => {
-        return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
-    }
+    const formatPrice = (price: number) =>
+        new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(price);
 
-    const handlePaymentMethodChange = (method: 'card' | 'transfer' | 'cash') => {
-        setSelectedPaymentMethod(method);
-        setData('payment_type', method);
-
-        if (method !== 'cash') {
-            setAmountPaid(grandTotal);
-        } else if (method == 'cash') {
-
-        }
-        else {
-            setAmountPaid(0);
-        }
-    };
-
-    const resetAfterSuccess = () => {
-        setCartItems([]);
+    const openPayment = () => {
+        if (cartItems.length === 0) { toast.error('Keranjang masih kosong!'); return; }
         setAmountPaid(0);
         setSelectedPaymentMethod('cash');
-
-        setData({
-            invoice_number: 'INV-' + Date.now(),
-            customer_id: '',
-            payment_type: 'cash',
-            discount: 0,
-            tax: 0,
-            notes: '',
-            items: [],
-        });
-
-        // hapus cart dari localStorage
-        localStorage.removeItem('cartItems');
+        setShowPayment(true);
     };
 
-
-    const handleCheckout = (e?: React.FormEvent<HTMLFormElement>) => {
-        e?.preventDefault?.();
-
-        if (cartItems.length === 0) {
-            toast.error('Keranjang masih kosong!');
-            return;
-        }
-
+    const handleCheckout = () => {
+        if (cartItems.length === 0) { toast.error('Keranjang masih kosong!'); return; }
         if (selectedPaymentMethod === 'cash' && (!amountPaid || amountPaid < grandTotal)) {
             toast.error('Uang yang dibayar tidak cukup!');
             return;
         }
+
+        // Ambil snapshot data sebelum submit
+        const snapshotItems = [...cartItems];
+        const snapshotTotal = grandTotal;
+        const snapshotPaid = selectedPaymentMethod === 'cash' ? amountPaid : grandTotal;
+        const snapshotChange = selectedPaymentMethod === 'cash' ? Math.max(0, amountPaid - grandTotal) : 0;
+        const snapshotPayment = selectedPaymentMethod;
 
         const orderData = {
             ...data,
@@ -188,405 +178,148 @@ export default function CashierAppStatic() {
             onStart: () => setIsSubmitting(true),
             onFinish: () => setIsSubmitting(false),
             onSuccess: () => {
-                toast.success('Transaksi berhasil')
-                resetAfterSuccess()
+                toast.success('Transaksi berhasil');
+                setCartItems([]);
+                setShowPayment(false);
+                setAmountPaid(0);
+                setSelectedPaymentMethod('cash');
+                setData({
+                    invoice_number: 'INV-' + Date.now(), customer_id: '', payment_type: 'cash',
+                    discount: 0, tax: 0, notes: '', items: [],
+                });
+                localStorage.removeItem('cartItems');
+                // Pasang lastSale + showInvoice bareng di akhir
+                setTimeout(() => {
+                    setLastSale({
+                        id: Date.now(),
+                        items: snapshotItems,
+                        grandTotal: snapshotTotal,
+                        paid: snapshotPaid,
+                        change: snapshotChange,
+                        paymentType: snapshotPayment,
+                    });
+                    setShowInvoice(true);
+                }, 300);
             },
-            onError: (errors) => {
-                toast.error('Gagal menyimpan transaksi!');
-                console.error(errors);
-            },
+            onError: () => toast.error('Gagal menyimpan transaksi!'),
         });
     };
+
+    const paymentMethods = [
+        { key: 'cash' as const, label: 'Tunai', icon: Banknote },
+        { key: 'transfer' as const, label: 'Transfer', icon: Wallet },
+        { key: 'qris' as const, label: 'QRIS', icon: CreditCard },
+    ];
+
     return (
         <div>
             <CashierHeader />
             <Head title="Penjualan" />
-            <div className="flex md:flex-row bg-slate-100 h-screen overflow-hidden">
+            <div className="flex md:flex-row bg-gray-50 h-screen overflow-hidden">
                 {/* Main Content */}
-                <div className="flex-1 flex flex-col lg:pr-[500px] bg-slate-100">
-                    {/* Fixed Header Section */}
-                    <div className="bg-slate-100 p-4 space-y-4">
-                        <div className="relative w-full">
-                            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
-                            <Input
-                                type="search"
-                                placeholder="Cari produk, pelanggan, atau transaksi..."
-                                className="pl-8 py-6 bg-slate-100 rounded-xl shadow-none border-gray-200 focus:bg-slate-100"
-                            />
+                <div className="flex-1 flex flex-col lg:mr-[420px]">
+                    {/* Search & Categories */}
+                    <div className="bg-white border-b border-gray-200 p-3 space-y-3">
+                        <div className="relative">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 h-4 w-4" />
+                            <Input type="search" placeholder="Cari produk..." className="pl-9 py-4 bg-gray-50 border-gray-200 focus:bg-white text-sm" />
                         </div>
-                        <div className="grid grid-cols-4 sm:grid-cols-4 md:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 md:gap-4">
-                            {categories.map((categories: CategoriesProps) => (
-                                <button
-                                    key={categories.id}
-                                    onClick={() => {
-                                        router.visit(`/sales?category_id=${categories.id}`)
-                                    }}
-                                    className={`flex flex-col sm:flex-row cursor-pointer items-center justify-center sm:justify-start w-full px-1 sm:px-2 py-2 sm:py-2 rounded-lg shadow-none transition-colors ${isActive(categories.id)
-                                            ? "bg-white text-purple-600 border border-purple-600"
-                                            : "bg-slate-100 text-gray-700 hover:bg-white border border-gray-200"
-                                        }`}
+                        <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                            <button
+                                onClick={() => router.visit('/sales')}
+                                className={cn(
+                                    "px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors border",
+                                    !activeCategory ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                                )}
+                            >
+                                Semua
+                            </button>
+                            {categories.map((cat) => (
+                                <button key={cat.id}
+                                    onClick={() => router.visit(`/sales?category_id=${cat.id}`)}
+                                    className={cn(
+                                        "px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors border",
+                                        activeCategory === cat.id ? "bg-blue-600 text-white border-blue-600" : "bg-white text-gray-600 border-gray-200 hover:bg-gray-50"
+                                    )}
                                 >
-                                    <div className="flex flex-col items-center sm:items-start">
-                                        <span className="text-xs sm:text-sm flex gap-2 font-medium whitespace-nowrap">
-                                            <div className={`bg-purple-600 text-white rounded-md p-1 ${isActive(categories.id) ? "bg-purple-600" : ""}`}>
-                                                {(() => {
-                                                    switch (categories.name.toLowerCase()) {
-                                                        case "makanan":
-                                                            return <Utensils size={20} />
-                                                        case "minuman":
-                                                            return <GlassWater size={20} />
-                                                        case "barang":
-                                                            return <BoxIcon size={20} />
-                                                        default:
-                                                            return <BoxIcon size={20} />
-                                                    }
-                                                })()}
-                                            </div>
-                                            {categories.name}
-                                        </span>
-                                        <span className={`text-[10px] sm:text-xs ${categories.active ? "text-purple-100" : "text-gray-500"}`}>
-                                            {categories.stock}
-                                        </span>
-                                    </div>
+                                    {cat.name}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Scrollable Content */}
-                    <div className="flex-1 overflow-y-auto p-4">
-                        <h2 className="text-lg font-semibold mb-3 text-gray-800">Lunch Menu</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-2 pb-4">
+                    {/* Products Grid */}
+                    <div className="flex-1 overflow-y-auto p-3">
+                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3">
                             {products.length > 0 ? (
                                 products.map((item) => (
                                     <ProductCard key={item.id} product={item} onAddToCart={handleAddToCart} />
                                 ))
                             ) : (
-                                <div className="p-4 w-full flex flex-col items-center justify-center border border-slate-200 rounded-lg">
-                                    <h3 className="font-semibold text-gray-800 mb-1 text-center self-center">
-                                        Belum ada produk
-                                    </h3>
-                                </div>
+                                <div className="col-span-full p-8 text-center text-gray-400">Belum ada produk</div>
                             )}
                         </div>
                     </div>
                 </div>
 
-                {/* Desktop Sidebar */}
-                <div className="w-full hidden lg:flex lg:w-[500px] fixed right-0 top-0 h-screen">
+                {/* Cart Sidebar */}
+                <div className="w-[420px] hidden lg:flex fixed right-0 top-0 h-screen">
                     <div className="flex flex-col h-full w-full border-l border-gray-200 bg-white">
-                        <div className="p-6 flex-1 flex flex-col overflow-hidden">
-                            <h2 className="text-xl font-semibold mb-6 text-gray-800">Order Items ({cartItems.length})</h2>
-                            <div className="flex-1 pr-2 max-h-[350px] overflow-y-auto">
-                                {cartItems.length > 0 ? (
-                                    cartItems.map((product) => (
-                                        <div key={product.id} className="flex items-start space-x-3 mb-4 p-2 rounded-lg border border-purple-600/50">
-                                            <img
-                                                src={`/storage/products/${product.image}`}
-                                                alt={product.name}
-                                                className="w-16 h-16 object-cover rounded-md flex-shrink-0"
-                                            />
-                                            <div className="flex-grow">
-                                                <h3 className="font-medium text-gray-800">{product.name}</h3>
-                                                <div className="flex items-center justify-between mt-3">
-                                                    <div className="flex items-center space-x-2">
-                                                        <button
-                                                            onClick={() => handleDecrement(product.id)}
-                                                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-                                                        >
-                                                            <Minus size={16} />
-                                                        </button>
-                                                        <span className="text-xs text-gray-500">{product.quantity}</span>
-                                                        <button
-                                                            onClick={() => handleAddToCart(product)}
-                                                            className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-                                                        >
-                                                            <PlusIcon size={16} />
-                                                        </button>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleRemove(product.id)}
-                                                        className="w-6 h-6 rounded-full bg-gray-200 hover:bg-gray-300 flex items-center justify-center transition-colors"
-                                                    >
-                                                        <Trash size={16} className="text-red-500" />
-                                                    </button>
-                                                </div>
+                        <div className="p-4 border-b border-gray-100">
+                            <h2 className="text-base font-semibold text-gray-800 flex items-center gap-2">
+                                <Receipt className="w-4 h-4 text-blue-600" />
+                                Pesanan ({cartItems.length})
+                            </h2>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+                            {cartItems.length > 0 ? (
+                                cartItems.map((product) => (
+                                    <div key={product.id} className="flex items-center gap-3 p-2 rounded-lg border border-gray-100 bg-white hover:border-gray-200 transition-colors">
+                                        <img src={`/storage/products/${product.image}`} alt={product.name}
+                                            className="w-12 h-12 object-cover rounded-md flex-shrink-0" />
+                                        <div className="flex-1 min-w-0">
+                                            <p className="font-medium text-gray-800 text-sm truncate">{product.name}</p>
+                                            <div className="flex items-center gap-2 mt-1.5">
+                                                <button onClick={() => handleDecrement(product.id)}
+                                                    className="w-5 h-5 rounded bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600">
+                                                    <Minus size={12} />
+                                                </button>
+                                                <span className="text-xs font-medium w-5 text-center">{product.quantity}</span>
+                                                <button onClick={() => handleAddToCart(product)}
+                                                    className="w-5 h-5 rounded bg-gray-100 hover:bg-gray-200 flex items-center justify-center text-gray-600">
+                                                    <PlusIcon size={12} />
+                                                </button>
                                             </div>
-                                            <span className="font-semibold text-gray-900">
-                                                {formatPrice(product.price * (product.quantity || 1))}
-                                            </span>
                                         </div>
-                                    ))
-                                ) : (
-                                    <div className="h-full flex items-center justify-center min-h-[280px]">
-                                        <div className="text-gray-400 text-sm text-center">Belum ada item di keranjang</div>
+                                        <div className="text-right">
+                                            <p className="font-semibold text-sm text-gray-900">{formatPrice(product.price * product.quantity)}</p>
+                                            <button onClick={() => handleRemove(product.id)}
+                                                className="text-gray-300 hover:text-red-500 transition-colors mt-1">
+                                                <Trash size={12} />
+                                            </button>
+                                        </div>
                                     </div>
-                                )}
-                            </div>
+                                ))
+                            ) : (
+                                <div className="h-full flex items-center justify-center text-gray-400 text-sm">Belum ada item</div>
+                            )}
                         </div>
 
-                        <div className="p-6 space-y-8 overflow-y-auto max-h-[calc(100vh-500px)] scrollbar-hide">
-    <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center gap-2">
-            <HugeiconsIcon icon={CreditCardIcon} className="w-5 h-5 text-purple-600" />
-            Pilih Metode Pembayaran
-        </h3>
-        <div className="grid grid-cols-3 gap-3">
-            {/* Tunai Button */}
-            <button
-                className={cn(
-                    'p-3 flex flex-col items-center justify-center border rounded-xl',
-                    selectedPaymentMethod === 'cash' ? 'bg-blue-50 border-blue-300' : 'hover:border-blue-300 hover:bg-blue-50 transition-all'
-                )}
-                onClick={() => handlePaymentMethodChange('cash')}
-            >
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mb-2">
-                    <Banknote className="w-5 h-5 text-blue-600" />
-                </div>
-                <span className="text-sm font-medium">Tunai</span>
-            </button>
-
-            {/* Transfer Button */}
-            <button
-                className={cn(
-                    'p-3 flex flex-col items-center justify-center border rounded-xl',
-                    selectedPaymentMethod === 'transfer' ? 'bg-green-50 border-green-300' : 'hover:border-green-300 hover:bg-green-50 transition-all'
-                )}
-                onClick={() => handlePaymentMethodChange('transfer')}
-            >
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mb-2">
-                    <Wallet className="w-5 h-5 text-green-600" />
-                </div>
-                <span className="text-sm font-medium">Transfer</span>
-            </button>
-
-            {/* QRIS Button */}
-            <button
-                className={cn(
-                    'p-3 flex flex-col items-center justify-center border rounded-xl',
-                    selectedPaymentMethod === 'qris' ? 'bg-purple-50 border-purple-300' : 'hover:border-purple-300 hover:bg-purple-50 transition-all'
-                )}
-                onClick={() => handlePaymentMethodChange('qris')}
-            >
-                <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mb-2">
-                    <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm-2 14h8v-8H3v8zm2-6h4v4H5v-4zm8-10v8h8V3h-8zm6 6h-4V5h4v4zm-6 4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2v-2zm0-2h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
-                    </svg>
-                </div>
-                <span className="text-sm font-medium">QRIS</span>
-            </button>
-        </div>
-
-        {/* Cash Payment Form */}
-        {selectedPaymentMethod === "cash" && (
-            <div className="mt-6 space-y-4 w-full">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <Banknote className="w-5 h-5 text-purple-600" />
-                    Pembayaran Tunai
-                </h3>
-
-                <div className="space-y-2">
-                    <Label htmlFor="amount-paid" className="text-gray-700 font-medium">
-                        Jumlah Uang Diterima
-                    </Label>
-                    <div className="relative">
-                        <span className="absolute text-lg left-3 top-1/2 -translate-y-1/2 text-gray-500 pointer-events-none select-none">
-                            Rp
-                        </span>
-                        <CurrencyInput
-                            name="amount-paid"
-                            autoComplete="off"
-                            value={amountPaid}
-                            onValueChange={(value) => {
-                                const numericValue = Number(value || 0)
-                                setAmountPaid(numericValue)
-                            }}
-                            id="amount-paid"
-                            type="text"
-                            placeholder="0"
-                            className="w-full text-lg py-2 pl-10 pr-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-                focus:border-purple-300 focus:ring-2 focus:ring-purple-100"
-                        />
-                    </div>
-                </div>
-
-                <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-xl p-4 shadow-sm w-full">
-                    <div className="flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                            <RefreshCw className="w-4 h-4 text-green-600" />
-                            <span className="font-medium text-gray-700">Kembalian</span>
-                        </div>
-                        <span className="text-2xl font-bold text-green-600">
-                            {formatPrice(Math.max(0, amountPaid - grandTotal))}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        )}
-
-        {/* Transfer Payment */}
-        {selectedPaymentMethod === "transfer" && (
-            <div className="mt-6 space-y-4 w-full">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <Wallet className="w-5 h-5 text-purple-600" />
-                    Pembayaran Transfer
-                </h3>
-
-                <div className="space-y-4">
-                    <div className="space-y-2">
-                        <Label htmlFor="bank" className="text-gray-700 font-medium">
-                            Pilih Bank
-                        </Label>
-                        <Select>
-                            <SelectTrigger className="w-full py-2 px-4 text-gray-800 rounded-xl bg-gray-50 border border-gray-200 
-                focus:border-green-300 focus:ring-2 focus:ring-green-100">
-                                <SelectValue placeholder="Pilih bank tujuan" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="bca">BCA</SelectItem>
-                                <SelectItem value="mandiri">Mandiri</SelectItem>
-                                <SelectItem value="bri">BRI</SelectItem>
-                                <SelectItem value="bni">BNI</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-
-                    <div className="bg-green-50 border border-gray-300 rounded-xl p-4">
-                        <div className="flex items-center gap-3">
-                            <div className="bg-white p-2 rounded-lg border border-gray-300">
-                                <div className="w-10 h-10 bg-green-100 rounded flex items-center justify-center">
-                                    <Wallet className="w-5 h-5 text-green-600" />
-                                </div>
+                        {/* Bottom: total + bayar button */}
+                        <div className="border-t border-gray-100 p-4 space-y-3">
+                            <div className="flex justify-between text-sm">
+                                <span className="text-gray-500">Subtotal</span>
+                                <span className="font-medium text-gray-800">{formatPrice(subTotal)}</span>
                             </div>
-                            <div>
-                                <p className="font-medium text-gray-700">Bank Central Asia</p>
-                                <p className="text-sm text-gray-500">123-456-7890 (a.n. Mr Shoop)</p>
-                            </div>
-                        </div>
-
-                        <div className="mt-4 space-y-2">
-                            <Label className="text-gray-700 font-medium">
-                                Total Transfer
-                            </Label>
-                            <div className="text-2xl font-bold text-green-600">
-                                {formatPrice(grandTotal)}
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )}
-
-        {/* QRIS Payment */}
-        {selectedPaymentMethod === "qris" && (
-            <div className="mt-6 space-y-4 w-full">
-                <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
-                    <svg className="w-5 h-5 text-purple-600" fill="currentColor" viewBox="0 0 24 24">
-                        <path d="M3 11h8V3H3v8zm2-6h4v4H5V5zm-2 14h8v-8H3v8zm2-6h4v4H5v-4zm8-10v8h8V3h-8zm6 6h-4V5h4v4zm-6 4h2v2h-2v-2zm2 2h2v2h-2v-2zm-2 2h2v2h-2v-2zm4 0h2v2h-2v-2zm2-2h2v2h-2v-2zm0-2h2v2h-2v-2zm-2-2h2v2h-2v-2z"/>
-                    </svg>
-                    Pembayaran QRIS
-                </h3>
-
-                <div className="bg-white border border-gray-300 rounded-2xl p-6 space-y-4">
-                    {/* QR Code */}
-                    <div className="flex justify-center">
-                        <div className="bg-white p-4 rounded-xl border-4 border-purple-600 shadow-lg">
-                            <img 
-                                src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=00020101021126660014ID.CO.QRIS.WWW0114ID0000000000000215ID2023010100000303UMI51440014ID.CO.TELKOM.WWW021893600000000000000030303UMI5204549953033605802ID5909Mr%20Shoop6008Surabaya61056100062070703A016304ABCD"
-                                alt="QRIS Code"
-                                className="w-48 h-48"
-                            />
-                        </div>
-                    </div>
-
-                    {/* Merchant Info */}
-                    <div className="text-center space-y-2">
-                        <div className="flex items-center justify-center gap-2">
-                            <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                                <span className="text-sm font-bold text-purple-600">MS</span>
-                            </div>
-                            <h4 className="font-semibold text-gray-800">Mr Shoop</h4>
-                        </div>
-                        <p className="text-sm text-gray-500">Scan QR Code untuk pembayaran</p>
-                    </div>
-
-                    {/* Total Amount */}
-                    <div className="bg-gradient-to-r from-purple-50 to-indigo-50 border border-gray-300 rounded-xl p-4">
-                        <div className="text-center space-y-1">
-                            <p className="text-sm text-gray-600">Total Pembayaran</p>
-                            <p className="text-3xl font-bold text-purple-600">
-                                {formatPrice(grandTotal)}
-                            </p>
-                        </div>
-                    </div>
-
-                    {/* Supported Apps */}
-                    <div className="space-y-2">
-                        <p className="text-xs text-gray-500 text-center">Didukung oleh:</p>
-                        <div className="flex justify-center items-center gap-3 flex-wrap">
-                            <div className="px-3 py-1 bg-gray-50 rounded-lg border border-gray-300">
-                                <span className="text-xs font-medium text-gray-700">GoPay</span>
-                            </div>
-                            <div className="px-3 py-1 bg-gray-50 rounded-lg border border-gray-300">
-                                <span className="text-xs font-medium text-gray-700">OVO</span>
-                            </div>
-                            <div className="px-3 py-1 bg-gray-50 rounded-lg border border-gray-300">
-                                <span className="text-xs font-medium text-gray-700">DANA</span>
-                            </div>
-                            <div className="px-3 py-1 bg-gray-50 rounded-lg border border-gray-300">
-                                <span className="text-xs font-medium text-gray-700">LinkAja</span>
-                            </div>
-                            <div className="px-3 py-1 bg-gray-50 rounded-lg border border-gray-300">
-                                <span className="text-xs font-medium text-gray-700">ShopeePay</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Instructions */}
-                    <div className="bg-blue-50 border border-gray-300 rounded-xl p-3">
-                        <div className="flex items-start gap-2">
-                            <svg className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <div className="text-xs text-blue-800 space-y-1">
-                                <p className="font-medium">Cara Pembayaran:</p>
-                                <ol className="list-decimal list-inside space-y-0.5 text-blue-700">
-                                    <li>Buka aplikasi e-wallet Anda</li>
-                                    <li>Pilih menu Scan/Bayar</li>
-                                    <li>Scan QR code di atas</li>
-                                    <li>Konfirmasi pembayaran</li>
-                                </ol>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        )}
-    </div>
-</div>
-                        <div className="p-6 border-t">
-                            <div className="space-y-2 text-sm text-gray-700 bg-muted p-4 rounded-xl mb-4">
-                                <div className="flex justify-between">
-                                    <span>Sub Total</span>
-                                    <span>{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(subTotal)}</span>
-                                </div>
-                                <div className="flex justify-between">
-                                    <span>Tax</span>
-                                    <span>$5.2</span>
-                                </div>
-                                <div className="flex justify-between font-bold text-lg text-gray-900 mt-4 border-t border-gray-300 pt-4">
-                                    <span>Total Payment</span>
-                                    <span>{Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR' }).format(grandTotal)}</span>
-                                </div>
+                            <div className="flex justify-between text-base font-bold text-gray-900 border-t border-gray-100 pt-3">
+                                <span>Total</span>
+                                <span className="text-blue-600">{formatPrice(grandTotal)}</span>
                             </div>
                             <button
                                 disabled={cartItems.length === 0}
-                                onClick={handleCheckout}
-                                className={`w-full cursor-pointer h-14 text-white text-lg font-semibold rounded-xl transition-all active:scale-[0.98] shadow-sm 
-                            ${cartItems.length === 0
-                                        ? "bg-gray-400 cursor-not-allowed"
-                                        : "bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 hover:shadow-xl"
-                                    }`}
+                                onClick={openPayment}
+                                className="w-full py-3.5 text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-xl transition-colors cursor-pointer"
                             >
                                 Bayar {formatPrice(grandTotal)}
                             </button>
@@ -594,6 +327,139 @@ export default function CashierAppStatic() {
                     </div>
                 </div>
             </div>
+
+            {/* Payment Modal */}
+            <Dialog open={showPayment} onOpenChange={setShowPayment}>
+                <DialogContent className="sm:max-w-md">
+                    <DialogHeader>
+                        <DialogTitle className="flex items-center gap-2 text-lg">
+                            <Receipt className="w-5 h-5 text-blue-600" />
+                            Pembayaran
+                        </DialogTitle>
+                    </DialogHeader>
+
+                    <div className="space-y-5">
+                        {/* Metode Pembayaran */}
+                        <div>
+                            <p className="text-sm font-medium text-gray-700 mb-3">Metode Pembayaran</p>
+                            <div className="grid grid-cols-3 gap-2">
+                                {paymentMethods.map((method) => (
+                                    <button key={method.key}
+                                        className={cn(
+                                            'py-3 flex flex-col items-center justify-center border rounded-xl text-sm transition-colors',
+                                            selectedPaymentMethod === method.key
+                                                ? method.key === 'cash' ? 'bg-blue-50 border-blue-300 text-blue-700'
+                                                    : method.key === 'transfer' ? 'bg-green-50 border-green-300 text-green-700'
+                                                        : 'bg-purple-50 border-purple-300 text-purple-700'
+                                                : 'border-gray-200 text-gray-500 hover:bg-gray-50'
+                                        )}
+                                        onClick={() => {
+                                            setSelectedPaymentMethod(method.key);
+                                            if (method.key !== 'cash') setAmountPaid(grandTotal);
+                                            else setAmountPaid(0);
+                                        }}
+                                    >
+                                        <method.icon className="w-5 h-5 mb-1" />
+                                        <span className="text-xs font-medium">{method.label}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Cash Input */}
+                        {selectedPaymentMethod === 'cash' && (
+                            <div className="space-y-2">
+                                <Label className="text-sm text-gray-600">Uang Diterima</Label>
+                                <div className="relative">
+                                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">Rp</span>
+                                    <input
+                                        type="number"
+                                        value={amountPaid || ''}
+                                        onChange={(e) => setAmountPaid(Number(e.target.value))}
+                                        placeholder="0"
+                                        className="w-full py-3 pl-10 pr-3 text-lg font-semibold rounded-xl bg-gray-50 border border-gray-200 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 outline-none"
+                                        autoFocus
+                                    />
+                                </div>
+                                {/* Quick amount buttons */}
+                                <div className="flex gap-2 flex-wrap">
+                                    {[
+                                        { label: 'Rp20.000', value: 20000 },
+                                        { label: 'Rp50.000', value: 50000 },
+                                        { label: 'Rp100.000', value: 100000 },
+                                        { label: 'Tepat', value: grandTotal },
+                                    ].map((btn) => (
+                                        <button
+                                            key={btn.value}
+                                            type="button"
+                                            onClick={() => setAmountPaid(btn.value)}
+                                            className={`px-3 py-1.5 text-xs font-medium rounded-lg border transition-colors cursor-pointer ${
+                                                amountPaid === btn.value
+                                                    ? 'bg-blue-100 border-blue-300 text-blue-700'
+                                                    : 'bg-white border-gray-200 text-gray-600 hover:bg-gray-50'
+                                            }`}
+                                        >
+                                            {btn.label}
+                                        </button>
+                                    ))}
+                                </div>
+                                {amountPaid >= grandTotal && (
+                                    <div className="flex justify-between items-center bg-green-50 border border-green-200 rounded-xl p-3">
+                                        <span className="text-sm text-green-700 font-medium">Kembalian</span>
+                                        <span className="text-lg font-bold text-green-600">{formatPrice(amountPaid - grandTotal)}</span>
+                                    </div>
+                                )}
+                                {amountPaid > 0 && amountPaid < grandTotal && (
+                                    <div className="text-xs text-red-500">Kurang {formatPrice(grandTotal - amountPaid)}</div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* Total */}
+                        <div className="border-t border-gray-100 pt-3 space-y-1.5">
+                            <div className="flex justify-between text-sm text-gray-500">
+                                <span>Subtotal</span>
+                                <span>{formatPrice(subTotal)}</span>
+                            </div>
+                            <div className="flex justify-between text-lg font-bold text-gray-900">
+                                <span>Total</span>
+                                <span className="text-blue-600">{formatPrice(grandTotal)}</span>
+                            </div>
+                        </div>
+
+                        {/* Actions */}
+                        <div className="grid grid-cols-2 gap-3">
+                            <button onClick={() => setShowPayment(false)} className="py-3.5 text-sm font-semibold text-gray-700 bg-gray-200 hover:bg-gray-300 rounded-xl transition-colors cursor-pointer">
+                                Batal
+                            </button>
+                            <button
+                                disabled={isSubmitting || (selectedPaymentMethod === 'cash' && (!amountPaid || amountPaid < grandTotal))}
+                                onClick={handleCheckout}
+                                className="py-3.5 text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed rounded-xl transition-colors cursor-pointer"
+                            >
+                                {isSubmitting ? 'Memproses...' : `Bayar Rp ${grandTotal.toLocaleString('id-ID')}`}
+                            </button>
+                        </div>
+                    </div>
+                </DialogContent>
+            </Dialog>
+
+            {/* Invoice Modal */}
+            {showInvoice && lastSale && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 print:bg-white print:!block print:!p-0 animate-fade-in" id="invoice-modal">
+                    <div className="bg-white rounded-xl shadow-2xl w-full max-w-sm mx-4 p-6 print:!rounded-none print:!shadow-none print:!max-w-full print:!mx-0 print:!p-4 print:!min-h-screen animate-scale-in">
+                        <div className="print:hidden flex justify-end gap-2 mb-3">
+                            <button onClick={() => window.print()} className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 text-sm flex items-center gap-2 cursor-pointer active:scale-95 transition-all">
+                                <Printer className="w-4 h-4" /> Print
+                            </button>
+                            <button onClick={() => { setShowInvoice(false); setLastSale(null); }} className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm cursor-pointer active:scale-95 transition-all">
+                                Tutup
+                            </button>
+                        </div>
+                        <PrintContent lastSale={lastSale} />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

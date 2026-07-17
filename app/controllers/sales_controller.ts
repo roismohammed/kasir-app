@@ -6,6 +6,7 @@ import type { HttpContext } from '@adonisjs/core/http'
 
 export default class SalesController {
   async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     const selectedCategoryId = request.input('category_id')
     const sales = await Sale.query()
       .preload('customer')
@@ -14,6 +15,8 @@ export default class SalesController {
           product.preload('category')
         })
       })
+      .orderBy('created_at', 'desc')
+      .paginate(page, 10)
 
     const productsQuery = Product.query().preload('category').where('stock', '>', 0)
     if (selectedCategoryId) {
@@ -69,7 +72,7 @@ export default class SalesController {
       await SaleProduct.createMany(saleItems)
 
       session.flash('success', 'Transaksi berhasil disimpan!')
-      return response.redirect().toRoute('struck.show', { id: sale.id })
+      return response.redirect().withQs({ saleId: sale.id }).toRoute('sales.index')
     } catch (error) {
       console.error(error)
       session.flash('error', 'Terjadi kesalahan saat menyimpan transaksi')

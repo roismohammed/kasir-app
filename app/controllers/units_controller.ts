@@ -5,9 +5,10 @@ export default class UnitsController {
   /**
    * Display a list of resource
    */
-  public async index({ inertia }: HttpContext) {
+  public async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     return inertia.render('units/index', {
-      units: await Unit.query().paginate(1, 10)
+      units: await Unit.query().orderBy('created_at', 'desc').paginate(page, 10)
     }
     )
   }

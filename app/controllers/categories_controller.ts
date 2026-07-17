@@ -6,9 +6,10 @@ export default class CategoriesController {
   /**
    * Display a list of resource
    */
-  async index({ inertia }: HttpContext) {
+  async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     return inertia.render('category/index',{
-      categories :await Category.query().paginate(1, 10)
+      categories :await Category.query().orderBy('created_at', 'desc').paginate(page, 10)
     })
   }
 

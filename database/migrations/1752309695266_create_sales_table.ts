@@ -14,8 +14,8 @@ export default class extends BaseSchema {
       table.decimal('total_price', 12, 2).notNullable()
       table.decimal('tax', 12, 2).defaultTo(0)
       table.text('notes').nullable()
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at').nullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 

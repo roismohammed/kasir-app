@@ -9,9 +9,10 @@ export default class StockOutsController {
   /**
    * Display a list of resource
    */
-  async index({ inertia }: HttpContext) {
+  async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     return inertia.render('stockOut/index', {
-      stock_out: await StockOut.query().preload('products').preload('suppliers').paginate(1, 10)
+      stock_out: await StockOut.query().preload('products').preload('suppliers').orderBy('created_at', 'desc').paginate(page, 10)
     })
   }
 

@@ -6,9 +6,10 @@ export default class SuppliersController {
   /**
    * Display a list of resource
    */
-  async index({ inertia }: HttpContext) {
+  async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     return inertia.render('suppliers/index', {
-      suppliers: await Supplier.query().paginate(1, 10),
+      suppliers: await Supplier.query().orderBy('created_at', 'desc').paginate(page, 10),
     })
   }
 

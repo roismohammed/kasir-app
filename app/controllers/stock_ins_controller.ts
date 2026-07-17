@@ -9,9 +9,10 @@ export default class StockInsController {
   /**
    * Display a list of resource
    */
-  async index({ inertia }: HttpContext) {
+  async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     return inertia.render('stockIn/index', {
-      stock_in: await StockIn.query().preload('products').paginate(1, 10)
+      stock_in: await StockIn.query().preload('products').orderBy('created_at', 'desc').paginate(page, 10)
     })
   }
 

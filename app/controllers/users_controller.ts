@@ -6,10 +6,11 @@ export default class UsersController {
   /**
    * Display a list of resource
    */
-  public async index({ inertia }: HttpContext) {
+  public async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     const role = await Role.all()
     return inertia.render('user/index',{
-      users: await User.query().preload('role').paginate(1,10),
+      users: await User.query().preload('role').orderBy('created_at', 'desc').paginate(page, 10),
       role
     })
   }

@@ -8,14 +8,21 @@ export default class ProductsController {
   /**
    * Display a list of resource
    */
-  public async index({ inertia }: HttpContext) {
+  public async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     const products = await Product.query()
       .preload('category')
       .preload('unit')
-      .paginate(1, 10)
+      .orderBy('created_at', 'desc')
+      .paginate(page, 10)
+
+    const categories = await Category.all()
+    const unit = await Unit.all()
 
     return inertia.render('product/index', {
       products,
+      categories,
+      unit,
     })
   }
 
@@ -77,6 +84,12 @@ export default class ProductsController {
   public async update({ params, request, response, session }: HttpContext) {
     const product = await Product.findOrFail(params.id)
     const data = await request.validateUsing(ProductValidator)
+    const image = request.file('image')
+
+    if (image) {
+      await image.move(app.makePath('storage/products'))
+      data.image = image.fileName!
+    }
 
     product.merge(data)
     await product.save()

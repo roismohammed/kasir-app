@@ -10,8 +10,8 @@ export default class extends BaseSchema {
       table.string('phone')
       table.string('address')
       table.text('description')
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at').nullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 

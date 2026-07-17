@@ -6,9 +6,10 @@ export default class CustomersController {
   /**
    * Display a list of resource
    */
-  async index({ inertia }: HttpContext) {
+  async index({ inertia, request }: HttpContext) {
+    const page = request.input('page', 1)
     return inertia.render('customers/index', {
-      customers: await Customer.query().paginate(1, 10),
+      customers: await Customer.query().orderBy('created_at', 'desc').paginate(page, 10),
     })
   }
 

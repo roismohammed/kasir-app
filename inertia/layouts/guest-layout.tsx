@@ -5,9 +5,9 @@ import Navbar from "~/components/navbar";
 export default function GuestLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="px-0">
-      {/* <Navbar /> */}
+      <Navbar />
        {children}
-        {/* <Footer /> */}
+        <Footer />
     </div>
   )
 }

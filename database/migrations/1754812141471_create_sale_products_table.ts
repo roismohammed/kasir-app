@@ -10,8 +10,8 @@ export default class extends BaseSchema {
       table.integer('product_id').unsigned().references('products.id').onDelete('CASCADE')  
       table.integer('quantity').notNullable()
       table.decimal('price', 10, 2).notNullable()
-      table.timestamp('created_at')
-      table.timestamp('updated_at')
+      table.timestamp('created_at').nullable()
+      table.timestamp('updated_at').nullable()
     })
   }
 
